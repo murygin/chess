@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+<ui:composition template="layout.xhtml">
+	<ui:define name="content">
+		<h2>Register</h2>
+		<h:form> 
+			  
+        	<h:panelGrid id="registerGrid" columns="2" cellpadding="5"> 
+				<h:outputLabel for="username" value="Username: *" /> 
+				<p:inputText id="username" value="#{register.login}" required="true" label="username"/>
+				<h:outputLabel for="email" value="Email: *" /> 
+				<p:inputText id="email" value="#{register.email}" required="true" label="email"/>
+				<h:outputLabel for="pwd1" value="Password: *" />  
+            	<p:password id="pwd1" value="#{register.password}" feedback="true" match="pwd2" label="Password" required="true"/>  
+            	<h:outputLabel for="pwd2" value="Password (again): *" />  
+            	<p:password id="pwd2" value="#{register.password}" feedback="false" label="Password (again)" required="true"/>  
+            	<p:commandButton value="Register" update="messagePanel" actionListener="#{register.register}" />
+            	<p:messages showDetail="true" autoUpdate="true"/>
+			</h:panelGrid>
+			<p:outputPanel id="messagePanel" rendered="#{register.user!=null}">
+				<h:outputLabel  value="User created" /> 
+			</p:outputPanel>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+
+</html>
