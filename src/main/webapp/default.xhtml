@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+<ui:composition template="layout.xhtml">
+	<ui:define name="content">
+		<h2>
+			This is default content in: <i>default.xhtml</i>
+		</h2>
+		
+		<p:accordionPanel>
+			<p:tab title="#{welcomeBean.message}">
+				<p:dataList value="#{welcomeBean.userService.all}" var="user" itemType="disc">	
+					#{user.id}, #{user.login}
+				</p:dataList>
+
+			</p:tab>
+			<p:tab title="#{welcomeBean.userService.message}">
+				<h:outputText value="Ipsum" />
+			</p:tab>
+</p:accordionPanel>
+
+	</ui:define>
+</ui:composition>
+
+</html>
