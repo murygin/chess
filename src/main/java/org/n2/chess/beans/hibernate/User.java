@@ -39,6 +39,8 @@ public class User implements Serializable {
 
     private Integer id;
     private String login;
+    private String email;
+    private String password;
     
     /**
      * @return the id
@@ -58,7 +60,7 @@ public class User implements Serializable {
     /**
      * @return the login
      */
-    @Column(name = "login", unique = true, nullable = false, length = 10)
+    @Column(name = "login", unique = true, nullable = true, length = 10)
     public String getLogin() {
         return login;
     }
@@ -67,5 +69,31 @@ public class User implements Serializable {
      */
     public void setLogin(String login) {
         this.login = login;
+    }
+    /**
+     * @return the email
+     */
+    @Column(name = "email", unique = true, nullable = false, length = 100)
+    public String getEmail() {
+        return email;
+    }
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    /**
+     * @return the password
+     */
+    @Column(name = "password", nullable = true, length = 100)
+    public String getPassword() {
+        return password;
+    }
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

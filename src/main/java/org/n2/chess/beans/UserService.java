@@ -73,5 +73,9 @@ public class UserService implements IUserService {
     public List<User> getAll() {
         return getUserDao().loadAll();
     }
+    
+    public void save(User user) {
+        getUserDao().save(user);
+    }
 
 }

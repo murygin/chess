@@ -34,4 +34,6 @@ public interface IUserService {
     void setMessage(String message);
     
     List<User> getAll();
+    
+    void save(User user);
 }
