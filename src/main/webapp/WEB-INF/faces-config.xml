@@ -8,4 +8,10 @@
 		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 	</application>
 	
+    <!--
+    <validator>
+        <validator-id>userValidator</validator-id>
+        <validator-class>org.n2.chess.beans.UserValidator</validator-class>
+    </validator>
+    -->
 </faces-config>

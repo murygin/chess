@@ -19,6 +19,9 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import org.apache.log4j.Logger;
 import org.n2.chess.beans.hibernate.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,20 +46,31 @@ public class RegisterBean {
     
     private String password2;
     
-    private User user;
+    @Autowired
+    private UserBean userBean;
     
     @Autowired
     private IUserService userService;
 
     public void register() {
         LOG.error("register...");
-        User user = new User();
-        user.setEmail(getEmail());
-        user.setLogin(getLogin());
-        user.setPassword(getPassword());     
-        getUserService().save(user);
-        if(user.getId()!=null) {
-            setUser(user);
+        try {
+            User user = new User();
+            user.setEmail(getEmail());
+            user.setLogin(getLogin());
+            user.setPassword(getPassword());     
+            getUserService().save(user);
+            FacesContext.getCurrentInstance().addMessage(
+                    null, 
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,"User creted", "Login name is: " + getLogin()));
+            if(user.getId()!=null) {
+                getUserBean().setUser(user);
+            }
+        } catch (Exception e) {
+            LOG.error("Error while creating user", e);
+            FacesContext.getCurrentInstance().addMessage(
+                    null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,"Registering failed", "Error while registering user: " + e.getMessage()));
         }
     }
     
@@ -117,17 +131,17 @@ public class RegisterBean {
     }
 
     /**
-     * @return the user
+     * @return the userBean
      */
-    public User getUser() {
-        return user;
+    public UserBean getUserBean() {
+        return userBean;
     }
 
     /**
-     * @param user the user to set
+     * @param userBean the userBean to set
      */
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserBean(UserBean userBean) {
+        this.userBean = userBean;
     }
 
     /**
