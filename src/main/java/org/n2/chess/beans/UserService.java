@@ -21,6 +21,9 @@ package org.n2.chess.beans;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.n2.chess.beans.hibernate.IUserDao;
 import org.n2.chess.beans.hibernate.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,7 @@ import org.springframework.stereotype.Service;
 @Service("userService")
 public class UserService implements IUserService {
     
-    private String message = "Hello from a UserService instance.";
+    private static final Logger LOG = Logger.getLogger(UserService.class);
 
     @Autowired
     private IUserDao userDao;
@@ -51,20 +54,6 @@ public class UserService implements IUserService {
     public void setUserDao(IUserDao userDao) {
         this.userDao = userDao;
     }
-    
-    /**
-     * @return the message
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * @param message the message to set
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
     /* (non-Javadoc)
      * @see org.n2.chess.beans.IUserService#loadAll()
@@ -77,5 +66,46 @@ public class UserService implements IUserService {
     public void save(User user) {
         getUserDao().save(user);
     }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IUserService#findUser(java.lang.String)
+     */
+    @Override
+    public User findUser(String username) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
+        criteria.add(Restrictions.eq("login", username));
+        User user = null;
+        List<User> result = getUserDao().find(criteria);
+        if(result!=null) {
+            if(result.size()>1) {
+                LOG.error("More than one user found with login: " + username);
+                throw new RuntimeException("More than one user found.");
+            }
+            if(!result.isEmpty()) {
+                user = result.get(0);
+            }
+        }
+        return user;
+    }
+
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IUserService#isUsernameAvailable(java.lang.String)
+     */
+    @Override
+    public boolean isUsernameAvailable(String username) {
+        List<User> userList = getUserDao().findByExample(new User(username,null,null,null));
+        return userList==null || userList.isEmpty();
+    }
+
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IUserService#isEmailAvailable(java.lang.String)
+     */
+    @Override
+    public boolean isEmailAvailable(String email) {
+        List<User> userList = getUserDao().findByExample(new User(null,email,null,null));
+        return userList==null || userList.isEmpty();
+    }
+
+    
 
 }

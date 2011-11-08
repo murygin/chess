@@ -43,11 +43,17 @@ public class UserValidator implements Validator {
      */
     @Override
     public void validate(FacesContext arg0, UIComponent arg1, Object value) throws ValidatorException {
-        FacesMessage message = new FacesMessage();
-        message.setDetail("User name is taken: " + getUserService());
-        message.setSummary("User name is taken: " + getUserService());
-        message.setSeverity(FacesMessage.SEVERITY_ERROR);
-        throw new ValidatorException(message);
+        if(value!=null) {
+            
+            if(!getUserService().isUsernameAvailable((String) value) 
+               || !getUserService().isEmailAvailable((String) value)) {              
+                FacesMessage message = new FacesMessage();
+                message.setDetail(value + "is not available. Choose another name.");
+                message.setSummary("Not available");
+                message.setSeverity(FacesMessage.SEVERITY_WARN);
+                throw new ValidatorException(message);
+            }
+        }
     }
 
     /**

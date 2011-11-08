@@ -17,23 +17,35 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.n2.chess.beans.hibernate;
+package org.n2.chess.beans;
 
-import java.util.List;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
 
-import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public interface IUserDao {
-    
-    void save(User user);
-    void update(User user);
-    void delete(User user);
-    List<User> find(String query,Object... values);
-    List<User> findByExample(User user);
-    List<User> find(DetachedCriteria criteria);
-    List<User> loadAll();
+@Component("passwordValidator")
+public class PasswordValidator implements Validator{
+ 
+    public PasswordValidator(){
+    }
+ 
+    @Override
+    public void validate(FacesContext context, UIComponent component,Object value) throws ValidatorException {  
+        String pwd = (String) value;
+        if(pwd!=null && pwd.length()<6) {
+            FacesMessage msg = new FacesMessage("Password is to short", "Enter a password with at least 6 characters.");
+            msg.setSeverity(FacesMessage.SEVERITY_WARN);
+            throw new ValidatorException(msg);
+        }
+    }
+
+
 }

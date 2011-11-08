@@ -21,6 +21,7 @@ package org.n2.chess.beans.hibernate;
 
 import java.util.List;
 
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -55,20 +56,35 @@ public class UserDao extends CustomHibernateDaoSupport implements IUserDao {
     }
 
     /* (non-Javadoc)
-     * @see org.n2.chess.beans.hibernate.IUserDao#findByStockCode(java.lang.String)
-     */
-    @Override
-    public User findByStockCode(String userCode) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
      * @see org.n2.chess.beans.hibernate.IUserDao#findAll()
      */
     @Override
     public List<User> loadAll() {
         return getHibernateTemplate().loadAll(User.class);
+    }
+
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.hibernate.IUserDao#find(java.lang.String, java.lang.Object[])
+     */
+    @Override
+    public List<User> find(String query, Object... values) {
+        return getHibernateTemplate().find(query, values);
+    }
+
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.hibernate.IUserDao#findByExample(org.n2.chess.beans.hibernate.User)
+     */
+    @Override
+    public List<User> findByExample(User user) {
+        return getHibernateTemplate().findByExample(user);
+    }
+
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.hibernate.IUserDao#find(org.hibernate.criterion.DetachedCriteria)
+     */
+    @Override
+    public List<User> find(DetachedCriteria criteria) {
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 
 }

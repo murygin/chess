@@ -11,19 +11,6 @@
 		<h2>
 			This is default content in: <i>default.xhtml</i>
 		</h2>
-		
-		<p:accordionPanel>
-			<p:tab title="#{welcomeBean.message}">
-				<p:dataList value="#{welcomeBean.userService.all}" var="user" itemType="disc">	
-					#{user.id}, #{user.login}
-				</p:dataList>
-
-			</p:tab>
-			<p:tab title="#{welcomeBean.userService.message}">
-				<h:outputText value="Ipsum" />
-			</p:tab>
-</p:accordionPanel>
-
 	</ui:define>
 </ui:composition>
 

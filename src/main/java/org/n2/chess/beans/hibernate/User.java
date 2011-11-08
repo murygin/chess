@@ -41,6 +41,24 @@ public class User implements Serializable {
     private String login;
     private String email;
     private String password;
+    private String salt;
+
+    public User() {
+        super();
+    }
+
+    /**
+     * @param login
+     * @param email
+     * @param password
+     */
+    public User(String login, String email, String password, String salt) {
+        super();
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.salt = salt;
+    }
     
     /**
      * @return the id
@@ -95,5 +113,20 @@ public class User implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * @return the salt
+     */
+    public String getSalt() {
+        return salt;
+    }
+
+    /**
+     * @param salt the salt to set
+     */
+    @Column(name = "salt", nullable = true, length = 100)
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

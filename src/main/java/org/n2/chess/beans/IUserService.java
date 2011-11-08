@@ -29,11 +29,13 @@ import org.n2.chess.beans.hibernate.User;
  */
 public interface IUserService {
     
-    String getMessage();
- 
-    void setMessage(String message);
-    
     List<User> getAll();
     
     void save(User user);
+    
+    User findUser(String username);
+    
+    boolean isUsernameAvailable(String username);
+    
+    boolean isEmailAvailable(String email);
 }

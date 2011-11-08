@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import java.io.Serializable;
+
 import org.n2.chess.beans.hibernate.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("user")
 @Scope("session")
-public class UserBean {
+public class UserBean  implements Serializable {
 
     private User user;
 
