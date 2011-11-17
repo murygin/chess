@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository("userDao")
+@SuppressWarnings("unchecked")
 public class UserDao extends CustomHibernateDaoSupport implements IUserDao {
 
     /* (non-Javadoc)

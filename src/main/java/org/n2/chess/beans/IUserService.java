@@ -35,7 +35,15 @@ public interface IUserService {
     
     User findUser(String username);
     
+    /**
+     * @param email
+     * @return
+     */
+    User findUserByEmail(String email);
+    
     boolean isUsernameAvailable(String username);
     
     boolean isEmailAvailable(String email);
+
+    
 }

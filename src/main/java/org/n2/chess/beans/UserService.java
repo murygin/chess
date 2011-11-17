@@ -87,6 +87,27 @@ public class UserService implements IUserService {
         }
         return user;
     }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IUserService#findUser(java.lang.String)
+     */
+    @Override
+    public User findUserByEmail(String email) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
+        criteria.add(Restrictions.eq("email", email));
+        User user = null;
+        List<User> result = getUserDao().find(criteria);
+        if(result!=null) {
+            if(result.size()>1) {
+                LOG.error("More than one user found with email: " + email);
+                throw new RuntimeException("More than one user found.");
+            }
+            if(!result.isEmpty()) {
+                user = result.get(0);
+            }
+        }
+        return user;
+    }
 
     /* (non-Javadoc)
      * @see org.n2.chess.beans.IUserService#isUsernameAvailable(java.lang.String)
