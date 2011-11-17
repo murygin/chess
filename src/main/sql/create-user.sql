@@ -1,9 +1,13 @@
-CREATE TABLE  `chess`.`user` (
+--DROP TABLE `cchess`.`user`;
+
+CREATE TABLE  `cchess`.`user` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `login` VARCHAR(100),
   `email` VARCHAR(100) NOT NULL,
   `password` VARCHAR(32),
   `salt` VARCHAR(32),
+  INDEX (`id`),
+  INDEX (`email`),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uni_login` (`login`),
   UNIQUE KEY `uni_email` (`email`)

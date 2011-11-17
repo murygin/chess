@@ -5,6 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
 <ui:composition template="layout.xhtml">
@@ -56,9 +57,54 @@
 						<h:outputLabel for="pwdLogin" value="Password: " />  
 		            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
 		            	
-		            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.login}" />
+		            	<p:commandButton value="Login" actionListener="#{register.login}"  update="registerContainer,loginContainer,loginToggle,gameListContainer,newGameContainer,boardContainer" />
 					</h:panelGrid>
 				</h:form>
+			</p:outputPanel>
+		</p:outputPanel>
+		<p:outputPanel id="gameListContainer" >
+			<p:outputPanel id="gameListPanel" rendered="#{user.ok}" >
+				<h2>Game list</h2>
+				<table>
+					<ui:repeat value="#{game.gameList}" var="g" rendered="#{user.ok}">
+						<tr>
+							<td><h:outputText value="#{g.playerWhite.login}" /></td>
+							<td><h:outputText value="#{g.playerBlack.login}" /></td>
+						</tr>
+					</ui:repeat>
+				</table>		
+			</p:outputPanel>
+		</p:outputPanel>
+		<p:outputPanel id="newGameContainer" >
+			<p:outputPanel id="newGamePanel" rendered="#{user.ok}" >
+				<h2>New</h2>
+				<h:form>
+					<h:panelGrid id="newGameGrid" columns="2" cellpadding="5">
+						<h:outputLabel for="emailGame" value="Email: " /> 
+						<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
+						<!--
+						<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email">
+							<f:validator binding="#{emailValidator}" />
+                			<p:ajax event="blur" update="emailGameMsg" />
+						</p:inputText>
+						-->
+						<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
+						<p:commandButton value="Create" update="gameListContainer" actionListener="#{game.create}" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+		</p:outputPanel>
+		<p:outputPanel id="boardContainer">
+			<p:outputPanel id="boardPanel" rendered="#{user.ok and !empty board.board}" >
+				<table>
+					<ui:repeat value="#{board.board.rows}" var="row" >
+						<tr>
+							<ui:repeat value="#{row.squares}" var="square" >
+								<td><h:outputText value="#{square.color}"/><h:outputText value=": #{square.piece.letter}" rendered="#{!empty square.piece}"/></td>
+							</ui:repeat>
+						</tr>
+					</ui:repeat>
+				</table>
 			</p:outputPanel>
 		</p:outputPanel>
 	</ui:define>

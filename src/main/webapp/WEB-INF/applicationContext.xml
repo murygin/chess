@@ -46,6 +46,7 @@
 		<property name="annotatedClasses">
 			<list>
 				<value>org.n2.chess.beans.hibernate.User</value>
+                <value>org.n2.chess.beans.hibernate.Game</value>
 			</list>
 		</property>
 
