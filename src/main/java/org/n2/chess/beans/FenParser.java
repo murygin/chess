@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,7 +34,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service("fenParser")
-public class FenParser implements IFenParser {
+public class FenParser implements IFenParser, Serializable {
 
     private static final Logger LOG = Logger.getLogger(FenParser.class);
     
