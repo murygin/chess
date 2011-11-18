@@ -19,11 +19,13 @@
  ******************************************************************************/
 package org.n2.chess.model;
 
+import java.io.Serializable;
+
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public class Piece {
+public class Piece implements Serializable {
 
     public final char ROOK_B = 'r';  
     public final char ROOK_W = 'R';
