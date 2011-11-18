@@ -63,6 +63,7 @@
 			</p:outputPanel>
 		</p:outputPanel>
 		<p:outputPanel id="gameListContainer" >
+			<h:outputText value="gameListContainer: #{user.ok}" /> - <h:outputText value="#{user.user.id}" />
 			<p:outputPanel id="gameListPanel" >
 				<h2>Game list</h2>
 				<table>
@@ -76,7 +77,8 @@
 			</p:outputPanel>
 		</p:outputPanel>
 		<p:outputPanel id="newGameContainer" >
-			<p:outputPanel id="newGamePanel">
+			<h:outputText value="newGameContainer: #{user.ok}" /> - <h:outputText value="#{user.user.id}" />
+			<p:outputPanel id="newGamePanel" rendered="#{user.ok}">
 				<h2>New</h2>
 				<h:form>
 					<h:panelGrid id="newGameGrid" columns="2" cellpadding="5">
@@ -95,7 +97,8 @@
 			</p:outputPanel>
 		</p:outputPanel>
 		<p:outputPanel id="boardContainer">
-			<p:outputPanel id="boardPanel" rendered="#{!empty board.board}" >
+			<h:outputText value="boardContainer #{user.ok}" /> - <h:outputText value="#{user.user.id}" />
+			<p:outputPanel id="boardPanel" rendered="#{user.ok and !empty board.board}" >
 				<table>
 					<ui:repeat value="#{board.board.rows}" var="row" >
 						<tr>
