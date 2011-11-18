@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import java.io.Serializable;
+
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("board")
 @Scope("session")
-public class BoardBean {
+public class BoardBean implements Serializable {
     
     private Board board;
     
