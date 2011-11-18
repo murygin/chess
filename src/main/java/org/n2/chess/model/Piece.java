@@ -20,6 +20,8 @@
 package org.n2.chess.model;
 
 import java.io.Serializable;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -27,23 +29,52 @@ import java.io.Serializable;
  */
 public class Piece implements Serializable {
 
-    public final char ROOK_B = 'r';  
-    public final char ROOK_W = 'R';
+    public final static char ROOK_B = 'r';
+    public final static String ROOK_B_UNICODE = "&#9820;";   
+    public final static char ROOK_W = 'R';
+    public final static String ROOK_W_UNICODE = "&#9814;";
     
-    public final char KNIGHT_B = 'n';  
-    public final char KNIGHT_W = 'N';
+    public final static char KNIGHT_B = 'n'; 
+    public final static String KNIGHT_B_UNICODE = "&#9822;"; 
+    public final static char KNIGHT_W = 'N';
+    public final static String KNIGHT_W_UNICODE = "&#9816;";
 
-    public final char BISHOP_B = 'b'; 
-    public final char BISHOP_W = 'B';
+    public final static char BISHOP_B = 'b'; 
+    public final static String BISHOP_B_UNICODE = "&#9821;";
+    public final static char BISHOP_W = 'B';
+    public final static String BISHOP_W_UNICODE = "&#9815;";
 
-    public final char QUEEN_B = 'q'; 
-    public final char QUEEN_W = 'Q';
+    public final static char QUEEN_B = 'q'; 
+    public final static String QUEEN_B_UNICODE = "&#9819;";
+    public final static char QUEEN_W = 'Q';
+    public final static String QUEEN_W_UNICODE = "&#9813;";
 
-    public final char KING_B = 'k'; 
-    public final char KING_W = 'K';
+    public final static char KING_B = 'k'; 
+    public final static String KING_B_UNICODE = "&#9818;";
+    public final static char KING_W = 'K';
+    public final static String KING_W_UNICODE = "&#9812;";
 
-    public final char PAWN_B = 'p'; 
-    public final char PAWN_W = 'P';
+    public final static char PAWN_B = 'p'; 
+    public final static String PAWN_B_UNICODE = "&#9823;";
+    public final static char PAWN_W = 'P';
+    public final static String PAWN_W_UNICODE = "&#9817;";
+    
+    public final static Map<Character, String> UNICODE_MAP;
+    static {
+        UNICODE_MAP = new Hashtable<Character, String>();
+        UNICODE_MAP.put(ROOK_B, ROOK_B_UNICODE);
+        UNICODE_MAP.put(ROOK_W, ROOK_W_UNICODE);
+        UNICODE_MAP.put(KNIGHT_B, KNIGHT_B_UNICODE);
+        UNICODE_MAP.put(KNIGHT_W, KNIGHT_W_UNICODE);
+        UNICODE_MAP.put(BISHOP_B, BISHOP_B_UNICODE);
+        UNICODE_MAP.put(BISHOP_W, BISHOP_W_UNICODE);
+        UNICODE_MAP.put(QUEEN_B, QUEEN_B_UNICODE);
+        UNICODE_MAP.put(QUEEN_W, QUEEN_W_UNICODE);
+        UNICODE_MAP.put(KING_B, KING_B_UNICODE);
+        UNICODE_MAP.put(KING_W, KING_W_UNICODE);
+        UNICODE_MAP.put(PAWN_B, PAWN_B_UNICODE);
+        UNICODE_MAP.put(PAWN_W, PAWN_W_UNICODE);
+    }
     
     private char letter;
     
@@ -79,6 +110,12 @@ public class Piece implements Serializable {
     public char getLetter() {
         return letter;
     }
+    
+    public String getUnicode() {
+        return UNICODE_MAP.get(getLetter());
+    }
+    
+    
 
     /**
      * @return the row

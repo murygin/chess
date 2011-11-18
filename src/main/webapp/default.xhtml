@@ -63,7 +63,6 @@
 			</p:outputPanel>
 		</p:outputPanel>
 		<p:outputPanel id="gameListContainer" >
-			<h:outputText value="gameListContainer: #{user.ok}" /> - <h:outputText value="#{user.user.id}" />
 			<p:outputPanel id="gameListPanel" >
 				<h2>Game list</h2>
 				<table>
@@ -77,7 +76,6 @@
 			</p:outputPanel>
 		</p:outputPanel>
 		<p:outputPanel id="newGameContainer" >
-			<h:outputText value="newGameContainer: #{user.ok}" /> - <h:outputText value="#{user.user.id}" />
 			<p:outputPanel id="newGamePanel" rendered="#{user.ok}">
 				<h2>New</h2>
 				<h:form>
@@ -97,13 +95,12 @@
 			</p:outputPanel>
 		</p:outputPanel>
 		<p:outputPanel id="boardContainer">
-			<h:outputText value="boardContainer #{user.ok}" /> - <h:outputText value="#{user.user.id}" />
 			<p:outputPanel id="boardPanel" rendered="#{user.ok and !empty board.board}" >
-				<table>
+				<table class="board">
 					<ui:repeat value="#{board.board.rows}" var="row" >
 						<tr>
 							<ui:repeat value="#{row.squares}" var="square" >
-								<td><h:outputText value="#{square.color}"/><h:outputText value=": #{square.piece.letter}" rendered="#{!empty square.piece}"/></td>
+								<td class="#{square.color}"><h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/></td>
 							</ui:repeat>
 						</tr>
 					</ui:repeat>
