@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import java.io.Serializable;
+
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
 import org.n2.chess.model.Piece;
@@ -32,7 +34,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service("boardService")
-public class BoardService implements IBoardService {
+public class BoardService implements IBoardService, Serializable {
 
     @Autowired
     private IFenParser parser;
