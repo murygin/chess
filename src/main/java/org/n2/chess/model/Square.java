@@ -19,13 +19,14 @@
  ******************************************************************************/
 package org.n2.chess.model;
 
+import java.io.Serializable;
 import org.n2.chess.beans.BoardService;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public class Square {
+public class Square implements Serializable {
 
     public static final String WHITE = "white";
     
