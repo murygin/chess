@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.n2.chess.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -29,7 +30,7 @@ import java.util.Map;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public class Board {
+public class Board implements Serializable {
 
     Map<Integer,Row> rowMap = new Hashtable<Integer, Row>(8);
 
