@@ -96,15 +96,24 @@
 		</p:outputPanel>
 		<p:outputPanel id="boardContainer">
 			<p:outputPanel id="boardPanel" rendered="#{user.ok and !empty board.board}" >
-				<table class="board">
-					<ui:repeat value="#{board.board.rows}" var="row" >
-						<tr>
-							<ui:repeat value="#{row.squares}" var="square" >
-								<td class="#{square.color}"><h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/></td>
-							</ui:repeat>
-						</tr>
-					</ui:repeat>
-				</table>
+				<h:form>
+					<table class="board">
+						<ui:repeat value="#{board.board.rows}" var="row" >
+							<tr>
+								<ui:repeat value="#{row.squares}" var="square" >
+									<td class="#{square.style}">
+										<p:commandLink action="#{board.select}" update="boardContainer">
+											<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
+											<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
+											<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
+										</p:commandLink>
+										
+									</td>
+								</ui:repeat>
+							</tr>
+						</ui:repeat>
+					</table>
+				</h:form>
 			</p:outputPanel>
 		</p:outputPanel>
 	</ui:define>

@@ -85,5 +85,24 @@ public class Row implements Serializable {
     public void setNumber(int number) {
         this.number = number;
     }
+    
+    public void unSelect() {
+        for (Square square : getSquareMap().values()) {
+            square.setSource(false);
+            square.setDest(false);
+        }   
+    }
  
+    public void unSource() {
+        for (Square square : getSquareMap().values()) {
+            square.setSource(false);
+        }   
+    }
+
+    public void unDest() {
+        for (Square square : getSquareMap().values()) {
+            square.setDest(false);
+        }
+    }
+    
 }

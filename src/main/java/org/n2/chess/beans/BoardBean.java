@@ -23,6 +23,7 @@ import java.io.Serializable;
 
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
+import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,12 @@ import org.springframework.stereotype.Component;
 public class BoardBean implements Serializable {
     
     private Board board;
+    
+    private Square square;
+    
+    private Square source;
+    
+    private Square dest;
     
     @Autowired
     private IBoardService boardService;
@@ -52,7 +59,7 @@ public class BoardBean implements Serializable {
         }
         return board;
     }
-
+    
     /**
      * @return
      */
@@ -62,6 +69,63 @@ public class BoardBean implements Serializable {
             this.board = getBoardService().createBoard(game);
         }
         return this.board;
+    }
+    
+    public void select() {
+        if(getSquare()!=null) {
+            if(getSource()==null || (getSource()!=null && getDest()!=null)) {
+                setSource(getSquare());
+                setDest(null);
+                getBoard().setSource(getSource());
+            } else {
+                setDest(getSquare());
+                getBoard().setDest(getDest());
+            }
+        }
+    }
+    
+    /**
+     * @return the square
+     */
+    public Square getSquare() {
+        return square;
+    }
+
+    /**
+     * @param square the square to set
+     */
+    public void setSquare(Square square) {
+        this.square = square;
+    }
+
+    
+
+    /**
+     * @return the source
+     */
+    public Square getSource() {
+        return source;
+    }
+
+    /**
+     * @param source the source to set
+     */
+    public void setSource(Square source) {
+        this.source = source;
+    }
+
+    /**
+     * @return the dest
+     */
+    public Square getDest() {
+        return dest;
+    }
+
+    /**
+     * @param dest the dest to set
+     */
+    public void setDest(Square dest) {
+        this.dest = dest;
     }
 
     /**

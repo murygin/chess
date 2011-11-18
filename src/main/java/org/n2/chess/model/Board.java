@@ -60,6 +60,44 @@ public class Board implements Serializable {
         this.rowMap = rowMap;
     }
 
+    /**
+     * @param source
+     */
+    public void setSource(Square source) {
+        unSelect();
+        getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn()).setSource(true);
+        
+    }
+    
+    private void unSelect() {
+        for (Row row : getRowMap().values()) {
+            row.unSelect();
+        }
+        
+    }
+    
+    private void unSource() {
+        for (Row row : getRowMap().values()) {
+            row.unSource();
+        }
+        
+    }
+
+    /**
+     * @param source
+     */
+    public void setDest(Square dest) {
+        getRowMap().get(dest.getRow()).getSquareMap().get(dest.getColumn()).setDest(true);
+        
+    }
+    
+    private void unDest() {
+        for (Row row : getRowMap().values()) {
+            row.unDest();
+        }
+        
+    }
+
     
 
     

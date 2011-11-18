@@ -39,6 +39,10 @@ public class Square implements Serializable {
     int column;
     
     Piece piece;
+    
+    boolean source = false;
+    
+    boolean dest = false;
 
     /**
      * @param color
@@ -47,9 +51,7 @@ public class Square implements Serializable {
         super();
         this.color = color;
     }
-    
-    
-
+   
     /**
      * @param row
      * @param column
@@ -58,11 +60,8 @@ public class Square implements Serializable {
         super();
         this.row = row;
         this.column = column;
-        this.color = createColor();
-        
+        this.color = createColor();      
     }
-
-
 
     /**
      * @param color
@@ -77,13 +76,24 @@ public class Square implements Serializable {
     }
 
 
-
     /**
      * @return
      */
     private String createColor() {
         return ((BoardService.isEven(row) && BoardService.isEven(column)) 
                 || (!BoardService.isEven(row) && !BoardService.isEven(column))) ? Square.BLACK : Square.WHITE;
+    }
+    
+    public String getStyle() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getColor());
+        if(getSource()) {
+            sb.append("-source");
+        }
+        if(getDest()) {
+            sb.append("-dest");
+        }
+        return sb.toString();
     }
 
     /**
@@ -140,6 +150,34 @@ public class Square implements Serializable {
      */
     public void setPiece(Piece piece) {
         this.piece = piece;
+    }
+
+    /**
+     * @return the dest
+     */
+    public boolean getDest() {
+        return dest;
+    }
+
+    /**
+     * @param dest the dest to set
+     */
+    public void setDest(boolean dest) {
+        this.dest = dest;
+    }
+
+    /**
+     * @return the source
+     */
+    public boolean getSource() {
+        return source;
+    }
+
+    /**
+     * @param b
+     */
+    public void setSource(boolean b) {
+        this.source=b;    
     }
     
     
