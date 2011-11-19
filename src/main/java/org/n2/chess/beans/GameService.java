@@ -85,6 +85,14 @@ public class GameService implements IGameService {
         getGameDao().save(game);
         return game;
     }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IGameService#saveGame(org.n2.chess.beans.hibernate.Game)
+     */
+    @Override
+    public void updateGame(Game game) {
+        getGameDao().update(game); 
+    }
 
     /**
      * @return the gameDao
@@ -113,7 +121,5 @@ public class GameService implements IGameService {
     public void setUserService(IUserService userService) {
         this.userService = userService;
     }
-
-    
 
 }

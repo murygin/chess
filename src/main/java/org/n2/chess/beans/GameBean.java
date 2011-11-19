@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.n2.chess.beans.hibernate.Game;
+import org.n2.chess.beans.hibernate.User;
+import org.n2.chess.model.Board;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -45,6 +47,9 @@ public class GameBean implements Serializable{
     private UserBean userBean;
     
     @Autowired
+    private BoardBean boardBean;
+    
+    @Autowired
     private IGameService gameService;
     
     public List<Game> getGameList() {
@@ -62,6 +67,33 @@ public class GameBean implements Serializable{
         gameList.add(newGame);
     }
     
+    public void move() {
+        getBoardBean().move();
+        getGameService().updateGame(getSelectedGame());
+    }
+    
+    public boolean getMyTurn() {
+        boolean myTurn = false;
+        String myColor = getMyColor();
+        if(myColor!=null && getBoardBean().getBoard()!=null) {
+            myTurn = myColor.equals(getBoardBean().getBoard().getActive());
+        }
+        return myTurn;
+    }
+    
+    public String getMyColor() {
+        String myColor = null;
+        if(getSelectedGame()!=null && getUserBean().getUser()!=null) {
+            if(getSelectedGame().getPlayerBlack().getLogin().equals(getUserBean().getUser().getLogin())) {
+                myColor=Board.BLACK;
+            }
+            if(getSelectedGame().getPlayerWhite().getLogin().equals(getUserBean().getUser().getLogin())) {
+                myColor=Board.WHITE;
+            }
+        }
+        return myColor;
+    }
+    
     /**
      * @return the selectedGame
      */
@@ -74,6 +106,8 @@ public class GameBean implements Serializable{
      */
     public void setSelectedGame(Game selectedGame) {
         this.selectedGame = selectedGame;
+        getBoardBean().setColorPlayer(getMyColor());
+        getBoardBean().setGame(selectedGame);
     }
 
     /**
@@ -100,6 +134,20 @@ public class GameBean implements Serializable{
      */
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
+    }
+
+    /**
+     * @return the boardBean
+     */
+    public BoardBean getBoardBean() {
+        return boardBean;
+    }
+
+    /**
+     * @param boardBean the boardBean to set
+     */
+    public void setBoardBean(BoardBean boardBean) {
+        this.boardBean = boardBean;
     }
 
     /**

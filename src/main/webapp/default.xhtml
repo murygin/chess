@@ -106,13 +106,14 @@
 											<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
 											<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
 											<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
-										</p:commandLink>
-										
+										</p:commandLink>									
 									</td>
 								</ui:repeat>
 							</tr>
 						</ui:repeat>
 					</table>
+					<p:commandButton action="#{game.move}" update="boardContainer" value="Move" rendered="#{game.myTurn}"/>
+					<h:outputText value="Please wait. It's not your turn." rendered="#{!game.myTurn}"/>										
 				</h:form>
 			</p:outputPanel>
 		</p:outputPanel>

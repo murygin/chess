@@ -30,8 +30,11 @@ public interface IBoardService {
 
     /**
      * @param game
+     * @param colorPlayer 
      * @return
      */
-    Board createBoard(Game game);
+    Board createBoard(Game game, String colorPlayer);
+    
+    String createFen(Board board);
 
 }

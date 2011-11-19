@@ -28,8 +28,10 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.n2.chess.beans.hibernate.User;
@@ -132,6 +134,15 @@ public class RegisterBean implements Serializable {
             LOG.error("Error while login", e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", "Error while login: " + e.getMessage()));
         }
+    }
+    
+    public String logout() {
+        getUserBean().setUser(null);
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext ec = context.getExternalContext();
+        final HttpServletRequest request = (HttpServletRequest)ec.getRequest();
+        request.getSession( false ).invalidate();
+        return "logout";
     }
 
     private void validate() throws ValidatorException {

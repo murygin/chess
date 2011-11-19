@@ -44,11 +44,12 @@ public class BoardBean implements Serializable {
     
     private Square dest;
     
-    @Autowired
-    private IBoardService boardService;
+    private Game game;
+    
+    private String colorPlayer;
     
     @Autowired
-    private GameBean gameBean;
+    private IBoardService boardService;
     
     /**
      * @return the board
@@ -61,12 +62,12 @@ public class BoardBean implements Serializable {
     }
     
     /**
+     * @param string 
      * @return
      */
     private Board createBoard() {
-        Game game = getGameBean().getSelectedGame();
-        if(game!=null) {
-            this.board = getBoardService().createBoard(game);
+        if(getGame()!=null) {
+            this.board = getBoardService().createBoard(getGame(),getColorPlayer());
         }
         return this.board;
     }
@@ -82,6 +83,11 @@ public class BoardBean implements Serializable {
                 getBoard().setDest(getDest());
             }
         }
+    }
+    
+    public void move() {
+        getBoard().move();
+        getGame().setFen(getBoardService().createFen(getBoard()));
     }
     
     /**
@@ -129,6 +135,35 @@ public class BoardBean implements Serializable {
     }
 
     /**
+     * @return the game
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * @param game the game to set
+     */
+    public void setGame(Game game) {
+        this.game = game;
+        board = createBoard();
+    }
+
+    /**
+     * @return the colorPlayer
+     */
+    public String getColorPlayer() {
+        return colorPlayer;
+    }
+
+    /**
+     * @param colorPlayer the colorPlayer to set
+     */
+    public void setColorPlayer(String colorPlayer) {
+        this.colorPlayer = colorPlayer;
+    }
+
+    /**
      * @return the boardService
      */
     public IBoardService getBoardService() {
@@ -142,22 +177,6 @@ public class BoardBean implements Serializable {
         this.boardService = boardService;
     }
 
-    /**
-     * @return the gameBean
-     */
-    public GameBean getGameBean() {
-        return gameBean;
-    }
-
-    /**
-     * @param gameBean the gameBean to set
-     */
-    public void setGameBean(GameBean gameBean) {
-        this.gameBean = gameBean;
-    }
-
-    
-    
     
 
 }

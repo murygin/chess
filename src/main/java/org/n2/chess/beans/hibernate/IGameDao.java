@@ -29,9 +29,9 @@ import org.hibernate.criterion.DetachedCriteria;
  */
 public interface IGameDao {
     
-    void save(Game user);
-    void update(Game user);
-    void delete(Game user);
+    void save(Game game);
+    void update(Game game);
+    void delete(Game game);
     List<Game> find(String query,Object... values);
     List<Game> findByExample(Game game);
     List<Game> find(DetachedCriteria criteria);

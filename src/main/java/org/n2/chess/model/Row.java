@@ -36,13 +36,39 @@ public class Row implements Serializable {
     Map<Integer,Square> squareMap = new Hashtable<Integer, Square>(8);
 
     int number;
+    
+    String active;
+    
+    String colorPlayer;
+    
     /**
      * @param r
      */
     public Row(int r) {
         this.number = r;
+        this.active = Board.WHITE;
     }
     
+    /**
+     * @param r
+     * @param active2
+     */
+    public Row(int r, String active) {
+        this.number = r;
+        this.active = active;
+    }
+
+    /**
+     * @param r
+     * @param active2
+     * @param colorPlayer2
+     */
+    public Row(int r, String active, String colorPlayer) {
+        this.number = r;
+        this.active = active;
+        this.colorPlayer = colorPlayer;
+    }
+
     /**
      * @param createPiece
      */
@@ -55,7 +81,11 @@ public class Row implements Serializable {
     }
     
     public List<Square> getSquares() {
-        return new ArrayList<Square>(squareMap.values());
+        List<Square> squares = new ArrayList<Square>(squareMap.values());
+        if(Board.WHITE.equals(getColorPlayer())) {
+            Collections.reverse(squares);
+        }
+        return squares;
     }
 
     /**
@@ -86,6 +116,34 @@ public class Row implements Serializable {
         this.number = number;
     }
     
+    /**
+     * @return the active
+     */
+    public String getActive() {
+        return active;
+    }
+
+    /**
+     * @param active the active to set
+     */
+    public void setActive(String active) {
+        this.active = active;
+    }
+
+    /**
+     * @return the colorPlayer
+     */
+    public String getColorPlayer() {
+        return colorPlayer;
+    }
+
+    /**
+     * @param colorPlayer the colorPlayer to set
+     */
+    public void setColorPlayer(String colorPlayer) {
+        this.colorPlayer = colorPlayer;
+    }
+
     public void unSelect() {
         for (Square square : getSquareMap().values()) {
             square.setSource(false);

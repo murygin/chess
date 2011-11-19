@@ -39,4 +39,6 @@ public interface IGameService {
     Game create(User userWhite, String emailBlack);
     
     Game create(User userWhite, User userBlack);
+    
+    void updateGame(Game game);
 }

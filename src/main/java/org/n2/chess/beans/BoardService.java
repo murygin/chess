@@ -20,6 +20,10 @@
 package org.n2.chess.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
@@ -43,14 +47,19 @@ public class BoardService implements IBoardService, Serializable {
      * @see org.n2.chess.beans.IBoardService#createBoard(org.n2.chess.beans.hibernate.Game)
      */
     @Override
-    public Board createBoard(Game game) {
+    public Board createBoard(Game game, String colorPlayer) {
         String fen = game.getFen();
         getParser().parse(fen);
-        
         Board board = new Board();
+        board.setColorPlayer(colorPlayer);
+        board.setActive(getParser().getActive());
+        board.setCastling(getParser().getCastling());
+        board.setEnPassant(getParser().getEnPassant());
+        board.setHalfmove(getParser().getHalfmove());
+        board.setNumber(getParser().getNumber());
         int r = 0;
         for (String fenRow : getParser().getRows()) {
-           Row row = new Row(r);
+           Row row = new Row(r,board.getActive(),colorPlayer);
            int c = 0;
            for (int i = 0; i < fenRow.length(); i++) {
                char p = fenRow.charAt(i);
@@ -69,6 +78,43 @@ public class BoardService implements IBoardService, Serializable {
            r++;
         }
         return board;
+    }
+    
+    public String createFen(Board board) {
+        StringBuilder fen = new StringBuilder();
+        boolean first = true;
+        List<Row> rows = new ArrayList<Row>(board.getRowMap().values());
+        Collections.reverse(rows);
+        for (Row row : rows) {
+            if(!first) {
+                fen.append("/");
+            }
+            int empty=0;
+            List<Square> squares = new ArrayList<Square>(row.getSquareMap().values());
+            Collections.reverse(squares);
+            for (Square square : squares) {
+                Piece piece = square.getPiece();
+                if(piece!=null) {
+                    if(empty>0) {
+                        fen.append(empty);
+                        empty=0;
+                    }
+                    fen.append(piece.getLetter());
+                } else {
+                    empty++;
+                }
+            }
+            if(empty>0) {
+                fen.append(empty);
+            }
+            first = false;
+        }
+        fen.append(" ").append(board.getActive());
+        fen.append(" ").append(board.getCastling());
+        fen.append(" ").append(board.getEnPassant());
+        fen.append(" ").append(board.getHalfmove());
+        fen.append(" ").append(board.getNumber());
+        return fen.toString();
     }
    
 

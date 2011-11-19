@@ -81,7 +81,7 @@ public class Square implements Serializable {
      */
     private String createColor() {
         return ((BoardService.isEven(row) && BoardService.isEven(column)) 
-                || (!BoardService.isEven(row) && !BoardService.isEven(column))) ? Square.BLACK : Square.WHITE;
+                || (!BoardService.isEven(row) && !BoardService.isEven(column))) ? Square.WHITE : Square.BLACK;
     }
     
     public String getStyle() {
