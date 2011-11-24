@@ -8,115 +8,136 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core" 
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
-<ui:composition template="layout.xhtml">
+<ui:composition template="3col.xhtml">
 	<ui:define name="content">
-		<p:messages showDetail="true" autoUpdate="true"/>
-		<p:outputPanel id="registerContainer" >
-			<p:outputPanel id="registerPanel" rendered="#{!user.ok and register.registerVisible}" >
-				<h2>Register</h2>
-				<h:form> 	
-		        	<h:panelGrid id="registerGrid" columns="3" cellpadding="5"> 
-						<h:outputLabel for="username" value="Username: *" /> 
-						<p:inputText id="username" value="#{register.login}" required="true" label="username">
-							<f:validator binding="#{userValidator}" />  
-                			<p:ajax event="blur" update="usernameMsg" />  
-            			</p:inputText>  
-            			<p:message id="usernameMsg" for="username" showSummary="true" showDetail="false"/>
-            			
-            			<h:outputLabel for="email" value="Email: *" />
-						<p:inputText id="email" value="#{register.email}" required="true" label="email">
-							<f:validator binding="#{emailValidator}" />
-                			<p:ajax event="blur" update="emailMsg" />
-						</p:inputText>
-						<p:message id="emailMsg" for="email" showSummary="true" showDetail="false"/>
-						
-						<h:outputLabel for="pwd1" value="Password: *" />  
-		            	<p:password id="pwd1" value="#{register.password}" feedback="true" label="Password" required="true">  
-		            		<f:validator binding="#{passwordValidator}" />
-                			<p:ajax event="blur" update="pwd1Msg" />
-                		</p:password>
-		            	<p:message id="pwd1Msg" for="pwd1" showSummary="true" showDetail="false"/>
-		            	
-		            	<h:outputLabel for="pwd2" value="Password (again): *" />  
-		            	<p:password id="pwd2" value="#{register.password2}" feedback="false" label="Password (again)" required="true"/>
-		            	<p:message id="pwd2Msg" for="pwd2" showSummary="true" showDetail="false"/>
-		            	
-		            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.register}" />      	
-					</h:panelGrid>
-				</h:form>
+		<div class="col1">
+			<p:outputPanel id="boardContainer">
+				<p:outputPanel id="boardPanel" rendered="#{user.ok}" >
+					<h:form>
+						<table class="board">
+							<ui:repeat value="#{board.board.rows}" var="row" >
+								<tr>
+									<ui:repeat value="#{row.squares}" var="square" >
+										<td class="#{square.style}">
+											<p:commandLink action="#{board.select}" update="boardContainer">
+												<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
+												<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
+												<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
+											</p:commandLink>									
+										</td>
+									</ui:repeat>
+								</tr>
+							</ui:repeat>
+						</table>
+						<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>
+						<h:outputText value="Please wait. It's not your turn." rendered="#{!game.myTurn}"/>										
+					</h:form>
+				</p:outputPanel>
 			</p:outputPanel>
-		</p:outputPanel>
-		<p:outputPanel id="loginContainer" >
-			<p:outputPanel id="loginPanel" rendered="#{!user.ok and register.loginVisible}" >
-				<h2>Login</h2>
-				<h:form>
-					<h:panelGrid id="loginGrid" columns="2" cellpadding="5">
-						<h:outputLabel for="usernameLogin" value="Username: " /> 
-						<p:inputText id="usernameLogin" value="#{register.login}" required="true" label="username"/>
-						
-						<h:outputLabel for="pwdLogin" value="Password: " />  
-		            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
-		            	
-		            	<p:commandButton value="Login" actionListener="#{register.login}"  update="registerContainer,loginContainer,loginToggle,gameListContainer,newGameContainer,boardContainer" />
-					</h:panelGrid>
-				</h:form>
+			<p:outputPanel id="registerContainer" >
+				<p:outputPanel id="registerPanel" rendered="#{!user.ok and register.registerVisible}" >
+					<h2>Register</h2>
+					<h:form> 	
+			        	<h:panelGrid id="registerGrid" columns="3" cellpadding="5"> 
+							<h:outputLabel for="username" value="Username: *" /> 
+							<p:inputText id="username" value="#{register.login}" required="true" label="username">
+								<f:validator binding="#{userValidator}" />  
+	                			<p:ajax event="blur" update="usernameMsg" />  
+	            			</p:inputText>  
+	            			<p:message id="usernameMsg" for="username" showSummary="true" showDetail="false"/>
+	            			
+	            			<h:outputLabel for="email" value="Email: *" />
+							<p:inputText id="email" value="#{register.email}" required="true" label="email">
+								<f:validator binding="#{emailValidator}" />
+	                			<p:ajax event="blur" update="emailMsg" />
+							</p:inputText>
+							<p:message id="emailMsg" for="email" showSummary="true" showDetail="false"/>
+							
+							<h:outputLabel for="pwd1" value="Password: *" />  
+			            	<p:password id="pwd1" value="#{register.password}" feedback="true" label="Password" required="true">  
+			            		<f:validator binding="#{passwordValidator}" />
+	                			<p:ajax event="blur" update="pwd1Msg" />
+	                		</p:password>
+			            	<p:message id="pwd1Msg" for="pwd1" showSummary="true" showDetail="false"/>
+			            	
+			            	<h:outputLabel for="pwd2" value="Password (again): *" />  
+			            	<p:password id="pwd2" value="#{register.password2}" feedback="false" label="Password (again)" required="true"/>
+			            	<p:message id="pwd2Msg" for="pwd2" showSummary="true" showDetail="false"/>
+			            	
+			            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.register}" />      	
+						</h:panelGrid>
+					</h:form>
+				</p:outputPanel>
 			</p:outputPanel>
-		</p:outputPanel>
-		<p:outputPanel id="gameListContainer" >
-			<p:outputPanel id="gameListPanel" >
-				<h2>Game list</h2>
-				<table>
-					<ui:repeat value="#{game.gameList}" var="g">
-						<tr>
-							<td><h:outputText value="#{g.playerWhite.login}" /></td>
-							<td><h:outputText value="#{g.playerBlack.login}" /></td>
-						</tr>
-					</ui:repeat>
-				</table>		
+			<p:outputPanel id="loginContainer" >
+				<p:outputPanel id="loginPanel" rendered="#{!user.ok and register.loginVisible}" >
+					<h2>Login</h2>
+					<h:form>
+						<h:panelGrid id="loginGrid" columns="2" cellpadding="5">
+							<h:outputLabel for="usernameLogin" value="Username: " /> 
+							<p:inputText id="usernameLogin" value="#{register.login}" required="true" label="username"/>
+							
+							<h:outputLabel for="pwdLogin" value="Password: " />  
+			            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
+			            	
+			            	<p:commandButton value="Login" actionListener="#{register.login}"  update="boardContainer,registerContainer,loginContainer,loginToggle,gameListContainer,newGameContainer,moveListContainer" />
+						</h:panelGrid>
+					</h:form>
+				</p:outputPanel>
 			</p:outputPanel>
-		</p:outputPanel>
-		<p:outputPanel id="newGameContainer" >
-			<p:outputPanel id="newGamePanel" rendered="#{user.ok}">
-				<h2>New</h2>
-				<h:form>
-					<h:panelGrid id="newGameGrid" columns="2" cellpadding="5">
-						<h:outputLabel for="emailGame" value="Email: " /> 
-						<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
-						<!--
-						<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email">
-							<f:validator binding="#{emailValidator}" />
-                			<p:ajax event="blur" update="emailGameMsg" />
-						</p:inputText>
-						-->
-						<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
-						<p:commandButton value="Create" update="gameListContainer" actionListener="#{game.create}" />
-					</h:panelGrid>
-				</h:form>
-			</p:outputPanel>
-		</p:outputPanel>
-		<p:outputPanel id="boardContainer">
-			<p:outputPanel id="boardPanel" rendered="#{user.ok and !empty board.board}" >
-				<h:form>
-					<table class="board">
-						<ui:repeat value="#{board.board.rows}" var="row" >
+		</div>
+		
+		<div class="col2">
+			<p:outputPanel id="gameListContainer" >
+				<p:outputPanel id="gameListPanel" >
+					<h2>Game list</h2>
+					<table>
+						<ui:repeat value="#{game.gameList}" var="g">
 							<tr>
-								<ui:repeat value="#{row.squares}" var="square" >
-									<td class="#{square.style}">
-										<p:commandLink action="#{board.select}" update="boardContainer">
-											<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
-											<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
-											<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
-										</p:commandLink>									
-									</td>
-								</ui:repeat>
+								<td><h:outputText value="#{g.playerWhite.login}" /></td>
+								<td><h:outputText value="#{g.playerBlack.login}" /></td>
 							</tr>
 						</ui:repeat>
-					</table>
-					<p:commandButton action="#{game.move}" update="boardContainer" value="Move" rendered="#{game.myTurn}"/>
-					<h:outputText value="Please wait. It's not your turn." rendered="#{!game.myTurn}"/>										
-				</h:form>
+					</table>		
+				</p:outputPanel>
 			</p:outputPanel>
-		</p:outputPanel>
+			<p:outputPanel id="newGameContainer" >
+				<p:outputPanel id="newGamePanel" rendered="#{user.ok}">
+					<h2>New</h2>
+					<h:form>
+						<h:panelGrid id="newGameGrid" columns="2" cellpadding="5">
+							<h:outputLabel for="emailGame" value="Email: " /> 
+							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
+							<!--
+							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email">
+								<f:validator binding="#{emailValidator}" />
+	                			<p:ajax event="blur" update="emailGameMsg" />
+							</p:inputText>
+							-->
+							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
+							<p:commandButton value="Create" update="gameListContainer" actionListener="#{game.create}" />
+						</h:panelGrid>
+					</h:form>
+				</p:outputPanel>
+			</p:outputPanel>
+		</div>
+		
+		<div class="col3">
+			<p:outputPanel id="moveListContainer" >
+				<p:outputPanel id="moveListPanel" >
+					<h:form>
+						<table>
+							<ui:repeat value="#{game.moveList}" var="tuple" >
+								<tr>
+									<td><h:outputText value="#{tuple.white.move}" /></td>
+									<td><h:outputText value="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
+								</tr>
+							</ui:repeat>
+						</table>
+					</h:form>
+				</p:outputPanel>
+			</p:outputPanel>
+		</div>
 	</ui:define>
 </ui:composition>
 </html>

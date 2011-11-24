@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:ui="http://java.sun.com/jsf/facelets" 
+	  xml:lang="en-GB">
+<h:head>
+    <title>chess in the cloud</title>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+	<meta name="description" content="A chess board in the cloud" />
+	<meta name="keywords" content="chess" />
+	<meta name="robots" content="index, follow" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" type="text/css" href="common-style.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="screen.css" media="screen" />
+</h:head>
+<h:body>
+	<div id="header">
+		<ui:insert name="header">
+			<ui:include src="header.xhtml" />
+		</ui:insert>	
+	</div>
+	<div class="colmask threecol">
+		<div class="colmid">
+			<div class="colleft">
+				<ui:insert name="content" />
+			</div>
+		</div>
+	</div>
+	<div id="footer">
+		<ui:insert name="footer">
+			<ui:include src="footer.xhtml" />
+		</ui:insert>
+	</div>
+</h:body>
+</html>
