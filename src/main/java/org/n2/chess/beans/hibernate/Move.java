@@ -21,19 +21,14 @@ package org.n2.chess.beans.hibernate;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,18 +39,17 @@ import javax.persistence.TemporalType;
  *
  */
 @Entity
-@Table(name = "game", catalog = "cchess")
-public class Game implements Serializable {
+@Table(name = "move", catalog = "cchess")
+public class Move implements Serializable {
 
     private Integer id;
-    private User playerWhite;
-    private User playerBlack;
-    private Set<Move> moveSet;
-    private Date startDate;
-    private Date lastMoveDate;
+    private Integer gameId;
+    private Integer n;
+    private String move;
+    private Date date;
     private String fen;
 
-    public Game() {
+    public Move() {
         super();
     }
     
@@ -74,83 +68,67 @@ public class Game implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    /**
-     * @return the playerWhite
-     */
-    @ManyToOne( targetEntity=User.class )
-    @JoinColumn(name="white")
-    public User getPlayerWhite() {
-        return playerWhite;
-    }
-
-    /**
-     * @param playerWhite the playerWhite to set
-     */ 
-    public void setPlayerWhite(User playerWhite) {
-        this.playerWhite = playerWhite;
-    }
     
     /**
-     * @return the playerBlack
+     * @return the gameId
      */
-    @ManyToOne( targetEntity=User.class )
-    @JoinColumn(name="black")
-    public User getPlayerBlack() {
-        return playerBlack;
+    @Column(name = "game_id", nullable = false)
+    public Integer getGameId() {
+        return gameId;
     }
+
+    /**
+     * @param gameId the gameId to set
+     */
+    public void setGameId(Integer gameId) {
+        this.gameId = gameId;
+    }
+
+    /**
+     * @return the id
+     */
+    @Column(name = "number", nullable = false)
+    public Integer getN() {
+        return n;
+    }
+    /**
+     * @param id the id to set
+     */
+    public void setN(Integer n) {
+        this.n = n;
+    }
+
    
+
     /**
-     * @param playerBlack the playerBlack to set
-     */   
-    public void setPlayerBlack(User playerBlack) {
-        this.playerBlack = playerBlack;
+     * @return the move
+     */
+    @Column(name = "move", nullable = true, length = 10)
+    public String getMove() {
+        return move;
     }
 
-    @OneToMany(fetch=FetchType.EAGER,cascade = {CascadeType.ALL})
-    @JoinColumn(name="game_id")
-    @OrderBy("date")
-    public Set<Move> getMoveSet() {
-        return moveSet;
-    }
-    
     /**
-     * @param moveSet the moveSet to set
+     * @param move the move to set
      */
-    public void setMoveSet(Set<Move> moveSet) {
-        this.moveSet = moveSet;
+    public void setMove(String move) {
+        this.move = move;
     }
 
     /**
      * @return the startDate
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start")
-    public Date getStartDate() {
-        return startDate;
+    @Column(name = "movedate", nullable = false)
+    public Date getDate() {
+        return date;
     }
 
     /**
      * @param startDate the startDate to set
      */
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    /**
-     * @return the lastMoveDate
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_move")
-    public Date getLastMoveDate() {
-        return lastMoveDate;
-    }
-
-    /**
-     * @param lastMoveDate the lastMoveDate to set
-     */  
-    public void setLastMoveDate(Date lastMoveDate) {
-        this.lastMoveDate = lastMoveDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     /**
@@ -166,5 +144,42 @@ public class Game implements Serializable {
      */   
     public void setFen(String fen) {
         this.fen = fen;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Move other = (Move) obj;
+        if (date == null) {
+            if (other.date != null)
+                return false;
+        } else if (!date.equals(other.date))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 }

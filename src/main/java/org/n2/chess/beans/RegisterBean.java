@@ -70,6 +70,9 @@ public class RegisterBean implements Serializable {
     
     @Autowired
     private UserBean userBean;
+    
+    @Autowired
+    private GameBean gameBean;
 
     @Autowired
     private IUserService userService;
@@ -125,6 +128,7 @@ public class RegisterBean implements Serializable {
             
             if (user != null &&  Arrays.equals(proposedDigest, bDigest) ) {
                 getUserBean().setUser(user);
+                getGameBean().init();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login succesful", "You are logged in. Welcome back: " + getLogin()));              
             }
             setPassword(null);
@@ -372,6 +376,20 @@ public class RegisterBean implements Serializable {
      */
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
+    }
+
+    /**
+     * @return the gameBean
+     */
+    public GameBean getGameBean() {
+        return gameBean;
+    }
+
+    /**
+     * @param gameBean the gameBean to set
+     */
+    public void setGameBean(GameBean gameBean) {
+        this.gameBean = gameBean;
     }
 
     /**

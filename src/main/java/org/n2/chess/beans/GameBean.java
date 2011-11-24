@@ -20,11 +20,19 @@
 package org.n2.chess.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.n2.chess.beans.hibernate.Game;
+import org.n2.chess.beans.hibernate.Move;
+import org.n2.chess.beans.hibernate.MoveTuble;
 import org.n2.chess.beans.hibernate.User;
 import org.n2.chess.model.Board;
+import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -62,13 +70,47 @@ public class GameBean implements Serializable{
         return gameList;
     }
     
+    public List<MoveTuble> getMoveList() {
+        List<MoveTuble> moveList = Collections.emptyList();
+        if(getSelectedGame()!=null) {
+            moveList = new ArrayList<MoveTuble>();
+            Set<Move> moves = getSelectedGame().getMoveSet();
+            Move white = null;
+            for (Move move : moves) {
+                if(white==null) {
+                    white = move;
+                } else {
+                    moveList.add(new MoveTuble(white.getN(), white, move));
+                    white = null;
+                }
+            }
+            if(white!=null) {
+                moveList.add(new MoveTuble(white.getN(), white, null));
+            }
+        }
+        return moveList;
+    }
+    
+    public void init() {
+        getGameList();
+    }
+    
     public void create() {
         Game newGame = getGameService().create(getUserBean().getUser(),getEmailNew());
         gameList.add(newGame);
     }
     
     public void move() {
+        Date date = Calendar.getInstance().getTime();
+        String notation = getBoardBean().createNotation();
         getBoardBean().move();
+        Move move = new Move();
+        move.setGameId(getSelectedGame().getId());
+        move.setN(1);
+        move.setDate(date);
+        move.setMove(notation);
+        move.setFen(getSelectedGame().getFen());
+        getSelectedGame().getMoveSet().add(move);
         getGameService().updateGame(getSelectedGame());
     }
     

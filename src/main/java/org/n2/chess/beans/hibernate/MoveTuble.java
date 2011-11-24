@@ -17,30 +17,59 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.n2.chess.beans;
+package org.n2.chess.beans.hibernate;
 
-import java.util.List;
-
-import org.n2.chess.beans.hibernate.Game;
-import org.n2.chess.beans.hibernate.User;
-import org.n2.chess.model.Square;
+import java.io.Serializable;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public interface IGameService {
+public class MoveTuble implements Serializable {
 
-    List<Game> loadGames(User user);
+    private int number;
+    
+    private Move white;
+    
+    private Move black;
 
+    
+    
     /**
-     * @param user
-     * @param emailNew
+     * @param number
+     * @param white
+     * @param black
      */
-    Game create(User userWhite, String emailBlack);
-    
-    Game create(User userWhite, User userBlack);
-    
-    void updateGame(Game game);
-    
+    public MoveTuble(int number, Move white, Move black) {
+        super();
+        this.number = number;
+        this.white = white;
+        this.black = black;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+   
+    public Move getWhite() {
+        return white;
+    }
+
+    public void setWhite(Move white) {
+        this.white = white;
+    }
+
+   
+    public Move getBlack() {
+        return black;
+    }
+
+    public void setBlack(Move black) {
+        this.black = black;
+    }
 }

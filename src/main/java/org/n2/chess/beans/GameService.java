@@ -19,14 +19,17 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.IGameDao;
 import org.n2.chess.beans.hibernate.User;
+import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +38,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service("gameService")
-public class GameService implements IGameService {
+public class GameService implements IGameService, Serializable {
 
     public static final String FEN_START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
@@ -55,6 +58,7 @@ public class GameService implements IGameService {
         crit.add(Restrictions.or(
                 Restrictions.eq("playerWhite.id", user.getId()), 
                 Restrictions.eq("playerBlack.id", user.getId())));
+        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return getGameDao().find(crit);
     }
     

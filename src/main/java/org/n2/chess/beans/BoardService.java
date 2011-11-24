@@ -33,6 +33,8 @@ import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import sun.security.action.GetBooleanAction;
+
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
@@ -40,6 +42,8 @@ import org.springframework.stereotype.Service;
 @Service("boardService")
 public class BoardService implements IBoardService, Serializable {
 
+    public static String[] LETTERS_COLUMN = {"a","b","c","d","e","f","g","h"};
+    
     @Autowired
     private IFenParser parser;
     
@@ -115,6 +119,38 @@ public class BoardService implements IBoardService, Serializable {
         fen.append(" ").append(board.getHalfmove());
         fen.append(" ").append(board.getNumber());
         return fen.toString();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IBoardService#createNotation(org.n2.chess.model.Square, org.n2.chess.model.Square)
+     */
+    @Override
+    public String createNotation(Square source, Square dest, String colorPlayer) {
+        StringBuilder sb = new StringBuilder();
+        if(source!=null && source.getPiece()!=null && dest!=null) {
+            Piece piece = source.getPiece();
+            if(piece.getLetter()!=Piece.PAWN_B && piece.getLetter()!=Piece.PAWN_W) {
+                sb.append(String.valueOf(piece.getLetter()).toUpperCase());
+            }
+            sb.append(LETTERS_COLUMN[source.getColumn()]);
+            //if(Board.WHITE.equals(colorPlayer)) {
+               //sb.append((source.getRow()+1));
+            //} else {
+                sb.append((8-source.getRow()));
+            //}
+            if(dest.getPiece()!=null) {
+                sb.append("x");
+            } else {
+                sb.append("-");
+            }
+            sb.append(LETTERS_COLUMN[dest.getColumn()]);
+            //if(Board.WHITE.equals(colorPlayer)) {
+                //sb.append((dest.getRow()+1));
+            //} else {
+                sb.append((8-dest.getRow()));
+            //}
+        }
+        return sb.toString();
     }
    
 

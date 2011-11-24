@@ -17,30 +17,23 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.n2.chess.beans;
+package org.n2.chess.beans.hibernate;
 
 import java.util.List;
 
-import org.n2.chess.beans.hibernate.Game;
-import org.n2.chess.beans.hibernate.User;
-import org.n2.chess.model.Square;
+import org.hibernate.criterion.DetachedCriteria;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public interface IGameService {
-
-    List<Game> loadGames(User user);
-
-    /**
-     * @param user
-     * @param emailNew
-     */
-    Game create(User userWhite, String emailBlack);
+public interface IMoveDao {
     
-    Game create(User userWhite, User userBlack);
-    
-    void updateGame(Game game);
-    
+    void save(Move move);
+    void update(Move move);
+    void delete(Move move);
+    List<Move> find(String query,Object... values);
+    List<Move> findByExample(Move move);
+    List<Move> find(DetachedCriteria criteria);
+    List<Move> loadAll();
 }

@@ -99,7 +99,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param rowMap the rowMap to set
+     * @param rowMap the rowMap to setSquare sourceSquare = getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn());
+        
      */
     public void setRowMap(Map<Integer, Row> rowMap) {
         this.rowMap = rowMap;
@@ -114,6 +115,13 @@ public class Board implements Serializable {
         this.source=source;
     }
     
+    /**
+     * @return the source
+     */
+    public Square getSource() {
+        return source;
+    }
+
     /**
      * @return the number
      */
@@ -179,7 +187,7 @@ public class Board implements Serializable {
 
     /**
      * @param active the active to set
-     */
+     */    
     public void setActive(String active) {
         this.active = active;
         for (Row row : getRowMap().values()) {
@@ -241,6 +249,13 @@ public class Board implements Serializable {
         
     }
     
+    /**
+     * @return the dest
+     */
+    public Square getDest() {
+        return dest;
+    }
+
     private void unDest() {
         this.dest=null;
         for (Row row : getRowMap().values()) {

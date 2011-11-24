@@ -47,6 +47,7 @@
 			<list>
 				<value>org.n2.chess.beans.hibernate.User</value>
                 <value>org.n2.chess.beans.hibernate.Game</value>
+                <value>org.n2.chess.beans.hibernate.Move</value>
 			</list>
 		</property>
 

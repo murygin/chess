@@ -21,6 +21,7 @@ package org.n2.chess.beans;
 
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
+import org.n2.chess.model.Square;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -36,5 +37,13 @@ public interface IBoardService {
     Board createBoard(Game game, String colorPlayer);
     
     String createFen(Board board);
+
+    /**
+     * @param source
+     * @param dest
+     * @param colorPlayer 
+     * @return
+     */
+    String createNotation(Square source, Square dest, String colorPlayer);
 
 }

@@ -91,6 +91,15 @@ public class BoardBean implements Serializable {
     }
     
     /**
+     * @param string 
+     * @return
+     */
+    public String createNotation() {
+        // TODO Auto-generated method stub
+        return getBoardService().createNotation(getSource(),getDest(),getColorPlayer());
+    }
+    
+    /**
      * @return the square
      */
     public Square getSquare() {
