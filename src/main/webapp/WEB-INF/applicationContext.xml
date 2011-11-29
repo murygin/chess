@@ -7,13 +7,15 @@
 	<context:annotation-config />
 	<context:component-scan base-package="org.n2.chess.beans" />
 
+    <bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>/WEB-INF/classes/mail.properties</value>
+            <!--<value>/WEB-INF/classes/database.properties</value>-->
+        </property>
+    </bean>
+
     <!--
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location">
-			<value>/WEB-INF/classes/database.properties</value>
-		</property>
-	</bean>
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
@@ -50,6 +52,19 @@
                 <value>org.n2.chess.beans.hibernate.Move</value>
 			</list>
 		</property>
-
 	</bean>
+    
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}" />
+        <property name="port" value="${mail.port}" />
+        <property name="username" value="${mail.username}" />
+        <property name="password" value="${mail.password}" />
+     
+        <property name="javaMailProperties">
+           <props>
+                  <prop key="mail.smtp.auth">true</prop>
+                  <prop key="mail.smtp.starttls.enable">true</prop>
+               </props>
+        </property>
+    </bean>
 </beans>

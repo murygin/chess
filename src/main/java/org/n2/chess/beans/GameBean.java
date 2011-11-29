@@ -32,6 +32,7 @@ import org.n2.chess.beans.hibernate.Move;
 import org.n2.chess.beans.hibernate.MoveTuble;
 import org.n2.chess.beans.hibernate.User;
 import org.n2.chess.model.Board;
+import org.n2.chess.model.Piece;
 import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -59,6 +60,9 @@ public class GameBean implements Serializable{
     
     @Autowired
     private IGameService gameService;
+    
+    @Autowired
+    private IMailService mailService;
     
     public List<Game> getGameList() {
         if(gameList==null && getUserBean().getUser()!=null) {
@@ -111,9 +115,17 @@ public class GameBean implements Serializable{
         move.setMove(notation);
         move.setFen(getSelectedGame().getFen());
         getSelectedGame().getMoveSet().add(move);
-        getGameService().updateGame(getSelectedGame());
+        getGameService().updateGame(getSelectedGame());     
+        getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
+    /**
+     * @return
+     */
+    private User getOpponent() {
+        return (getMyColor().equals(Board.WHITE) ? getSelectedGame().getPlayerBlack() : getSelectedGame().getPlayerWhite());
+    }
+
     public boolean getMyTurn() {
         boolean myTurn = false;
         String myColor = getMyColor();
@@ -204,6 +216,20 @@ public class GameBean implements Serializable{
      */
     public void setGameService(IGameService gameService) {
         this.gameService = gameService;
+    }
+
+    /**
+     * @return the mailService
+     */
+    public IMailService getMailService() {
+        return mailService;
+    }
+
+    /**
+     * @param mailService the mailService to set
+     */
+    public void setMailService(IMailService mailService) {
+        this.mailService = mailService;
     }
 
     
