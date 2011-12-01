@@ -84,7 +84,7 @@ public class RegisterBean implements Serializable {
             securePassword();
             User user = new User(getLogin(), getEmail(), getPassword(), getSalt());
             getUserService().save(user);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "User creted", "Login name is: " + getLogin()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "User created", "Login name is: " + getLogin()));
             if (user.getId() != null) {
                 getUserBean().setUser(user);
             }

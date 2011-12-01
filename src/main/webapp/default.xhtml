@@ -12,25 +12,46 @@
 	<ui:define name="content">
 		<div class="col1">
 			<p:outputPanel id="boardContainer">
-				<p:outputPanel id="boardPanel" rendered="#{user.ok}" >
+				<p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
+					<div class="board">
+						<h:form>
+							<table class="board">
+								<ui:repeat value="#{board.board.rows}" var="row" >
+									<tr>
+										<ui:repeat value="#{row.squares}" var="square" >
+											<td class="#{square.style}">
+												<p:commandLink action="#{board.select}" update="boardContainer">
+													<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
+													<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
+													<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
+												</p:commandLink>									
+											</td>
+										</ui:repeat>
+									</tr>
+								</ui:repeat>
+							</table>
+						</h:form>
+					</div>
+				</p:outputPanel>
+			</p:outputPanel>
+			<p:outputPanel id="newGameContainer" >
+				<p:outputPanel id="newGamePanel" rendered="#{user.ok and game.newGameVisible}">
+					<h2>New game</h2>
 					<h:form>
-						<table class="board">
-							<ui:repeat value="#{board.board.rows}" var="row" >
-								<tr>
-									<ui:repeat value="#{row.squares}" var="square" >
-										<td class="#{square.style}">
-											<p:commandLink action="#{board.select}" update="boardContainer">
-												<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
-												<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
-												<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
-											</p:commandLink>									
-										</td>
-									</ui:repeat>
-								</tr>
-							</ui:repeat>
-						</table>
-						<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>
-						<h:outputText value="Please wait. It's not your turn." rendered="#{!game.myTurn}"/>										
+						<h:panelGrid id="newGameGrid" columns="3" cellpadding="5">
+							<h:outputLabel for="emailGame" value="Email: " /> 
+							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
+							<!--
+							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email">
+								<f:validator binding="#{emailValidator}" />
+	                			<p:ajax event="blur" update="emailGameMsg" />
+							</p:inputText>
+							-->
+							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
+							<h:panelGroup>
+								<p:commandButton value="Create" update="gameListContainer" actionListener="#{game.create}" />									
+							</h:panelGroup>						
+						</h:panelGrid>
 					</h:form>
 				</p:outputPanel>
 			</p:outputPanel>
@@ -38,7 +59,7 @@
 				<p:outputPanel id="registerPanel" rendered="#{!user.ok and register.registerVisible}" >
 					<h2>Register</h2>
 					<h:form> 	
-			        	<h:panelGrid id="registerGrid" columns="3" cellpadding="5"> 
+			        	<h:panelGrid id="registerGrid" columns="1" cellpadding="5"> 
 							<h:outputLabel for="username" value="Username: *" /> 
 							<p:inputText id="username" value="#{register.login}" required="true" label="username">
 								<f:validator binding="#{userValidator}" />  
@@ -64,6 +85,7 @@
 			            	<p:password id="pwd2" value="#{register.password2}" feedback="false" label="Password (again)" required="true"/>
 			            	<p:message id="pwd2Msg" for="pwd2" showSummary="true" showDetail="false"/>
 			            	
+			            	<h:outputLabel value="" /> 
 			            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.register}" />      	
 						</h:panelGrid>
 					</h:form>
@@ -73,14 +95,14 @@
 				<p:outputPanel id="loginPanel" rendered="#{!user.ok and register.loginVisible}" >
 					<h2>Login</h2>
 					<h:form>
-						<h:panelGrid id="loginGrid" columns="2" cellpadding="5">
+						<h:panelGrid id="loginGrid" columns="1" cellpadding="5">
 							<h:outputLabel for="usernameLogin" value="Username: " /> 
 							<p:inputText id="usernameLogin" value="#{register.login}" required="true" label="username"/>
 							
 							<h:outputLabel for="pwdLogin" value="Password: " />  
 			            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
-			            	
-			            	<p:commandButton value="Login" actionListener="#{register.login}"  update="boardContainer,registerContainer,loginContainer,loginToggle,gameListContainer,newGameContainer,moveListContainer" />
+			            				           
+			            	<p:commandButton value="Login" actionListener="#{register.login}"  update="boardContainer,registerContainer,loginContainer,loginToggle,gameListContainer,moveListContainer" />
 						</h:panelGrid>
 					</h:form>
 				</p:outputPanel>
@@ -89,7 +111,7 @@
 		
 		<div class="col2">
 			<p:outputPanel id="gameListContainer" >
-				<p:outputPanel id="gameListPanel" >
+				<p:outputPanel id="gameListPanel" rendered="#{user.ok}">
 					<h2>Game list</h2>
 					<table>
 						<ui:repeat value="#{game.gameList}" var="g">
@@ -98,25 +120,10 @@
 								<td><h:outputText value="#{g.playerBlack.login}" /></td>
 							</tr>
 						</ui:repeat>
-					</table>		
-				</p:outputPanel>
-			</p:outputPanel>
-			<p:outputPanel id="newGameContainer" >
-				<p:outputPanel id="newGamePanel" rendered="#{user.ok}">
-					<h2>New</h2>
+					</table>
 					<h:form>
-						<h:panelGrid id="newGameGrid" columns="2" cellpadding="5">
-							<h:outputLabel for="emailGame" value="Email: " /> 
-							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
-							<!--
-							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email">
-								<f:validator binding="#{emailValidator}" />
-	                			<p:ajax event="blur" update="emailGameMsg" />
-							</p:inputText>
-							-->
-							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
-							<p:commandButton value="Create" update="gameListContainer" actionListener="#{game.create}" />
-						</h:panelGrid>
+						<p:commandButton value="New" actionListener="#{game.toggleNewGame}"  update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{!game.newGameVisible}"/>	
+						<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{game.newGameVisible}"/>							
 					</h:form>
 				</p:outputPanel>
 			</p:outputPanel>
@@ -124,8 +131,9 @@
 		
 		<div class="col3">
 			<p:outputPanel id="moveListContainer" >
-				<p:outputPanel id="moveListPanel" >
+				<p:outputPanel id="moveListPanel" rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">
 					<h:form>
+						<h2>Move list</h2>
 						<table>
 							<ui:repeat value="#{game.moveList}" var="tuple" >
 								<tr>
@@ -134,6 +142,7 @@
 								</tr>
 							</ui:repeat>
 						</table>
+						<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>				
 					</h:form>
 				</p:outputPanel>
 			</p:outputPanel>

@@ -1,3 +1,14 @@
+body {
+	font-family: Arial,sans-serif;
+    font-size: .8em;
+}
+
+div.board {
+	margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
 table.board {
 	font-size:26pt;
 	border-collapse:collapse;

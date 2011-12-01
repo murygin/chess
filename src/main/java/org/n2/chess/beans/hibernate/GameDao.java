@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.n2.chess.beans.hibernate;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.criterion.DetachedCriteria;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("gameDao")
 @SuppressWarnings("unchecked")
-public class GameDao extends CustomHibernateDaoSupport implements IGameDao {
+public class GameDao extends CustomHibernateDaoSupport implements IGameDao, Serializable {
 
     /* (non-Javadoc)
      * @see org.n2.chess.beans.hibernate.IUserDao#save(org.n2.chess.beans.hibernate.User)

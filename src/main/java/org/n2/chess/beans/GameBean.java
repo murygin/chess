@@ -27,6 +27,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.Move;
 import org.n2.chess.beans.hibernate.MoveTuble;
@@ -51,6 +54,8 @@ public class GameBean implements Serializable{
     List<Game> gameList;
     
     Game selectedGame;
+    
+    private boolean newGameVisible = false;
     
     @Autowired
     private UserBean userBean;
@@ -162,6 +167,29 @@ public class GameBean implements Serializable{
         this.selectedGame = selectedGame;
         getBoardBean().setColorPlayer(getMyColor());
         getBoardBean().setGame(selectedGame);
+        if(getMyTurn()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Your turn", "It's your turn. To move click the board."));         
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn. Please wait."));
+        }
+    }
+
+    /**
+     * @return the newGameVisible
+     */
+    public boolean getNewGameVisible() {
+        return newGameVisible;
+    }
+
+    /**
+     * @param newGameVisible the newGameVisible to set
+     */
+    public void setNewGameVisible(boolean newGameVisible) {
+        this.newGameVisible = newGameVisible;
+    }
+    
+    public void toggleNewGame() {
+        this.newGameVisible = !this.newGameVisible;
     }
 
     /**

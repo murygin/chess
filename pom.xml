@@ -74,6 +74,11 @@
             <artifactId>primefaces</artifactId>
             <version>3.0.M3</version>
         </dependency>
+        <dependency>  
+            <groupId>org.primefaces.themes</groupId>  
+            <artifactId>blitzer</artifactId>  
+            <version>1.0.2</version>  
+        </dependency> 
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
