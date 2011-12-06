@@ -10,26 +10,27 @@
 	<meta name="keywords" content="chess" />
 	<meta name="robots" content="index, follow" />
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-	<link rel="stylesheet" type="text/css" href="screen.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="layout.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="common-style.css" media="screen" />
 </h:head>
 <h:body>
-	<div id="header">
-		<ui:insert name="header">
-			<ui:include src="header.xhtml" />
-		</ui:insert>	
-	</div>
-	<div class="colmask threecol">
-		<div class="colmid">
-			<div class="colleft">
-				<ui:insert name="content" />
-			</div>
+	<div id="container">
+		<div id="header">
+			<h1>Chess In The Cloud</h1>
 		</div>
-	</div>
-	<div id="footer">
-		<ui:insert name="footer">
-			<ui:include src="footer.xhtml" />
-		</ui:insert>
+		<div id="navigation">
+			<ui:insert name="header">
+				<ui:include src="header.xhtml" />
+			</ui:insert>
+		</div>
+		<div id="content-container">
+			<ui:insert name="content" />
+		</div>		
+		<div id="footer">
+			<ui:insert name="footer">
+				<ui:include src="footer.xhtml" />
+			</ui:insert>
+		</div>
 	</div>
 </h:body>
 </html>

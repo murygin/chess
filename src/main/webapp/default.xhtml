@@ -8,9 +8,36 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core" 
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
-<ui:composition template="3col.xhtml">
+<ui:composition template="3col-fixed.xhtml">
 	<ui:define name="content">
-		<div class="col1">
+		<div id="section-navigation">
+			<p:outputPanel id="gameListContainer" >
+				<p:outputPanel id="gameListPanel" rendered="#{user.ok}">
+					<h2>Game list</h2>
+					<h:form>
+						<ul>
+							<ui:repeat value="#{game.gameList}" var="g">
+								<li>
+									<p:commandLink update="boardContainer,moveListContainer">
+										<f:setPropertyActionListener target="#{game.selectedGame}" value="#{g}" />
+										<h:outputText value="#{g.playerWhite.login}" rendered="#{g.playerWhite.login != user.user.login}"/>
+										<h:outputText value="#{g.playerBlack.login}" rendered="#{g.playerBlack.login != user.user.login}"/>
+									</p:commandLink>
+								</li>						
+							</ui:repeat>
+						</ul>
+					</h:form>
+					<div id="section-new-game">
+						<h:form>
+							<p:commandButton value="New Game" actionListener="#{game.toggleNewGame}"  update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{!game.newGameVisible}"/>	
+							<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{game.newGameVisible}"/>							
+						</h:form>
+					</div>
+					
+				</p:outputPanel>
+			</p:outputPanel>
+		</div>
+		<div id="content">
 			<p:outputPanel id="boardContainer">
 				<p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
 					<div class="board">
@@ -108,28 +135,7 @@
 				</p:outputPanel>
 			</p:outputPanel>
 		</div>
-		
-		<div class="col2">
-			<p:outputPanel id="gameListContainer" >
-				<p:outputPanel id="gameListPanel" rendered="#{user.ok}">
-					<h2>Game list</h2>
-					<table>
-						<ui:repeat value="#{game.gameList}" var="g">
-							<tr>
-								<td><h:outputText value="#{g.playerWhite.login}" /></td>
-								<td><h:outputText value="#{g.playerBlack.login}" /></td>
-							</tr>
-						</ui:repeat>
-					</table>
-					<h:form>
-						<p:commandButton value="New" actionListener="#{game.toggleNewGame}"  update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{!game.newGameVisible}"/>	
-						<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{game.newGameVisible}"/>							
-					</h:form>
-				</p:outputPanel>
-			</p:outputPanel>
-		</div>
-		
-		<div class="col3">
+		<div id="aside">
 			<p:outputPanel id="moveListContainer" >
 				<p:outputPanel id="moveListPanel" rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">
 					<h:form>
@@ -142,11 +148,13 @@
 								</tr>
 							</ui:repeat>
 						</table>
-						<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>				
+						<div id="section-move">
+							<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>				
+						</div>
 					</h:form>
 				</p:outputPanel>
 			</p:outputPanel>
-		</div>
+		</div>	
 	</ui:define>
 </ui:composition>
 </html>

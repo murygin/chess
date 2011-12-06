@@ -6,11 +6,10 @@ body {
 div.board {
 	margin-left: auto;
     margin-right: auto;
-    width: 90%;
 }
 
 table.board {
-	font-size:26pt;
+	font-size:10pt;
 	border-collapse:collapse;
 	border:1px solid black;
 }

@@ -70,12 +70,6 @@ public class GameBean implements Serializable{
     private IMailService mailService;
     
     public List<Game> getGameList() {
-        if(gameList==null && getUserBean().getUser()!=null) {
-            gameList = getGameService().loadGames(getUserBean().getUser());
-            if(gameList!=null && !gameList.isEmpty()) {
-                setSelectedGame(gameList.get(0));
-            }
-        }
         return gameList;
     }
     
@@ -101,6 +95,12 @@ public class GameBean implements Serializable{
     }
     
     public void init() {
+        if(gameList==null && getUserBean().getUser()!=null) {
+            gameList = getGameService().loadGames(getUserBean().getUser());
+            if(gameList!=null && !gameList.isEmpty()) {
+                setSelectedGame(gameList.get(0));
+            }
+        }
         getGameList();
     }
     

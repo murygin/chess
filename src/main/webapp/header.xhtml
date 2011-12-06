@@ -9,17 +9,28 @@
 	<ui:composition>
 		<p:outputPanel id="loginToggle">
 			<h:form>
-				<h:outputLabel value="User: #{user.user.login}" rendered="#{user.ok}"/>
-				<p:commandLink actionListener="#{register.logout}" update="loginToggle,gameListContainer,newGameContainer,boardContainer" rendered="#{user.ok}">
-					<h:outputText value=" | Logout" />
-				</p:commandLink>		
-				<p:commandLink actionListener="#{register.toggleRegister}" update="registerContainer" rendered="#{!user.ok}">
-					<h:outputText value="Register" />
-				</p:commandLink>
-				<h:outputText value=" | " rendered="#{!user.ok}"/>
-				<p:commandLink actionListener="#{register.toggleLogin}" update="loginContainer" rendered="#{!user.ok}">
-					<h:outputText value="Login" />
-				</p:commandLink>
+				<ul>
+					<p:outputPanel id="userNamePanel" rendered="#{user.ok}">
+						<li><h:outputLabel value="User: #{user.user.login}" /></li>
+						<li>
+							<p:commandLink actionListener="#{register.logout}" update="loginToggle,gameListContainer,newGameContainer,boardContainer">
+								<h:outputText value="Logout" />
+							</p:commandLink>
+						</li>
+					</p:outputPanel>
+					<p:outputPanel id="loginLinkPanel" rendered="#{!user.ok}">
+						<li>
+							<p:commandLink actionListener="#{register.toggleRegister}" update="registerContainer" rendered="#{!user.ok}">
+								<h:outputText value="Register" />
+							</p:commandLink>
+						</li>
+						<li>
+							<p:commandLink actionListener="#{register.toggleLogin}" update="loginContainer" rendered="#{!user.ok}">
+								<h:outputText value="Login" />
+							</p:commandLink>
+						</li>
+					</p:outputPanel>			
+				</ul>
 			</h:form>
 		</p:outputPanel>
 		<p:messages showDetail="true" autoUpdate="true"/>	
