@@ -35,6 +35,7 @@ import org.n2.chess.beans.hibernate.Move;
 import org.n2.chess.beans.hibernate.MoveTuble;
 import org.n2.chess.beans.hibernate.User;
 import org.n2.chess.model.Board;
+import org.n2.chess.model.GameInfo;
 import org.n2.chess.model.Piece;
 import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,8 @@ public class GameBean implements Serializable{
     String emailNew;
     
     List<Game> gameList;
+    
+    List<GameInfo> gameInfoList;
     
     Game selectedGame;
     
@@ -73,6 +76,13 @@ public class GameBean implements Serializable{
         return gameList;
     }
     
+    /**
+     * @return the gameInfoList
+     */
+    public List<GameInfo> getGameInfoList() {
+        return gameInfoList;
+    }
+
     public List<MoveTuble> getMoveList() {
         List<MoveTuble> moveList = Collections.emptyList();
         if(getSelectedGame()!=null) {
@@ -97,9 +107,13 @@ public class GameBean implements Serializable{
     public void init() {
         if(gameList==null && getUserBean().getUser()!=null) {
             gameList = getGameService().loadGames(getUserBean().getUser());
+            gameInfoList = new ArrayList<GameInfo>();
+            for (Game game : gameList) {
+                gameInfoList.add(new GameInfo(game, getUserBean().getUser()));
+            }
             if(gameList!=null && !gameList.isEmpty()) {
                 setSelectedGame(gameList.get(0));
-            }
+            }          
         }
         getGameList();
     }
@@ -120,6 +134,8 @@ public class GameBean implements Serializable{
         move.setMove(notation);
         move.setFen(getSelectedGame().getFen());
         getSelectedGame().getMoveSet().add(move);
+        getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
+        getSelectedGame().setLastMoveDate(date);
         getGameService().updateGame(getSelectedGame());     
         getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
     }

@@ -86,6 +86,7 @@ public class GameService implements IGameService, Serializable {
         game.setPlayerWhite(playerWhite);
         game.setFen(FEN_START);
         game.setStartDate(Calendar.getInstance().getTime());
+        game.setStatus(Game.WHITE);
         getGameDao().save(game);
         return game;
     }

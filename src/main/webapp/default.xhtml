@@ -16,12 +16,12 @@
 					<h2>Game list</h2>
 					<h:form>
 						<ul>
-							<ui:repeat value="#{game.gameList}" var="g">
+							<ui:repeat value="#{game.gameInfoList}" var="g">
 								<li>
 									<p:commandLink update="boardContainer,moveListContainer">
-										<f:setPropertyActionListener target="#{game.selectedGame}" value="#{g}" />
-										<h:outputText value="#{g.playerWhite.login}" rendered="#{g.playerWhite.login != user.user.login}"/>
-										<h:outputText value="#{g.playerBlack.login}" rendered="#{g.playerBlack.login != user.user.login}"/>
+										<f:setPropertyActionListener target="#{game.selectedGame}" value="#{g.game}" />
+										<h:outputText value="#{g.opponent}" /> - <h:outputText value="#{g.status}" /><br/>
+										<h:outputText value="#{g.lastMove}" />
 									</p:commandLink>
 								</li>						
 							</ui:repeat>

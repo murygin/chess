@@ -47,9 +47,16 @@ import javax.persistence.TemporalType;
 @Table(name = "game", catalog = "cchess")
 public class Game implements Serializable {
 
+    public static final String BLACK = "b";
+    public static final String WHITE = "w";
+    public static final String DRAW = "draw";
+    public static final String BLACK_WIN = "bwin";
+    public static final String WHITE_WIN = "wwin";
+    
     private Integer id;
     private User playerWhite;
     private User playerBlack;
+    private String status; 
     private Set<Move> moveSet;
     private Date startDate;
     private Date lastMoveDate;
@@ -106,6 +113,22 @@ public class Game implements Serializable {
     public void setPlayerBlack(User playerBlack) {
         this.playerBlack = playerBlack;
     }
+    
+   
+    /**
+     * @return the status
+     */
+    @Column(name = "status", nullable = false, length = 10)
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @OneToMany(fetch=FetchType.EAGER,cascade = {CascadeType.ALL})
     @JoinColumn(name="game_id")
@@ -121,7 +144,7 @@ public class Game implements Serializable {
         this.moveSet = moveSet;
     }
 
-    /**
+    /**true
      * @return the startDate
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -156,7 +179,7 @@ public class Game implements Serializable {
     /**
      * @return the salt
      */
-    @Column(name = "fen", nullable = true, length = 70)
+    @Column(name = "fen", nullable = false, length = 70)
     public String getFen() {
         return fen;
     }
