@@ -111,6 +111,18 @@
 
 #aside h3 { margin: 0; }
 
+#messages
+{
+	float: left;
+	width: 800px;
+	background: #ccc;
+}
+
+#messages .ui-messages
+{
+	margin: 0 10px 0 10px;
+}
+
 #footer
 {
 	clear: left;

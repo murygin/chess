@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	  xmlns:h="http://java.sun.com/jsf/html"
 	  xmlns:ui="http://java.sun.com/jsf/facelets" 
+	  xmlns:p="http://primefaces.prime.com.tr/ui"
 	  xml:lang="en-GB">
 <h:head>
     <title>chess in the cloud</title>
@@ -24,8 +25,11 @@
 			</ui:insert>
 		</div>
 		<div id="content-container">
-			<ui:insert name="content" />
-		</div>		
+			<ui:insert name="content" />		
+		</div>
+		<div id="messages">
+			<p:messages showDetail="true" autoUpdate="true"/>
+		</div>	
 		<div id="footer">
 			<ui:insert name="footer">
 				<ui:include src="footer.xhtml" />

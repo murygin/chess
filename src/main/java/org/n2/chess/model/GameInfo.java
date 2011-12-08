@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.n2.chess.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,7 +30,7 @@ import org.n2.chess.beans.hibernate.User;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public class GameInfo {
+public class GameInfo implements Serializable{
 
     public static final String MOVE = "move";
     public static final String WAIT = "wait";

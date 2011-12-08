@@ -52,6 +52,8 @@ public class GameBean implements Serializable{
 
     String emailNew;
     
+    String colorNew = Board.WHITE;
+    
     List<Game> gameList;
     
     List<GameInfo> gameInfoList;
@@ -89,16 +91,18 @@ public class GameBean implements Serializable{
             moveList = new ArrayList<MoveTuble>();
             Set<Move> moves = getSelectedGame().getMoveSet();
             Move white = null;
-            for (Move move : moves) {
-                if(white==null) {
-                    white = move;
-                } else {
-                    moveList.add(new MoveTuble(white.getN(), white, move));
-                    white = null;
+            if(moves!=null) {
+                for (Move move : moves) {
+                    if(white==null) {
+                        white = move;
+                    } else {
+                        moveList.add(new MoveTuble(white.getN(), white, move));
+                        white = null;
+                    }
                 }
-            }
-            if(white!=null) {
-                moveList.add(new MoveTuble(white.getN(), white, null));
+                if(white!=null) {
+                    moveList.add(new MoveTuble(white.getN(), white, null));
+                }
             }
         }
         return moveList;
@@ -119,8 +123,23 @@ public class GameBean implements Serializable{
     }
     
     public void create() {
-        Game newGame = getGameService().create(getUserBean().getUser(),getEmailNew());
+        Game newGame = null;
+        String oppenent = null;
+        String color;
+        if(Board.WHITE.equals(getColorNew())) {
+            newGame = getGameService().create(getUserBean().getUser(),getEmailNew());
+            oppenent = newGame.getPlayerBlack().getLogin();
+            color = "white";
+        } else {
+            newGame = getGameService().create(getEmailNew(),getUserBean().getUser());
+            oppenent = newGame.getPlayerWhite().getLogin();
+            color = "black";
+        }
         gameList.add(newGame);
+        gameInfoList.add(new GameInfo(newGame, getUserBean().getUser()));
+        setSelectedGame(newGame);
+        setNewGameVisible(false);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New game saved", "Opponent: " + oppenent + ", your color: " + color));
     }
     
     public void move() {
@@ -138,6 +157,7 @@ public class GameBean implements Serializable{
         getSelectedGame().setLastMoveDate(date);
         getGameService().updateGame(getSelectedGame());     
         getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Move saved", "Notation: " + notation));
     }
     
     /**
@@ -184,9 +204,9 @@ public class GameBean implements Serializable{
         getBoardBean().setColorPlayer(getMyColor());
         getBoardBean().setGame(selectedGame);
         if(getMyTurn()) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Your turn", "It's your turn. To move click the board."));         
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn. Please wait."));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
         }
     }
 
@@ -220,6 +240,20 @@ public class GameBean implements Serializable{
     public void setEmailNew(String emailNew) {
         this.emailNew = emailNew;
     }
+    /**
+     * @return the colorNew
+     */
+    public String getColorNew() {
+        return colorNew;
+    }
+
+    /**
+     * @param colorNew the colorNew to set
+     */
+    public void setColorNew(String colorNew) {
+        this.colorNew = colorNew;
+    }
+
     /**
      * @return the userBean
      */

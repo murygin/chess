@@ -74,6 +74,19 @@ public class GameService implements IGameService, Serializable {
         }
         return game;
     }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
+     */
+    @Override
+    public Game create(String emailWhite, User userBlack) {
+        User userWhite = getUserService().findUserByEmail(emailWhite);
+        Game game = null;
+        if(userBlack!=null && userWhite!=null) {
+            game = create(userWhite, userBlack);
+        }
+        return game;
+    }
 
     /**
      * @param playerWhite

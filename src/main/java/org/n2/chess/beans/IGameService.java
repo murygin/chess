@@ -33,11 +33,9 @@ public interface IGameService {
 
     List<Game> loadGames(User user);
 
-    /**
-     * @param user
-     * @param emailNew
-     */
     Game create(User userWhite, String emailBlack);
+    
+    Game create(String emailWhite, User userblack);
     
     Game create(User userWhite, User userBlack);
     
