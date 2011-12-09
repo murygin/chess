@@ -190,4 +190,55 @@ public class Game implements Serializable {
     public void setFen(String fen) {
         this.fen = fen;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((playerBlack == null) ? 0 : playerBlack.hashCode());
+        result = prime * result + ((playerWhite == null) ? 0 : playerWhite.hashCode());
+        result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Game other = (Game) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (playerBlack == null) {
+            if (other.playerBlack != null)
+                return false;
+        } else if (!playerBlack.equals(other.playerBlack))
+            return false;
+        if (playerWhite == null) {
+            if (other.playerWhite != null)
+                return false;
+        } else if (!playerWhite.equals(other.playerWhite))
+            return false;
+        if (startDate == null) {
+            if (other.startDate != null)
+                return false;
+        } else if (!startDate.equals(other.startDate))
+            return false;
+        return true;
+    }
+    
+    
 }

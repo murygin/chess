@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.n2.chess.beans;
 
+import java.io.Serializable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,10 +30,10 @@ import org.springframework.stereotype.Component;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Component("mail")
-public class MailService implements IMailService {
+public class MailService implements IMailService, Serializable {
     
     @Autowired
-    private MailSender mailSender;
+    transient private MailSender mailSender;
     
     /* (non-Javadoc)
      * @see org.n2.chess.beans.IMailService#sendMail(java.lang.String, java.lang.String, java.lang.String, java.lang.String)

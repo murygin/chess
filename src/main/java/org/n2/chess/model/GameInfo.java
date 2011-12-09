@@ -22,6 +22,8 @@ package org.n2.chess.model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.User;
@@ -30,12 +32,35 @@ import org.n2.chess.beans.hibernate.User;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public class GameInfo implements Serializable{
+public class GameInfo implements Serializable, Comparable<GameInfo>{
 
     public static final String MOVE = "move";
     public static final String WAIT = "wait";
+    public static final String WIN = "win";
     public static final String DRAW = "draw";
     public static final String LOSS = "loss";
+    
+    private static final String IMAGE_FOLDER = "image/";
+    
+    private static Map<String, Integer> STATUS_SORT_MAP;
+    static {
+        STATUS_SORT_MAP = new Hashtable<String, Integer>();
+        STATUS_SORT_MAP.put(MOVE, 0);
+        STATUS_SORT_MAP.put(WAIT, 1);
+        STATUS_SORT_MAP.put(WIN, 2);
+        STATUS_SORT_MAP.put(DRAW, 3);
+        STATUS_SORT_MAP.put(LOSS, 4);
+    }
+    
+    private static Map<String, String> STATUS_IMAGE_MAP;
+    static {
+        STATUS_IMAGE_MAP = new Hashtable<String, String>();
+        STATUS_IMAGE_MAP.put(MOVE, IMAGE_FOLDER + "move.gif");
+        STATUS_IMAGE_MAP.put(WAIT, IMAGE_FOLDER + "pause.gif");
+        STATUS_IMAGE_MAP.put(WIN, IMAGE_FOLDER + "pause.gif");
+        STATUS_IMAGE_MAP.put(DRAW, IMAGE_FOLDER + "pause.gif");
+        STATUS_IMAGE_MAP.put(LOSS, IMAGE_FOLDER + "pause.gif");
+    }
     
     Game game;
     
@@ -96,6 +121,13 @@ public class GameInfo implements Serializable{
     public String getStatus() {
         return status;
     }
+    
+    /**
+     * @return the status
+     */
+    public String getStatusImage() {
+        return STATUS_IMAGE_MAP.get(getStatus());
+    }
 
     public static String getHumanRedableTime(long ms) {
         double x = ms / 1000.0;
@@ -116,13 +148,13 @@ public class GameInfo implements Serializable{
             }
             sb.append(hours).append(" h");
         }
-        if(minutes>0) {
+        if(minutes>0 && days<1) {
             if(sb.length()>0) {
                 sb.append(", ");
             }
             sb.append(minutes).append(" m");
         }
-        if(seconds>0) {
+        if(seconds>0 && hours<1) {
             if(sb.length()>0) {
                 sb.append(", ");
             }
@@ -130,4 +162,55 @@ public class GameInfo implements Serializable{
         }        
         return sb.toString();     
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(GameInfo game) {
+        int EQUAL = 0;
+        int result = EQUAL;
+        if(this.getStatus()!=null && game.getStatus()!=null) {
+            result = STATUS_SORT_MAP.get(this.getStatus()).compareTo(STATUS_SORT_MAP.get(game.getStatus()));
+        }
+        if(EQUAL==result) {
+            Date d1 = (this.getGame().getLastMoveDate()!=null) ? this.getGame().getLastMoveDate() : this.getGame().getStartDate();
+            Date d2 = (game.getGame().getLastMoveDate()!=null) ? game.getGame().getLastMoveDate() : game.getGame().getStartDate();
+            result = d1.compareTo(d2);
+        }
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((game == null) ? 0 : game.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GameInfo other = (GameInfo) obj;
+        if (game == null) {
+            if (other.game != null)
+                return false;
+        } else if (!game.equals(other.game))
+            return false;
+        return true;
+    }
+    
+    
 }

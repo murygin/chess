@@ -15,17 +15,19 @@
 				<p:outputPanel id="gameListPanel" rendered="#{user.ok}">
 					<h2>Game list</h2>
 					<h:form>
-						<ul>
-							<ui:repeat value="#{game.gameInfoList}" var="g">
-								<li>
-									<p:commandLink update="boardContainer,moveListContainer">
-										<f:setPropertyActionListener target="#{game.selectedGame}" value="#{g.game}" />
-										<h:outputText value="#{g.opponent}" /> - <h:outputText value="#{g.status}" /><br/>
-										<h:outputText value="#{g.lastMove}" />
-									</p:commandLink>
-								</li>						
-							</ui:repeat>
-						</ul>
+						<div id="game-list">
+							<ul>
+								<ui:repeat value="#{game.gameInfoList}" var="g">
+									<li>
+										<p:commandLink update="boardContainer,moveListContainer">
+											<f:setPropertyActionListener target="#{game.selectedGameInfo}" value="#{g}" />
+											<h:outputText value="#{g.opponent}" /><br/>
+											<h:outputText value="#{g.lastMove}" /><h:graphicImage value="#{g.statusImage}" />
+										</p:commandLink>
+									</li>						
+								</ui:repeat>
+							</ul>
+						</div>
 					</h:form>
 					<div id="section-new-game">
 						<h:form>
@@ -40,6 +42,7 @@
 		<div id="content">
 			<p:outputPanel id="boardContainer">
 				<p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
+					<h2><h:outputText value="#{game.selectedGameInfo.opponent}" /></h2>
 					<div class="board">
 						<h:form>
 							<table class="board">
@@ -139,14 +142,16 @@
 				<p:outputPanel id="moveListPanel" rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">
 					<h:form>
 						<h2>Move list</h2>
-						<table>
-							<ui:repeat value="#{game.moveList}" var="tuple" >
-								<tr>
-									<td><h:outputText value="#{tuple.white.move}" /></td>
-									<td><h:outputText value="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
-								</tr>
-							</ui:repeat>
-						</table>
+						<div id="move-list">
+							<table>
+								<ui:repeat value="#{game.moveList}" var="tuple" >
+									<tr>
+										<td><h:outputText value="#{tuple.white.move}" /></td>
+										<td><h:outputText valkeyue="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
+									</tr>
+								</ui:repeat>
+							</table>
+						</div>
 						<div id="section-move">
 							<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>				
 						</div>

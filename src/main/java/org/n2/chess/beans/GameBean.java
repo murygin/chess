@@ -58,7 +58,7 @@ public class GameBean implements Serializable{
     
     List<GameInfo> gameInfoList;
     
-    Game selectedGame;
+    GameInfo selectedGameInfo;
     
     private boolean newGameVisible = false;
     
@@ -115,8 +115,9 @@ public class GameBean implements Serializable{
             for (Game game : gameList) {
                 gameInfoList.add(new GameInfo(game, getUserBean().getUser()));
             }
-            if(gameList!=null && !gameList.isEmpty()) {
-                setSelectedGame(gameList.get(0));
+            Collections.sort(gameInfoList);
+            if(gameInfoList!=null && !gameInfoList.isEmpty()) {
+                setSelectedGame(gameInfoList.get(0).getGame());
             }          
         }
         getGameList();
@@ -188,26 +189,50 @@ public class GameBean implements Serializable{
         }
         return myColor;
     }
-    
+
     /**
      * @return the selectedGame
      */
     public Game getSelectedGame() {
-        return selectedGame;
+        Game game = null;
+        if(getSelectedGameInfo()!=null) {
+            game = getSelectedGameInfo().getGame();
+        }
+        return game;
+    }
+    
+    /**
+     * @return the selectedGame
+     */
+    public GameInfo getSelectedGameInfo() {
+        return selectedGameInfo;
     }
 
     /**
      * @param selectedGame the selectedGame to set
      */
-    public void setSelectedGame(Game selectedGame) {
-        this.selectedGame = selectedGame;
+    public void setSelectedGameInfo(GameInfo selectedGame) {
+        this.selectedGameInfo = selectedGame;
+        if(!gameInfoList.contains(selectedGameInfo)) {
+            gameInfoList.add(selectedGameInfo);
+        }
+        if(!gameList.contains(selectedGameInfo.getGame())) {
+            gameList.add(selectedGameInfo.getGame());
+        }
         getBoardBean().setColorPlayer(getMyColor());
-        getBoardBean().setGame(selectedGame);
+        getBoardBean().setGame(getSelectedGame());
         if(getMyTurn()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
         }
+    }
+    
+    /**
+     * @param selectedGame the selectedGame to set
+     */
+    public void setSelectedGame(Game selectedGame) {
+        setSelectedGameInfo(new GameInfo(selectedGame, getUserBean().getUser()));       
     }
 
     /**

@@ -80,6 +80,13 @@
 	list-style-type: none;
 }
 
+#game-list, #move-list
+{
+	height: 280px;
+	width: 180px;
+	overflow: auto;
+}
+
 #section-new-game, #section-move
 {
 	position: absolute; 

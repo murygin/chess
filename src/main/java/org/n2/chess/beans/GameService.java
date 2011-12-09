@@ -21,6 +21,7 @@ package org.n2.chess.beans;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -98,7 +99,9 @@ public class GameService implements IGameService, Serializable {
         game.setPlayerBlack(playerBlack);
         game.setPlayerWhite(playerWhite);
         game.setFen(FEN_START);
-        game.setStartDate(Calendar.getInstance().getTime());
+        Date now = Calendar.getInstance().getTime();
+        game.setStartDate(now);
+        game.setLastMoveDate(now);
         game.setStatus(Game.WHITE);
         getGameDao().save(game);
         return game;
