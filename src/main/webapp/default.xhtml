@@ -52,7 +52,7 @@
 											<td class="#{square.style}">
 												<p:commandLink action="#{board.select}" update="boardContainer">
 													<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
-													<h:outputText value="#{square.piece.unicode}" escape="false" rendered="#{!empty square.piece}"/>
+													<h:graphicImage value="#{square.piece.image}" width="14" height="18" rendered="#{!empty square.piece}"/>
 													<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
 												</p:commandLink>									
 											</td>
@@ -147,7 +147,7 @@
 								<ui:repeat value="#{game.moveList}" var="tuple" >
 									<tr>
 										<td><h:outputText value="#{tuple.white.move}" /></td>
-										<td><h:outputText valkeyue="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
+										<td><h:outputText value="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
 									</tr>
 								</ui:repeat>
 							</table>

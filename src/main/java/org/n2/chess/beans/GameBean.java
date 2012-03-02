@@ -149,7 +149,7 @@ public class GameBean implements Serializable{
         getBoardBean().move();
         Move move = new Move();
         move.setGameId(getSelectedGame().getId());
-        move.setN(1);
+        move.setN(getSelectedGame().getMoveSet().size() + 1);
         move.setDate(date);
         move.setMove(notation);
         move.setFen(getSelectedGame().getFen());

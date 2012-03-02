@@ -18,16 +18,16 @@ table.board td, th{
 	border:1px solid black;
 }
 table.board td{
-	width:40px;
-	height:40px;
+	width:30px;
+	height:30px;
 	text-align: center;
 	vertical-align:middle;
 }
 
 table.board td img{
-	width:40px;
-	height:40px;
-	margin: 0px 0 0px;
+	width: 30px;
+	height: 30px;
+	margin: 0px;
 }
 
 table.board td.white{
