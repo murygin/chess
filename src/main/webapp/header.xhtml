@@ -3,6 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 <body>
@@ -29,7 +30,21 @@
 								<h:outputText value="Login" />
 							</p:commandLink>
 						</li>
-					</p:outputPanel>			
+					</p:outputPanel>
+					<p:outputPanel id="loaderPanel">
+						<p:ajaxStatus>
+							<f:facet name="start">
+								<li>
+									<p:graphicImage value="/image/loader.gif" styleClass="loader"/>	
+								</li>								
+							</f:facet>
+							<f:facet name="complete">
+								<li>
+									<h:outputText value="" styleClass="loader"/>
+								</li>
+							</f:facet>						
+						</p:ajaxStatus>
+					</p:outputPanel>		
 				</ul>
 			</h:form>
 		</p:outputPanel>	

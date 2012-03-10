@@ -66,3 +66,7 @@ a:active {
 	text-decoration:none;
 	color: #000000;
 }
+
+.loader {
+	padding: 1px 10px;
+}
