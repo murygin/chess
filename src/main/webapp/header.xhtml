@@ -9,10 +9,10 @@
 <body>
 	<ui:composition>
 		<p:outputPanel id="loginToggle">
-			<h:form>
+			<h:form>			
 				<ul>
 					<p:outputPanel id="userNamePanel" rendered="#{user.ok}">
-						<li><h:outputLabel value="User: #{user.user.login}" /></li>
+						<li><h:outputLabel value="User agretreat: #{user.user.login}" /></li>
 						<li>
 							<p:commandLink actionListener="#{register.logout}" update="loginToggle,gameListContainer,newGameContainer,boardContainer">
 								<h:outputText value="Logout" />
@@ -30,24 +30,10 @@
 								<h:outputText value="Login" />
 							</p:commandLink>
 						</li>
-					</p:outputPanel>
-					<p:outputPanel id="loaderPanel">
-						<p:ajaxStatus>
-							<f:facet name="start">
-								<li>
-									<p:graphicImage value="/image/loader.gif" styleClass="loader"/>	
-								</li>								
-							</f:facet>
-							<f:facet name="complete">
-								<li>
-									<h:outputText value="" styleClass="loader"/>
-								</li>
-							</f:facet>						
-						</p:ajaxStatus>
 					</p:outputPanel>		
-				</ul>
+				</ul>			
 			</h:form>
-		</p:outputPanel>	
+		</p:outputPanel>
 	</ui:composition>
 </body>
 </html>

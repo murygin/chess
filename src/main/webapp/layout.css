@@ -42,7 +42,9 @@
 	border-right: 1px solid #fff;
 }
 
-#navigation li a:hover { background: #383; }
+#navigation li a:hover { 
+	background: #383; 
+}
 
 #content-container
 {

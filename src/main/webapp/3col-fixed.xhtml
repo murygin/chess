@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
 	  xmlns:ui="http://java.sun.com/jsf/facelets" 
 	  xmlns:p="http://primefaces.prime.com.tr/ui"
 	  xml:lang="en-GB">
@@ -14,7 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="layout.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="common-style.css" media="screen" />
 </h:head>
-<h:body>
+<h:body>	
 	<div id="container">
 		<div id="header">
 			<h1>Chess In The Cloud</h1>
@@ -28,6 +29,19 @@
 			<ui:insert name="content" />		
 		</div>
 		<div id="messages">
+			<p:ajaxStatus>
+				<f:facet name="start">
+					<li>
+						<p:graphicImage value="/image/loader.gif" styleClass="loader"/>
+						<h:outputText value="Please wait..." styleClass="loader"/>
+					</li>								
+				</f:facet>
+				<f:facet name="complete">
+					<li>
+						<h:outputText value="" styleClass="loader"/>
+					</li>
+				</f:facet>						
+			</p:ajaxStatus>
 			<p:messages showDetail="true" autoUpdate="true"/>
 		</div>	
 		<div id="footer">
