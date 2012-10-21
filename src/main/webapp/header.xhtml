@@ -5,7 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.prime.com.tr/ui">
+	xmlns:p="http://primefaces.org/ui">
 <body>
 	<ui:composition>
 		<p:outputPanel id="loginToggle">
@@ -14,19 +14,19 @@
 					<p:outputPanel id="userNamePanel" rendered="#{user.ok}">
 						<li><h:outputLabel value="User agretreat: #{user.user.login}" /></li>
 						<li>
-							<p:commandLink actionListener="#{register.logout}" update="loginToggle,gameListContainer,newGameContainer,boardContainer">
+							<p:commandLink actionListener="#{register.logout}" update=":loginToggle,:gameListContainer,:newGameContainer,:boardContainer,:moveListContainer">
 								<h:outputText value="Logout" />
 							</p:commandLink>
 						</li>
 					</p:outputPanel>
 					<p:outputPanel id="loginLinkPanel" rendered="#{!user.ok}">
 						<li>
-							<p:commandLink actionListener="#{register.toggleRegister}" update="registerContainer" rendered="#{!user.ok}">
+							<p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer" rendered="#{!user.ok}">
 								<h:outputText value="Register" />
 							</p:commandLink>
 						</li>
 						<li>
-							<p:commandLink actionListener="#{register.toggleLogin}" update="loginContainer" rendered="#{!user.ok}">
+							<p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer" rendered="#{!user.ok}">
 								<h:outputText value="Login" />
 							</p:commandLink>
 						</li>

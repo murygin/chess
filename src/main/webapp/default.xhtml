@@ -6,7 +6,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" 
-	xmlns:p="http://primefaces.prime.com.tr/ui">
+	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="3col-fixed.xhtml">
 	<ui:define name="content">
@@ -19,7 +19,7 @@
 							<ul>
 								<ui:repeat value="#{game.gameInfoList}" var="g">
 									<li>
-										<p:commandLink update="boardContainer,moveListContainer">
+										<p:commandLink update=":boardContainer,:moveListContainer">
 											<f:setPropertyActionListener target="#{game.selectedGameInfo}" value="#{g}" />
 											<h:outputText value="#{g.opponent}" /><br/>
 											<h:outputText value="#{g.lastMove}" /><h:graphicImage value="#{g.statusImage}" />
@@ -31,8 +31,8 @@
 					</h:form>
 					<div id="section-new-game">
 						<h:form>
-							<p:commandButton value="New Game" actionListener="#{game.toggleNewGame}"  update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{!game.newGameVisible}"/>	
-							<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update="boardContainer,newGameContainer,moveListContainer,gameListContainer" rendered="#{game.newGameVisible}"/>							
+							<p:commandButton value="New Game" actionListener="#{game.toggleNewGame}"  update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer" rendered="#{!game.newGameVisible}"/>	
+							<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer" rendered="#{game.newGameVisible}"/>							
 						</h:form>
 					</div>
 				</p:outputPanel>
@@ -49,7 +49,7 @@
 									<tr>
 										<ui:repeat value="#{row.squares}" var="square" >
 											<td class="#{square.style}">
-												<p:commandLink action="#{board.select}" update="boardContainer">
+												<p:commandLink action="#{board.select}" update=":boardContainer,:moveListContainer">
 													<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
 													<h:graphicImage value="#{square.piece.image}" width="14" height="18" rendered="#{!empty square.piece}"/>
 													<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
@@ -77,7 +77,7 @@
 							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
 							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
 							<h:panelGroup>
-								<p:commandButton value="Create" update="gameListContainer,boardContainer,newGameContainer" actionListener="#{game.create}" />									
+								<p:commandButton value="Create" update=":gameListContainer,:boardContainer,:newGameContainer" actionListener="#{game.create}" />									
 							</h:panelGroup>						
 						</h:panelGrid>
 					</h:form>
@@ -114,7 +114,7 @@
 			            	<p:message id="pwd2Msg" for="pwd2" showSummary="true" showDetail="false"/>
 			            	
 			            	<h:outputLabel value="" /> 
-			            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.register}" />      	
+			            	<p:commandButton value="Register" update=":registerContainer,:loginContainer,:loginToggle" actionListener="#{register.register}" />      	
 						</h:panelGrid>
 					</h:form>
 				</p:outputPanel>
@@ -130,7 +130,7 @@
 							<h:outputLabel for="pwdLogin" value="Password: " />  
 			            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
 			            				           
-			            	<p:commandButton value="Login" actionListener="#{register.login}"  update="boardContainer,registerContainer,loginContainer,loginToggle,gameListContainer,moveListContainer" />
+			            	<p:commandButton value="Login" actionListener="#{register.login}"  update=":boardContainer,:registerContainer,:loginContainer,:loginToggle,:gameListContainer,:moveListContainer" />
 						</h:panelGrid>
 					</h:form>
 				</p:outputPanel>
@@ -152,7 +152,14 @@
 							</table>
 						</div>
 						<div id="section-move">
-							<p:commandButton action="#{game.move}" update="boardContainer,moveListContainer" value="Move" rendered="#{game.myTurn}"/>				
+							<table>
+								<tr>
+									<td><h:outputText value="#{board.notation}" styleClass="currentMove"/></td>
+								</tr>
+								<tr>
+									<td><p:commandButton action="#{game.move}" update=":boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/>	</td>
+								</tr>						
+							</table>									
 						</div>
 					</h:form>
 				</p:outputPanel>

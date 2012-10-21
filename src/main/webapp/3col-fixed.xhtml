@@ -3,7 +3,7 @@
 	  xmlns:h="http://java.sun.com/jsf/html"
 	  xmlns:f="http://java.sun.com/jsf/core"
 	  xmlns:ui="http://java.sun.com/jsf/facelets" 
-	  xmlns:p="http://primefaces.prime.com.tr/ui"
+	  xmlns:p="http://primefaces.org/ui"
 	  xml:lang="en-GB">
 <h:head>
     <title>chess in the cloud</title>
@@ -31,16 +31,12 @@
 		<div id="messages">
 			<p:ajaxStatus>
 				<f:facet name="start">
-					<li>
-						<p:graphicImage value="/image/loader.gif" styleClass="loader"/>
-						<h:outputText value="Please wait..." styleClass="loader"/>
-					</li>								
+					<p:graphicImage value="/image/loader.gif" styleClass="loader"/>
+					<h:outputText value="Please wait..." styleClass="loader"/>								
 				</f:facet>
-				<f:facet name="complete">
-					<li>
-						<h:outputText value="" styleClass="loader"/>
-					</li>
-				</f:facet>						
+				<f:facet name="complete">	
+					<h:outputText value="" styleClass="loader"/>
+				</f:facet>					
 			</p:ajaxStatus>
 			<p:messages showDetail="true" autoUpdate="true"/>
 		</div>	
