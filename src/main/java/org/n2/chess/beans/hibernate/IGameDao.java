@@ -35,5 +35,6 @@ public interface IGameDao {
     List<Game> find(String query,Object... values);
     List<Game> findByExample(Game game);
     List<Game> find(DetachedCriteria criteria);
+    Game load(Integer id);
     List<Game> loadAll();
 }

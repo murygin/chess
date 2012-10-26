@@ -33,6 +33,8 @@ public interface IGameService {
 
     List<Game> loadGames(User user);
 
+    Game loadGame(Integer id);
+
     Game create(User userWhite, String emailBlack);
     
     Game create(String emailWhite, User userblack);

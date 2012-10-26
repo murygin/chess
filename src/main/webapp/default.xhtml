@@ -19,10 +19,10 @@
 							<ul>
 								<ui:repeat value="#{game.gameInfoList}" var="g">
 									<li>
-										<p:commandLink update=":boardContainer,:moveListContainer">
+										<p:commandLink action="#{game.loadGame}" update=":gameListContainer,:boardContainer,:moveListContainer">
 											<f:setPropertyActionListener target="#{game.selectedGameInfo}" value="#{g}" />
 											<h:outputText value="#{g.opponent}" /><br/>
-											<h:outputText value="#{g.lastMove}" /><h:graphicImage value="#{g.statusImage}" />
+											<h:outputText value="#{g.lastMove}" /><h:graphicImage value="#{g.statusImage}" rendered="#{!empty g.statusImage}"/>
 										</p:commandLink>
 									</li>						
 								</ui:repeat>
@@ -157,7 +157,7 @@
 									<td><h:outputText value="#{board.notation}" styleClass="currentMove"/></td>
 								</tr>
 								<tr>
-									<td><p:commandButton action="#{game.move}" update=":boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/>	</td>
+									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/>	</td>
 								</tr>						
 							</table>									
 						</div>

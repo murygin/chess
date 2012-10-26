@@ -32,6 +32,7 @@ import org.n2.chess.beans.hibernate.User;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 public class GameInfo implements Serializable, Comparable<GameInfo>{
 
     public static final String MOVE = "move";
@@ -55,7 +56,7 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
     private static Map<String, String> STATUS_IMAGE_MAP;
     static {
         STATUS_IMAGE_MAP = new Hashtable<String, String>();
-        STATUS_IMAGE_MAP.put(MOVE, IMAGE_FOLDER + "move.gif");
+        STATUS_IMAGE_MAP.put(MOVE, "");
         STATUS_IMAGE_MAP.put(WAIT, IMAGE_FOLDER + "pause.gif");
         STATUS_IMAGE_MAP.put(WIN, IMAGE_FOLDER + "pause.gif");
         STATUS_IMAGE_MAP.put(DRAW, IMAGE_FOLDER + "pause.gif");
@@ -159,8 +160,12 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
                 sb.append(", ");
             }
             sb.append(seconds).append(" s");
-        }        
-        return sb.toString();     
+        }
+        String time = sb.toString();
+        if(time.isEmpty()) {
+            time = "just now";
+        }
+        return time;     
     }
 
     /* (non-Javadoc)

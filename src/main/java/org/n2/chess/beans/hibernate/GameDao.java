@@ -64,6 +64,14 @@ public class GameDao extends CustomHibernateDaoSupport implements IGameDao, Seri
     public List<Game> loadAll() {
         return getHibernateTemplate().loadAll(Game.class);
     }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.hibernate.IGameDao#load(java.lang.Integer)
+     */
+    @Override
+    public Game load(Integer id) {
+        return getHibernateTemplate().load(Game.class, id);
+    }
 
     /* (non-Javadoc)
      * @see org.n2.chess.beans.hibernate.IUserDao#find(java.lang.String, java.lang.Object[])

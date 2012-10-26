@@ -118,9 +118,28 @@ public class GameBean implements Serializable{
             Collections.sort(gameInfoList);
             if(gameInfoList!=null && !gameInfoList.isEmpty()) {
                 setSelectedGame(gameInfoList.get(0).getGame());
+                initBoardBean();
             }          
         }
         getGameList();
+    }
+    
+    public void loadGame() {
+        Game game = getGameService().loadGame(getSelectedGame().getId());
+        gameList.remove(getSelectedGameInfo().getGame());
+        gameInfoList.remove(getSelectedGameInfo());
+        setSelectedGame(game);
+        initBoardBean();
+    }
+
+    private void initBoardBean() {
+        getBoardBean().setColorPlayer(getMyColor());
+        getBoardBean().setGame(getSelectedGame());
+        if(getMyTurn()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
+        }
     }
     
     public void create() {
@@ -156,11 +175,19 @@ public class GameBean implements Serializable{
         getSelectedGame().getMoveSet().add(move);
         getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
         getSelectedGame().setLastMoveDate(date);
-        getGameService().updateGame(getSelectedGame());     
+        getGameService().updateGame(getSelectedGame());
+        replaceGameInLists(getSelectedGame());
         getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Move saved", "Notation: " + notation));
     }
     
+    private void replaceGameInLists(Game selectedGame) {
+        gameList.remove(selectedGame);
+        gameInfoList.remove(new GameInfo(selectedGame, getUserBean().getUser()));
+        gameList.add(selectedGame);
+        gameInfoList.add(new GameInfo(selectedGame, getUserBean().getUser()));
+    }
+
     /**
      * @return
      */
@@ -218,13 +245,6 @@ public class GameBean implements Serializable{
         }
         if(!gameList.contains(selectedGameInfo.getGame())) {
             gameList.add(selectedGameInfo.getGame());
-        }
-        getBoardBean().setColorPlayer(getMyColor());
-        getBoardBean().setGame(getSelectedGame());
-        if(getMyTurn()) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
         }
     }
     

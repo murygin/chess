@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n2.chess.beans.hibernate.Game;
@@ -53,8 +54,7 @@ public class GameService implements IGameService, Serializable {
      * @see org.n2.chess.beans.IGameService#loadGames()
      */
     @Override
-    public List<Game> loadGames(User user) {
-        
+    public List<Game> loadGames(User user) {      
         DetachedCriteria crit = DetachedCriteria.forClass(Game.class);
         crit.add(Restrictions.or(
                 Restrictions.eq("playerWhite.id", user.getId()), 
@@ -63,6 +63,35 @@ public class GameService implements IGameService, Serializable {
         return getGameDao().find(crit);
     }
     
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IGameService#loadGame(java.lang.Integer)
+     */
+    @Override
+    public Game loadGame(Integer id) {
+        DetachedCriteria crit = DetachedCriteria.forClass(Game.class);
+        crit.add(Restrictions.eq("id", id));
+        crit.setFetchMode("playerWhite", FetchMode.JOIN);
+        crit.setFetchMode("playerBlack", FetchMode.JOIN);
+        crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<Game> result = getGameDao().find(crit);
+        return singleValue(result);
+    }
+    
+    /**
+     * @param result
+     * @return
+     */
+    private Game singleValue(List<Game> result) {
+        Game game = null;
+        if(result!=null && !result.isEmpty()) {
+            if(result.size()>1) {
+                throw new RuntimeException("More than one value find in list: " + result.size());
+            }
+            game = result.get(0);
+        }
+        return game;
+    }
+
     /* (non-Javadoc)
      * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
      */
