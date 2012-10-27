@@ -21,18 +21,22 @@ package org.n2.chess.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 public class Board implements Serializable {
 
+    private static final Logger LOG = Logger.getLogger(Board.class);
+    
     public static final String BLACK = "b";
     public static final String WHITE = "w";
     
@@ -59,6 +63,10 @@ public class Board implements Serializable {
         validate(source,dest);
         Square sourceSquare = getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn());
         Square destSquare = getRowMap().get(dest.getRow()).getSquareMap().get(dest.getColumn());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Move, source: " + sourceSquare);
+            LOG.debug("Move, dest: " + destSquare);
+        }
         Piece piece = sourceSquare.getPiece();
         sourceSquare.setPiece(null);
         destSquare.setPiece(piece);
@@ -87,6 +95,9 @@ public class Board implements Serializable {
         List<Row> rows = new ArrayList<Row>(rowMap.values());
         if(Board.WHITE.equals(getColorPlayer())) {
             Collections.reverse(rows);
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Returning rows.");
         }
         return rows;
     }

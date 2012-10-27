@@ -30,14 +30,13 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import org.apache.log4j.Logger;
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.Move;
 import org.n2.chess.beans.hibernate.MoveTuble;
 import org.n2.chess.beans.hibernate.User;
 import org.n2.chess.model.Board;
 import org.n2.chess.model.GameInfo;
-import org.n2.chess.model.Piece;
-import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -46,10 +45,13 @@ import org.springframework.stereotype.Component;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 @Component("game")
 @Scope("session")
 public class GameBean implements Serializable{
 
+    private static final Logger LOG = Logger.getLogger(GameBean.class);
+    
     String emailNew;
     
     String colorNew = Board.WHITE;
@@ -162,9 +164,12 @@ public class GameBean implements Serializable{
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New game saved", "Opponent: " + oppenent + ", your color: " + color));
     }
     
-    public void move() {
+    public void move() {     
         Date date = Calendar.getInstance().getTime();
         String notation = getBoardBean().createNotation();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Processing new move: " + notation + ", FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
+        }
         getBoardBean().move();
         Move move = new Move();
         move.setGameId(getSelectedGame().getId());
@@ -176,8 +181,16 @@ public class GameBean implements Serializable{
         getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
         getSelectedGame().setLastMoveDate(date);
         getGameService().updateGame(getSelectedGame());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("New move saved, new FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
+        }
         replaceGameInLists(getSelectedGame());
+        /*
         getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("New move notification email send, game-id: " + getSelectedGame().getId());
+        }
+        */
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Move saved", "Notation: " + notation));
     }
     

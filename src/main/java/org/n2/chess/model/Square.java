@@ -20,14 +20,19 @@
 package org.n2.chess.model;
 
 import java.io.Serializable;
+
+import org.apache.log4j.Logger;
 import org.n2.chess.beans.BoardService;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 public class Square implements Serializable {
 
+    private static final Logger LOG = Logger.getLogger(Square.class);
+    
     public static final String WHITE = "white";
     
     public static final String BLACK = "black";
@@ -142,6 +147,9 @@ public class Square implements Serializable {
      * @return the piece
      */
     public Piece getPiece() {
+        if (LOG.isDebugEnabled() && piece!=null) {
+            LOG.debug("Returning piece for " + toString());
+        }
         return piece;
     }
 
@@ -178,6 +186,11 @@ public class Square implements Serializable {
      */
     public void setSource(boolean b) {
         this.source=b;    
+    }
+
+    @Override
+    public String toString() {
+        return "Square [color=" + color + ", row=" + row + ", column=" + column + ", piece=" + piece + "]";
     }
     
     

@@ -21,18 +21,22 @@ package org.n2.chess.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 public class Row implements Serializable {
 
+    private static final Logger LOG = Logger.getLogger(Row.class);
+    
     Map<Integer,Square> squareMap = new Hashtable<Integer, Square>(8);
 
     int number;
@@ -84,6 +88,9 @@ public class Row implements Serializable {
         List<Square> squares = new ArrayList<Square>(squareMap.values());
         if(Board.WHITE.equals(getColorPlayer())) {
             Collections.reverse(squares);
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Returning squares");
         }
         return squares;
     }

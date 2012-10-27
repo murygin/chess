@@ -27,6 +27,7 @@ import java.util.Map;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 public class Piece implements Serializable {
 
     private static final String IMAGE_FOLDER = "image/piece/";
@@ -176,7 +177,10 @@ public class Piece implements Serializable {
         this.column = column;
     }
 
-
-    
+    @Override
+    public String toString() {
+        return "Piece [letter=" + letter + ", row=" + row + ", column=" + column + "]";
+    }
+       
 
 }
