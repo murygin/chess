@@ -24,14 +24,10 @@
 	</appender>
     
     <!--
-    <logger name="org.hibernate.SQL">
-        <level value="DEBUG" />
-    </logger>
-    -->
-    
     <logger name="org.n2.chess">
         <level value="DEBUG" />
     </logger>
+    -->
 
 	<!-- Logger for everything else -->
 	<root>

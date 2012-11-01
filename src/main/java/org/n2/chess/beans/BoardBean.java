@@ -23,6 +23,7 @@ import java.io.Serializable;
 
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
+import org.n2.chess.model.Piece;
 import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Component;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 @Component("board")
 @Scope("session")
 public class BoardBean implements Serializable {
@@ -86,8 +88,18 @@ public class BoardBean implements Serializable {
     }
     
     public void move() {
-        getBoard().move();
+        castling();
+        getBoard().move();       
         getGame().setFen(getBoardService().createFen(getBoard()));
+    }
+
+    private void castling() {
+        if(isCastlingKingsideMove() && isCastlingKingsideValid()) {
+            getBoard().castlingKingsideRookMove(); 
+        }
+        if(isCastlingQueensideMove() && isCastlingQueensideValid()) {
+            getBoard().castlingQueensideRookMove();  
+        }
     }
     
     /**
@@ -100,6 +112,37 @@ public class BoardBean implements Serializable {
     
     public String getNotation() {
         return createNotation();
+    }
+    
+    public boolean isCastlingKingsideMove() {
+        return getBoardService().isCastlingKingsideMove(getSource(),getDest(),getColorPlayer());
+    }
+    
+    public boolean isCastlingKingsideValid() {
+        boolean valid = false;
+        if(Board.WHITE.equals(getColorPlayer())) {
+            valid = getBoard().getCastling().contains("K");
+        }
+        if(Board.BLACK.equals(getColorPlayer())) {
+            valid = getBoard().getCastling().contains("k");
+        }
+        return valid;
+    }
+    
+    public boolean isCastlingQueensideMove() {
+        return getBoardService().isCastlingQueensideMove(getSource(),getDest(),getColorPlayer());
+    }
+    
+    public boolean isCastlingQueensideValid() {
+        boolean valid = false;
+        if(Board.WHITE.equals(getColorPlayer())) {
+            valid = getBoard().getCastling().contains("Q");
+        }
+        if(Board.BLACK.equals(getColorPlayer())) {
+            valid = getBoard().getCastling().contains("q");
+            
+        }
+        return valid;
     }
     
     /**

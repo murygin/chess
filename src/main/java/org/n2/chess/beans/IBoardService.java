@@ -46,4 +46,20 @@ public interface IBoardService {
      */
     String createNotation(Square source, Square dest, String colorPlayer);
 
+    /**
+     * @param source
+     * @param dest
+     * @param colorPlayer
+     * @return
+     */
+    boolean isCastlingKingsideMove(Square source, Square dest, String colorPlayer);
+    
+    /**
+     * @param source
+     * @param dest
+     * @param colorPlayer
+     * @return
+     */
+    boolean isCastlingQueensideMove(Square source, Square dest, String colorPlayer);
+
 }

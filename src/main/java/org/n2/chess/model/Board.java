@@ -30,20 +30,23 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class Board implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(Board.class);
-    
+
     public static final String BLACK = "b";
     public static final String WHITE = "w";
-    
-    Map<Integer,Row> rowMap = new Hashtable<Integer, Row>(8);
+
+    public static final String CASTLING_KINGSIDE = "castling_kingside";
+    public static final String CASTLING_QUEENSIDE = "castling_queenside";
+
+    Map<Integer, Row> rowMap = new Hashtable<Integer, Row>(8);
 
     Square source, dest;
-  
+
     String number;
 
     String halfmove;
@@ -55,12 +58,11 @@ public class Board implements Serializable {
     String active;
 
     String placement;
-    
+
     String colorPlayer;
-    
-    
-    public void move() {    
-        validate(source,dest);
+
+    public void move() {
+        validate(source, dest);
         Square sourceSquare = getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn());
         Square destSquare = getRowMap().get(dest.getRow()).getSquareMap().get(dest.getColumn());
         if (LOG.isDebugEnabled()) {
@@ -68,32 +70,113 @@ public class Board implements Serializable {
             LOG.debug("Move, dest: " + destSquare);
         }
         Piece piece = sourceSquare.getPiece();
+        if (Piece.KING_B == piece.getLetter()) {
+            disableBlackCastlings();
+        }
+        if (Piece.KING_W == piece.getLetter()) {
+            disableWhiteCastlings();
+        }
+        if (Piece.ROOK_B == piece.getLetter() && sourceSquare.getColumn() == 0) {
+            disableBlackCastlingQueenside();
+        }
+        if (Piece.ROOK_B == piece.getLetter() && sourceSquare.getColumn() == 7) {
+            disableBlackCastlingKingside();
+        }
+        if (Piece.ROOK_W == piece.getLetter() && sourceSquare.getColumn() == 0) {
+            disableWhiteCastlingQueenside();
+        }
+        if (Piece.ROOK_W == piece.getLetter() && sourceSquare.getColumn() == 7) {
+            disableWhiteCastlingKingside();
+        }
         sourceSquare.setPiece(null);
         destSquare.setPiece(piece);
         setActive(getActive().equals(BLACK) ? WHITE : BLACK);
-        setNumber(String.valueOf(Integer.parseInt(getNumber())+1));
+        setNumber(String.valueOf(Integer.parseInt(getNumber()) + 1));
         unSelect();
-     }
-    
+    }
+
+    private void disableWhiteCastlings() {
+        String old = getCastling();
+        setCastling("--" + old.substring(2, 4));
+    }
+
+    private void disableBlackCastlings() {
+        String old = getCastling();
+        setCastling(old.substring(0, 2) + "--");
+    }
+
+    private void disableBlackCastlingQueenside() {
+        String old = getCastling();
+        setCastling(old.substring(0, 3) + "-");
+    }
+
+    private void disableBlackCastlingKingside() {
+        String old = getCastling();
+        setCastling(old.substring(0, 2) + "-" + old.substring(3, 4));
+    }
+
+    private void disableWhiteCastlingQueenside() {
+        String old = getCastling();
+        setCastling(old.substring(0, 1) + "-" + old.substring(2, 4));
+    }
+
+    private void disableWhiteCastlingKingside() {
+        String old = getCastling();
+        setCastling("-" + old.substring(1, 4));
+    }
+
     /**
      * @param source2
      * @param dest2
      */
     private void validate(Square source2, Square dest2) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    public boolean isPieceAtSquare(char piece, int row, int col) {
+        Square square = getRowMap().get(row).getSquareMap().get(col);
+        return (square != null && square.getPiece() != null && piece == square.getPiece().getLetter());
+    }
+    
+    public void castlingQueensideRookMove() {
+        if(getActive().equals(WHITE)) {
+            move(7,0,7,3);         
+        }
+        if(getActive().equals(BLACK)) {
+            move(0,0,0,3);         
+        }
+    }
+   
+    public void castlingKingsideRookMove() {
+        if(getActive().equals(WHITE)) {
+            move(7,7,7,5);         
+        }
+        if(getActive().equals(BLACK)) {
+            move(0,7,0,5);         
+        }        
+    }
+    
+    private void move(int sx, int sy, int dx, int dy) {
+        Square sourceSquare = getRowMap().get(sx).getSquareMap().get(sy);
+        Square destSquare = getRowMap().get(dx).getSquareMap().get(dy);
+        Piece piece = sourceSquare.getPiece();
+        if(piece!=null) {
+            sourceSquare.setPiece(null);
+            destSquare.setPiece(piece);
+        }      
     }
 
     /**
      * @param row
      */
     public void putRow(Row row) {
-        rowMap.put(row.getNumber(), row);      
+        rowMap.put(row.getNumber(), row);
     }
-    
+
     public List<Row> getRows() {
         List<Row> rows = new ArrayList<Row>(rowMap.values());
-        if(Board.WHITE.equals(getColorPlayer())) {
+        if (Board.WHITE.equals(getColorPlayer())) {
             Collections.reverse(rows);
         }
         if (LOG.isDebugEnabled()) {
@@ -101,7 +184,7 @@ public class Board implements Serializable {
         }
         return rows;
     }
-    
+
     /**
      * @return the rowMap
      */
@@ -110,8 +193,10 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param rowMap the rowMap to setSquare sourceSquare = getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn());
-        
+     * @param rowMap
+     *            the rowMap to setSquare sourceSquare =
+     *            getRowMap().get(source.getRow
+     *            ()).getSquareMap().get(source.getColumn());
      */
     public void setRowMap(Map<Integer, Row> rowMap) {
         this.rowMap = rowMap;
@@ -123,9 +208,9 @@ public class Board implements Serializable {
     public void setSource(Square source) {
         unSelect();
         getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn()).setSource(true);
-        this.source=source;
+        this.source = source;
     }
-    
+
     /**
      * @return the source
      */
@@ -141,7 +226,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param number the number to set
+     * @param number
+     *            the number to set
      */
     public void setNumber(String number) {
         this.number = number;
@@ -155,7 +241,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param halfmove the halfmove to set
+     * @param halfmove
+     *            the halfmove to set
      */
     public void setHalfmove(String halfmove) {
         this.halfmove = halfmove;
@@ -169,7 +256,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param enPassant the enPassant to set
+     * @param enPassant
+     *            the enPassant to set
      */
     public void setEnPassant(String enPassant) {
         this.enPassant = enPassant;
@@ -183,7 +271,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param castling the castling to set
+     * @param castling
+     *            the castling to set
      */
     public void setCastling(String castling) {
         this.castling = castling;
@@ -197,13 +286,14 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param active the active to set
-     */    
+     * @param active
+     *            the active to set
+     */
     public void setActive(String active) {
         this.active = active;
         for (Row row : getRowMap().values()) {
             row.setActive(active);
-        } 
+        }
     }
 
     /**
@@ -214,7 +304,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param placement the placement to set
+     * @param placement
+     *            the placement to set
      */
     public void setPlacement(String placement) {
         this.placement = placement;
@@ -228,38 +319,39 @@ public class Board implements Serializable {
     }
 
     /**
-     * @param playerColor the playerColor to set
+     * @param playerColor
+     *            the playerColor to set
      */
     public void setColorPlayer(String playerColor) {
         this.colorPlayer = playerColor;
     }
 
     private void unSelect() {
-        this.source=null;
-        this.dest=null;
+        this.source = null;
+        this.dest = null;
         for (Row row : getRowMap().values()) {
             row.unSelect();
         }
-        
+
     }
-    
+
     private void unSource() {
-        this.source=null;
+        this.source = null;
         for (Row row : getRowMap().values()) {
             row.unSource();
         }
-        
+
     }
 
     /**
      * @param source
      */
     public void setDest(Square dest) {
-        this.dest=dest;
+        this.dest = dest;
         getRowMap().get(dest.getRow()).getSquareMap().get(dest.getColumn()).setDest(true);
-        
+
     }
-    
+
     /**
      * @return the dest
      */
@@ -268,11 +360,11 @@ public class Board implements Serializable {
     }
 
     private void unDest() {
-        this.dest=null;
+        this.dest = null;
         for (Row row : getRowMap().values()) {
             row.unDest();
         }
-        
+
     }
-    
+
 }

@@ -21,7 +21,6 @@ package org.n2.chess.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,16 +32,18 @@ import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import sun.security.action.GetBooleanAction;
-
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
+@SuppressWarnings("serial")
 @Service("boardService")
 public class BoardService implements IBoardService, Serializable {
 
     public static String[] LETTERS_COLUMN = {"a","b","c","d","e","f","g","h"};
+    
+    public static String CASTLING_KINGSIDE = "0-0";
+    public static String CASTLING_QUEENSIDE = "0-0-0";
     
     @Autowired
     private IFenParser parser;
@@ -133,26 +134,80 @@ public class BoardService implements IBoardService, Serializable {
                 sb.append(String.valueOf(piece.getLetter()).toUpperCase());
             }
             sb.append(LETTERS_COLUMN[source.getColumn()]);
-            //if(Board.WHITE.equals(colorPlayer)) {
-               //sb.append((source.getRow()+1));
-            //} else {
-                sb.append((8-source.getRow()));
-            //}
+            sb.append((8-source.getRow()));
             if(dest.getPiece()!=null) {
                 sb.append("x");
             } else {
                 sb.append("-");
             }
             sb.append(LETTERS_COLUMN[dest.getColumn()]);
-            //if(Board.WHITE.equals(colorPlayer)) {
-                //sb.append((dest.getRow()+1));
-            //} else {
-                sb.append((8-dest.getRow()));
-            //}
+            sb.append((8-dest.getRow()));
         }
-        return sb.toString();
+        String notation = sb.toString();
+        if(notation.equals("Ke1-g1") || notation.equals("Ke8-g8")) {
+            notation = CASTLING_KINGSIDE;
+        }
+        if(notation.equals("Ke1-c1") || notation.equals("Ke8-c8")) {
+            notation = CASTLING_QUEENSIDE;
+        }
+        return notation;
     }
-   
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IBoardService#isCastling(org.n2.chess.model.Square, org.n2.chess.model.Square, java.lang.String)
+     */
+    @Override
+    public boolean isCastlingKingsideMove(Square source, Square dest, String colorPlayer) {
+        if(source==null || dest==null) {
+            return false;
+        }
+        if(Board.WHITE.equals(colorPlayer)
+                && source.getRow()==7
+                && source.getColumn()==4
+                && Piece.KING_W==source.getPiece().getLetter()) {
+                 return isCastlingMove(7, dest,Board.CASTLING_KINGSIDE);
+             }
+             if(Board.BLACK.equals(colorPlayer)
+                && source.getRow()==0
+                && source.getColumn()==4
+                && Piece.KING_B==source.getPiece().getLetter()) {
+                 return isCastlingMove(0, dest,Board.CASTLING_KINGSIDE);
+             }
+        return false; 
+    }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IBoardService#isCastling(org.n2.chess.model.Square, org.n2.chess.model.Square, java.lang.String)
+     */
+    @Override
+    public boolean isCastlingQueensideMove(Square source, Square dest, String colorPlayer) {
+        if(source==null || dest==null) {
+            return false;
+        }
+        if(Board.WHITE.equals(colorPlayer)
+           && source.getRow()==7
+           && source.getColumn()==4
+           && Piece.KING_W==source.getPiece().getLetter()) {
+            return isCastlingMove(7, dest,Board.CASTLING_QUEENSIDE);
+        }
+        if(Board.BLACK.equals(colorPlayer)
+           && source.getRow()==0
+           && source.getColumn()==4
+           && Piece.KING_B==source.getPiece().getLetter()) {
+            return isCastlingMove(0, dest,Board.CASTLING_QUEENSIDE);
+        }
+        return false; 
+    }
+
+    private boolean isCastlingMove(int row, Square dest, String side) {
+        if(Board.CASTLING_KINGSIDE.equals(side)){
+            return dest.getRow()==row && dest.getColumn()==6;
+        }
+        if(Board.CASTLING_QUEENSIDE.equals(side)){
+            return dest.getRow()==row && dest.getColumn()==2;
+        }
+        return false;
+    }
 
     private static Integer getNumber(char c) {
         try {
