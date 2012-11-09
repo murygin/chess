@@ -32,6 +32,8 @@ import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.IGameDao;
 import org.n2.chess.beans.hibernate.User;
 import org.n2.chess.model.Square;
+import org.n2.chess.model.UserNotFoundException;
+import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,8 +98,11 @@ public class GameService implements IGameService, Serializable {
      * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
      */
     @Override
-    public Game create(User userWhite, String emailBlack) {
+    public Game create(User userWhite, String emailBlack) throws UserNotFoundException {
         User userBlack = getUserService().findUserByEmail(emailBlack);
+        if(userBlack==null) {
+            throw new UserNotFoundException("No registered user found with email address: " + emailBlack);
+        }
         Game game = null;
         if(userBlack!=null && userWhite!=null) {
             game = create(userWhite, userBlack);
@@ -109,8 +114,11 @@ public class GameService implements IGameService, Serializable {
      * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
      */
     @Override
-    public Game create(String emailWhite, User userBlack) {
+    public Game create(String emailWhite, User userBlack) throws UserNotFoundException {
         User userWhite = getUserService().findUserByEmail(emailWhite);
+        if(userWhite==null) {
+            throw new UserNotFoundException("No registered user found with email address: " + emailWhite);
+        }
         Game game = null;
         if(userBlack!=null && userWhite!=null) {
             game = create(userWhite, userBlack);

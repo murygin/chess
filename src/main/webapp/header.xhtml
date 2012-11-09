@@ -21,12 +21,12 @@
 					</p:outputPanel>
 					<p:outputPanel id="loginLinkPanel" rendered="#{!user.ok}">
 						<li>
-							<p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer" rendered="#{!user.ok}">
+							<p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer,:loginContainer" rendered="#{!user.ok}">
 								<h:outputText value="Register" />
 							</p:commandLink>
 						</li>
 						<li>
-							<p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer" rendered="#{!user.ok}">
+							<p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer,:registerContainer" rendered="#{!user.ok}">
 								<h:outputText value="Login" />
 							</p:commandLink>
 						</li>

@@ -130,6 +130,8 @@ public class RegisterBean implements Serializable {
                 getUserBean().setUser(user);
                 getGameBean().init();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login succesful", "You are logged in. Welcome back: " + getLogin()));              
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", "Check username and password."));
             }
             setPassword(null);
             setPassword2(null);
@@ -342,7 +344,10 @@ public class RegisterBean implements Serializable {
     }
     
     public void toggleRegister() {
-        this.registerVisible = !this.registerVisible;
+        registerVisible = !registerVisible;
+        if(registerVisible) {
+            loginVisible = false;
+        }
     }
 
     /**
@@ -360,7 +365,10 @@ public class RegisterBean implements Serializable {
     }
     
     public void toggleLogin() {
-        this.loginVisible = !this.loginVisible;
+        loginVisible = !loginVisible;
+        if(loginVisible) {
+            registerVisible = false;
+        }
     }
 
     /**

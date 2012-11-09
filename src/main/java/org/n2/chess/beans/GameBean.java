@@ -37,6 +37,7 @@ import org.n2.chess.beans.hibernate.MoveTuble;
 import org.n2.chess.beans.hibernate.User;
 import org.n2.chess.model.Board;
 import org.n2.chess.model.GameInfo;
+import org.n2.chess.model.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -145,23 +146,33 @@ public class GameBean implements Serializable{
     }
     
     public void create() {
-        Game newGame = null;
-        String oppenent = null;
-        String color;
-        if(Board.WHITE.equals(getColorNew())) {
-            newGame = getGameService().create(getUserBean().getUser(),getEmailNew());
-            oppenent = newGame.getPlayerBlack().getLogin();
-            color = "white";
-        } else {
-            newGame = getGameService().create(getEmailNew(),getUserBean().getUser());
-            oppenent = newGame.getPlayerWhite().getLogin();
-            color = "black";
+        try {
+            Game newGame = null;
+            String oppenent = null;
+            String color;
+            if(Board.WHITE.equals(getColorNew())) {
+                newGame = getGameService().create(getUserBean().getUser(),getEmailNew()); 
+                oppenent = newGame.getPlayerBlack().getLogin();
+                color = "white";
+            } else {
+                newGame = getGameService().create(getEmailNew(),getUserBean().getUser());
+                oppenent = newGame.getPlayerWhite().getLogin();
+                color = "black";
+            }
+            gameList.add(newGame);
+            gameInfoList.add(new GameInfo(newGame, getUserBean().getUser()));
+            setSelectedGame(newGame);
+            setNewGameVisible(false);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New game saved", "Opponent: " + oppenent + ", your color: " + color));
+        } catch (UserNotFoundException e) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Game creation failed: " + e.getMessage());
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Game creation failed", e.getMessage()));
+        } catch (Exception e) {
+            LOG.error("Game creation failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Game creation failed", "Unknow error."));
         }
-        gameList.add(newGame);
-        gameInfoList.add(new GameInfo(newGame, getUserBean().getUser()));
-        setSelectedGame(newGame);
-        setNewGameVisible(false);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New game saved", "Opponent: " + oppenent + ", your color: " + color));
     }
     
     public void move() {     

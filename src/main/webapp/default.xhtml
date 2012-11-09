@@ -77,7 +77,7 @@
 							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
 							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
 							<h:panelGroup>
-								<p:commandButton value="Create" update=":gameListContainer,:boardContainer,:newGameContainer" actionListener="#{game.create}" />									
+								<p:commandButton value="Create" actionListener="#{game.create}" update=":gameListContainer,:boardContainer,:newGameContainer" />									
 							</h:panelGroup>						
 						</h:panelGrid>
 					</h:form>
@@ -87,7 +87,7 @@
 				<p:outputPanel id="registerPanel" rendered="#{!user.ok and register.registerVisible}" >
 					<h2>Register</h2>
 					<h:form> 	
-			        	<h:panelGrid id="registerGrid" columns="1" cellpadding="5"> 
+			        	<h:panelGrid id="registerGrid" columns="1" cellpadding="2"> 
 							<h:outputLabel for="username" value="Username: *" /> 
 							<p:inputText id="username" value="#{register.login}" required="true" label="username">
 								<f:validator binding="#{userValidator}" />  
@@ -123,7 +123,7 @@
 				<p:outputPanel id="loginPanel" rendered="#{!user.ok and register.loginVisible}" >
 					<h2>Login</h2>
 					<h:form>
-						<h:panelGrid id="loginGrid" columns="1" cellpadding="5">
+						<h:panelGrid id="loginGrid" columns="1" cellpadding="2">
 							<h:outputLabel for="usernameLogin" value="Username: " /> 
 							<p:inputText id="usernameLogin" value="#{register.login}" required="true" label="username"/>
 							
@@ -151,11 +151,15 @@
 								</ui:repeat>
 							</table>
 						</div>
-						<div id="section-move">
+						<div id="section-move-display">
 							<table>
 								<tr>
 									<td><h:outputText value="#{board.notation}" styleClass="currentMove"/></td>
 								</tr>
+							</table>
+						</div>	
+						<div id="section-move">
+							<table>
 								<tr>
 									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/>	</td>
 								</tr>						
