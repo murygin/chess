@@ -27,11 +27,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.n2.chess.beans.BoardService;
 
 
 /**
@@ -48,11 +49,41 @@ public class Move implements Serializable {
     private String move;
     private Date date;
     private String fen;
+    private int sourceX, sourceY, destX, destY;
 
     public Move() {
         super();
     }
     
+    public void calculateCoordinates() {
+        if(move==null) {
+            return;
+        }
+        if(move.contains("0")) {
+            calculateCastlingCoordinates();
+            return;
+        }
+        String move2 = move;
+        if(move2.length()>5) {
+            move2 = move2.substring(1);
+        }
+        String source = move2.substring(0, 2);
+        String dest = move2.substring(3, 5);
+        setSourceY(BoardService.LETTER_NUMBER_MAP.get(source.substring(0, 1)));
+        setSourceX(Integer.valueOf(source.substring(1)));
+        setDestY(BoardService.LETTER_NUMBER_MAP.get(dest.substring(0, 1)));
+        setDestX(Integer.valueOf(dest.substring(1)));
+    }
+    
+    /**
+     * @return
+     */
+    private void calculateCastlingCoordinates() {
+        if(move==null || !move.contains("0")) {
+            return;
+        }
+    }
+
     /**
      * @return the id
      */
@@ -144,6 +175,42 @@ public class Move implements Serializable {
      */   
     public void setFen(String fen) {
         this.fen = fen;
+    }
+
+    @Transient
+    public int getSourceX() {
+        return sourceX;
+    }
+
+    public void setSourceX(int sourceX) {
+        this.sourceX = sourceX;
+    }
+
+    @Transient
+    public int getSourceY() {
+        return sourceY;
+    }
+
+    public void setSourceY(int sourceY) {
+        this.sourceY = sourceY;
+    }
+
+    @Transient
+    public int getDestX() {
+        return destX;
+    }
+
+    public void setDestX(int destX) {
+        this.destX = destX;
+    }
+
+    @Transient
+    public int getDestY() {
+        return destY;
+    }
+
+    public void setDestY(int destY) {
+        this.destY = destY;
     }
 
     /* (non-Javadoc)

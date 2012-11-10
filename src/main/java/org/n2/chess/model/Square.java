@@ -48,6 +48,10 @@ public class Square implements Serializable {
     boolean source = false;
     
     boolean dest = false;
+    
+    boolean lastSource = false;
+    
+    boolean lastDest = false;
 
     /**
      * @param color
@@ -97,6 +101,9 @@ public class Square implements Serializable {
         }
         if(getDest()) {
             sb.append("-dest");
+        }
+        if(getLastDest() || getLastSource()) {
+            sb.append("-last");
         }
         return sb.toString();
     }
@@ -186,6 +193,22 @@ public class Square implements Serializable {
      */
     public void setSource(boolean b) {
         this.source=b;    
+    }
+
+    public boolean getLastSource() {
+        return lastSource;
+    }
+
+    public boolean getLastDest() {
+        return lastDest;
+    }
+
+    public void setLastSource(boolean lastSource) {
+        this.lastSource = lastSource;
+    }
+
+    public void setLastDest(boolean lastDest) {
+        this.lastDest = lastDest;
     }
 
     @Override

@@ -22,9 +22,13 @@ package org.n2.chess.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.n2.chess.beans.hibernate.Game;
+import org.n2.chess.beans.hibernate.Move;
 import org.n2.chess.model.Board;
 import org.n2.chess.model.Piece;
 import org.n2.chess.model.Row;
@@ -44,6 +48,20 @@ public class BoardService implements IBoardService, Serializable {
     
     public static String CASTLING_KINGSIDE = "0-0";
     public static String CASTLING_QUEENSIDE = "0-0-0";
+    
+    public static Map<String, Integer> LETTER_NUMBER_MAP;
+    
+    static {
+        LETTER_NUMBER_MAP = new Hashtable<String, Integer>(8);
+        LETTER_NUMBER_MAP.put("a", 0);
+        LETTER_NUMBER_MAP.put("b", 1);
+        LETTER_NUMBER_MAP.put("c", 2);
+        LETTER_NUMBER_MAP.put("d", 3);
+        LETTER_NUMBER_MAP.put("e", 4);
+        LETTER_NUMBER_MAP.put("f", 5);
+        LETTER_NUMBER_MAP.put("g", 6);
+        LETTER_NUMBER_MAP.put("h", 7);
+    }
     
     @Autowired
     private IFenParser parser;
@@ -82,7 +100,30 @@ public class BoardService implements IBoardService, Serializable {
            board.putRow(row);
            r++;
         }
+        highlightLastMove(game, board, colorPlayer);
         return board;
+    }
+
+    private void highlightLastMove(Game game, Board board, String colorPlayer) {
+        Set<Move> moveSet = game.getMoveSet();
+        if(moveSet!=null && !moveSet.isEmpty()) {
+            Move lastMove = (Move) moveSet.toArray()[moveSet.size()-1];
+            lastMove.calculateCoordinates();
+            int sourceX = lastMove.getSourceX()-1;
+            int destX = lastMove.getDestX()-1;
+            int sourceY = lastMove.getSourceY();
+            int destY = lastMove.getDestY();
+            if(Board.WHITE.equals(colorPlayer)) {
+                sourceX = 7-sourceX;
+                destX = 7-destX;
+            }
+            if(Board.BLACK.equals(colorPlayer)) {
+                sourceY = 7-sourceY;
+                destY = 7-destY;
+            }
+            board.getRows().get(sourceX).getSquares().get(sourceY).setLastSource(true);
+            board.getRows().get(destX).getSquares().get(destY).setLastDest(true);
+        }
     }
     
     public String createFen(Board board) {

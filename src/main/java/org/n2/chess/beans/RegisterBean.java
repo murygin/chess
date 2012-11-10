@@ -137,8 +137,8 @@ public class RegisterBean implements Serializable {
             setPassword2(null);
             setSalt(null);
         } catch (Exception e) {
-            LOG.error("Error while login", e);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", "Error while login: " + e.getMessage()));
+            LOG.error("Error while login: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", "Unknown error."));
         }
     }
     
