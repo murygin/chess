@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.n2.chess.beans.IRuleService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import sun.security.action.GetBooleanAction;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -42,7 +46,7 @@ public class Board implements Serializable {
 
     public static final String CASTLING_KINGSIDE = "castling_kingside";
     public static final String CASTLING_QUEENSIDE = "castling_queenside";
-
+    
     Map<Integer, Row> rowMap = new Hashtable<Integer, Row>(8);
 
     Square source, dest;
@@ -62,7 +66,6 @@ public class Board implements Serializable {
     String colorPlayer;
 
     public void move() {
-        validate(source, dest);
         Square sourceSquare = getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn());
         Square destSquare = getRowMap().get(dest.getRow()).getSquareMap().get(dest.getColumn());
         if (LOG.isDebugEnabled()) {
@@ -123,15 +126,6 @@ public class Board implements Serializable {
     private void disableWhiteCastlingKingside() {
         String old = getCastling();
         setCastling("-" + old.substring(1, 4));
-    }
-
-    /**
-     * @param source2
-     * @param dest2
-     */
-    private void validate(Square source2, Square dest2) {
-        // TODO Auto-generated method stub
-
     }
 
     public boolean isPieceAtSquare(char piece, int row, int col) {

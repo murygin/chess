@@ -20,14 +20,21 @@
 package org.n2.chess.beans;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
+import org.apache.log4j.Logger;
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.model.Board;
-import org.n2.chess.model.Piece;
 import org.n2.chess.model.Square;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import de.schildbach.game.common.ChessLikeMove;
+import de.schildbach.game.exception.ParseException;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -37,6 +44,8 @@ import org.springframework.stereotype.Component;
 @Component("board")
 @Scope("session")
 public class BoardBean implements Serializable {
+    
+    private static final Logger LOG = Logger.getLogger(BoardBean.class);
     
     private Board board;
     
@@ -52,6 +61,9 @@ public class BoardBean implements Serializable {
     
     @Autowired
     private IBoardService boardService;
+    
+    @Autowired
+    private IRuleService ruleService;
     
     /**
      * @return the board
@@ -74,31 +86,76 @@ public class BoardBean implements Serializable {
         return this.board;
     }
     
+    /**
+     * Selects a square on the board. 
+     * Method is called when the user clicks the board.
+     */
     public void select() {
         if(getSquare()!=null) {
             if(getSource()==null || (getSource()!=null && getDest()!=null)) {
                 setSource(getSquare());
                 setDest(null);
                 getBoard().setSource(getSource());
+                showNextMoves();                       
             } else {
                 setDest(getSquare());
                 getBoard().setDest(getDest());
+                String notation = null;
+                try {
+                    getRuleService().parseMove(createNotation());
+                } catch(ParseException parseException) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info("Invalid move: " + notation + ", FEN: " + getGame().getFen());
+                    }
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalid move", "Invalid move: " + notation));           
+                }
             }
         }
     }
+
+    private void showNextMoves() {
+        Collection<? extends ChessLikeMove> moveList = getRuleService().getAllowedMoves(getSource().getNotation());
+        for (ChessLikeMove move : moveList) {
+            String notation = move.getTarget().getNotation();
+            int row = Integer.valueOf(notation.substring(1));
+            int col = BoardService.LETTER_NUMBER_MAP.get(notation.substring(0,1));
+            Square square = getBoard().getRowMap().get(8-row).getSquareMap().get(col);
+            square.setNext(true);
+        }
+    }
     
+    /**
+     * @param moveList
+     * @return
+     */
+    private String printMoveList(Collection<? extends ChessLikeMove> moveList) {
+        StringBuilder sb = new StringBuilder();
+        if(moveList!=null) {
+            for (ChessLikeMove move : moveList) {
+                sb.append(move.getTarget().getNotation()).append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
     public void move() {
+        getRuleService().parseMove(createNotation());
         castling();
         getBoard().move();       
         getGame().setFen(getBoardService().createFen(getBoard()));
+        getRuleService().parsePosition(getGame().getFen());
     }
 
     private void castling() {
         if(isCastlingKingsideMove() && isCastlingKingsideValid()) {
-            getBoard().castlingKingsideRookMove(); 
+            getBoard().castlingKingsideRookMove();
+            // rule engine expects a selected rook for castling
+            getBoard().getDest().setColumn(6);
         }
         if(isCastlingQueensideMove() && isCastlingQueensideValid()) {
-            getBoard().castlingQueensideRookMove();  
+            getBoard().castlingQueensideRookMove();
+            // rule engine expects a selected rook for castling
+            getBoard().getDest().setColumn(2);
         }
     }
     
@@ -200,6 +257,7 @@ public class BoardBean implements Serializable {
      * @param game the game to set
      */
     public void setGame(Game game) {
+        getRuleService().parsePosition(game.getFen());
         this.game = game;
         board = createBoard();
     }
@@ -218,18 +276,20 @@ public class BoardBean implements Serializable {
         this.colorPlayer = colorPlayer;
     }
 
-    /**
-     * @return the boardService
-     */
     public IBoardService getBoardService() {
         return boardService;
     }
 
-    /**
-     * @param boardService the boardService to set
-     */
     public void setBoardService(IBoardService boardService) {
         this.boardService = boardService;
+    }
+
+    public IRuleService getRuleService() {
+        return ruleService;
+    }
+
+    public void setRuleService(IRuleService ruleService) {
+        this.ruleService = ruleService;
     }
 
     

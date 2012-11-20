@@ -33,7 +33,13 @@ table.board td img{
 table.board td.white{
 	background-color:#cccccc;
 }
+table.board td.white-next{
+	background-color:#b5eab5;
+}
 table.board td.white-last{
+	background-color:#ccd7f2;
+}
+table.board td.white-last-next{
 	background-color:#b5eab5;
 }
 table.board td.white-source{
@@ -45,6 +51,9 @@ table.board td.white-source-last{
 table.board td.white-dest{
 	background-color:#eff209;
 }
+table.board td.white-dest-next{
+	background-color:#eff209;
+}
 table.board td.white-dest-last{
 	background-color:#eff209;
 }
@@ -52,7 +61,13 @@ table.board td.white-dest-last{
 table.board td.black{
 	background-color:#775555;
 }
+table.board td.black-next{
+	background-color:#56ad56;
+}
 table.board td.black-last{
+	background-color:#6386e0;
+}
+table.board td.black-last-next{
 	background-color:#56ad56;
 }
 table.board td.black-source{
@@ -62,6 +77,9 @@ table.board td.black-source-last{
 	background-color:#c0c211;
 }
 table.board td.black-dest{
+	background-color:#c0c211;
+}
+table.board td.black-dest-next{
 	background-color:#c0c211;
 }
 table.board td.black-dest-last{

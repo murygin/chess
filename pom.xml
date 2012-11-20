@@ -44,6 +44,38 @@
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>repository-murygin.forge.cloudbees.com.snapshot</id>
+            <name>repository-murygin-snapshot</name>
+            <url>http://repository-murygin.forge.cloudbees.com/snapshot/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>repository-murygin.forge.cloudbees.com.release</id>
+            <name>repository-murygin-release</name>
+            <url>http://repository-murygin.forge.cloudbees.com/release/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -74,11 +106,11 @@
             <artifactId>primefaces</artifactId>
             <version>3.2</version>
         </dependency>
-        <dependency>  
-            <groupId>org.primefaces.themes</groupId>  
-            <artifactId>blitzer</artifactId>  
-            <version>1.0.8</version>  
-        </dependency> 
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>blitzer</artifactId>
+            <version>1.0.8</version>
+        </dependency>
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -140,6 +172,17 @@
             <groupId>org.glassfish</groupId>
             <artifactId>javax.faces</artifactId>
             <version>2.1.3</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>de.schildbach</groupId>
+            <artifactId>game</artifactId>
+            <version>1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.1</version>
         </dependency>
     </dependencies>
     <build>

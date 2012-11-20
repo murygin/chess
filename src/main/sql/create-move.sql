@@ -6,7 +6,7 @@ CREATE TABLE  `cchess`.`move` (
   `number` INT(10) UNSIGNED NOT NULL,
   `move` VARCHAR(10) NOT NULL,
   `movedate` DATETIME NOT NULL,
-  `fen` VARCHAR(70) NOT NULL,
+  `fen` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX (`id`),
   INDEX (`game_id`),

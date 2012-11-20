@@ -157,8 +157,9 @@
 	clear: left;
 	background: #ccc;
 	text-align: right;
-	padding: 20px;
+	padding: 7px;
 	height: 1%;
+	font-size: x-small;
 }
 
 .ui-inputfield

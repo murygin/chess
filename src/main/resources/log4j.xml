@@ -23,11 +23,11 @@
 		</layout>
 	</appender>
     
-    <!--
-    <logger name="org.n2.chess">
+    
+    <logger name="org.n2.chess.beans.BoardBean">
         <level value="DEBUG" />
     </logger>
-    -->
+    
 
 	<!-- Logger for everything else -->
 	<root>

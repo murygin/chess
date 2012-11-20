@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,8 @@ import org.n2.chess.model.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import de.schildbach.game.exception.ParseException;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -78,6 +81,9 @@ public class GameBean implements Serializable{
     private IMailService mailService;
     
     public List<Game> getGameList() {
+        if(gameList==null) {
+            gameList = new LinkedList<Game>();
+        }
         return gameList;
     }
     
@@ -85,6 +91,9 @@ public class GameBean implements Serializable{
      * @return the gameInfoList
      */
     public List<GameInfo> getGameInfoList() {
+        if(gameInfoList==null) {
+            gameInfoList = new LinkedList<GameInfo>();
+        }
         return gameInfoList;
     }
 
@@ -112,7 +121,7 @@ public class GameBean implements Serializable{
     }
     
     public void init() {
-        if(gameList==null && getUserBean().getUser()!=null) {
+        if(getUserBean().getUser()!=null) {
             gameList = getGameService().loadGames(getUserBean().getUser());
             gameInfoList = new ArrayList<GameInfo>();
             for (Game game : gameList) {
@@ -129,8 +138,8 @@ public class GameBean implements Serializable{
     
     public void loadGame() {
         Game game = getGameService().loadGame(getSelectedGame().getId());
-        gameList.remove(getSelectedGameInfo().getGame());
-        gameInfoList.remove(getSelectedGameInfo());
+        getGameList().remove(getSelectedGameInfo().getGame());
+        getGameInfoList().remove(getSelectedGameInfo());
         setSelectedGame(game);
         initBoardBean();
     }
@@ -159,9 +168,10 @@ public class GameBean implements Serializable{
                 oppenent = newGame.getPlayerWhite().getLogin();
                 color = "black";
             }
-            gameList.add(newGame);
-            gameInfoList.add(new GameInfo(newGame, getUserBean().getUser()));
+            getGameList().add(newGame);
+            getGameInfoList().add(new GameInfo(newGame, getUserBean().getUser()));
             setSelectedGame(newGame);
+            loadGame();
             setNewGameVisible(false);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New game saved", "Opponent: " + oppenent + ", your color: " + color));
         } catch (UserNotFoundException e) {
@@ -175,41 +185,52 @@ public class GameBean implements Serializable{
         }
     }
     
-    public void move() {     
-        Date date = Calendar.getInstance().getTime();
-        String notation = getBoardBean().createNotation();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Processing new move: " + notation + ", FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
+    public void move() {
+        String notation = null;
+        try {
+            Date date = Calendar.getInstance().getTime();
+            notation = getBoardBean().createNotation();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Processing new move: " + notation + ", FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
+            }
+            getBoardBean().move();
+            Move move = new Move();
+            move.setGameId(getSelectedGame().getId());
+            move.setN(getSelectedGame().getMoveSet().size() + 1);
+            move.setDate(date);
+            move.setMove(notation);
+            move.setFen(getSelectedGame().getFen());
+            getSelectedGame().getMoveSet().add(move);
+            getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
+            getSelectedGame().setLastMoveDate(date);
+            getGameService().updateGame(getSelectedGame());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("New move saved, new FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
+            }
+            replaceGameInLists(getSelectedGame());
+            /*
+            getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("New move notification email send, game-id: " + getSelectedGame().getId());
+            }
+            */
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Move saved", "Notation: " + notation));
+        } catch(ParseException parseException) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Invalid move: " + notation + ", FEN: " + getSelectedGame().getFen());
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalid move", "Invalid move: " + notation));           
+        } catch(Exception e) {
+            LOG.error("Moving failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Moving failed, unknwon error."));           
         }
-        getBoardBean().move();
-        Move move = new Move();
-        move.setGameId(getSelectedGame().getId());
-        move.setN(getSelectedGame().getMoveSet().size() + 1);
-        move.setDate(date);
-        move.setMove(notation);
-        move.setFen(getSelectedGame().getFen());
-        getSelectedGame().getMoveSet().add(move);
-        getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
-        getSelectedGame().setLastMoveDate(date);
-        getGameService().updateGame(getSelectedGame());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("New move saved, new FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
-        }
-        replaceGameInLists(getSelectedGame());
-        /*
-        getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("New move notification email send, game-id: " + getSelectedGame().getId());
-        }
-        */
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Move saved", "Notation: " + notation));
     }
     
     private void replaceGameInLists(Game selectedGame) {
-        gameList.remove(selectedGame);
-        gameInfoList.remove(new GameInfo(selectedGame, getUserBean().getUser()));
-        gameList.add(selectedGame);
-        gameInfoList.add(new GameInfo(selectedGame, getUserBean().getUser()));
+        getGameList().remove(selectedGame);
+        getGameInfoList().remove(new GameInfo(selectedGame, getUserBean().getUser()));
+        getGameList().add(selectedGame);
+        getGameInfoList().add(new GameInfo(selectedGame, getUserBean().getUser()));
     }
 
     /**
@@ -264,11 +285,11 @@ public class GameBean implements Serializable{
      */
     public void setSelectedGameInfo(GameInfo selectedGame) {
         this.selectedGameInfo = selectedGame;
-        if(!gameInfoList.contains(selectedGameInfo)) {
-            gameInfoList.add(selectedGameInfo);
+        if(!getGameInfoList().contains(selectedGameInfo)) {
+            getGameInfoList().add(selectedGameInfo);
         }
-        if(!gameList.contains(selectedGameInfo.getGame())) {
-            gameList.add(selectedGameInfo.getGame());
+        if(!getGameList().contains(selectedGameInfo.getGame())) {
+            getGameList().add(selectedGameInfo.getGame());
         }
     }
     

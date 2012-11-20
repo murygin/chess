@@ -108,21 +108,25 @@ public class BoardService implements IBoardService, Serializable {
         Set<Move> moveSet = game.getMoveSet();
         if(moveSet!=null && !moveSet.isEmpty()) {
             Move lastMove = (Move) moveSet.toArray()[moveSet.size()-1];
-            lastMove.calculateCoordinates();
-            int sourceX = lastMove.getSourceX()-1;
-            int destX = lastMove.getDestX()-1;
-            int sourceY = lastMove.getSourceY();
-            int destY = lastMove.getDestY();
-            if(Board.WHITE.equals(colorPlayer)) {
-                sourceX = 7-sourceX;
-                destX = 7-destX;
+            if(!lastMove.getMove().contains("0")) {
+                lastMove.calculateCoordinates();
+                int sourceX = lastMove.getSourceX()-1;
+                int destX = lastMove.getDestX()-1;
+                int sourceY = lastMove.getSourceY();
+                int destY = lastMove.getDestY();
+                if(Board.WHITE.equals(colorPlayer)) {
+                    sourceX = 7-sourceX;
+                    destX = 7-destX;
+                }
+                if(Board.BLACK.equals(colorPlayer)) {
+                    sourceY = 7-sourceY;
+                    destY = 7-destY;
+                }
+                board.getRows().get(sourceX).getSquares().get(sourceY).setLastSource(true);
+                board.getRows().get(destX).getSquares().get(destY).setLastDest(true);
+            } else {
+                // TODO: highlight castling
             }
-            if(Board.BLACK.equals(colorPlayer)) {
-                sourceY = 7-sourceY;
-                destY = 7-destY;
-            }
-            board.getRows().get(sourceX).getSquares().get(sourceY).setLastSource(true);
-            board.getRows().get(destX).getSquares().get(destY).setLastDest(true);
         }
     }
     
@@ -185,10 +189,10 @@ public class BoardService implements IBoardService, Serializable {
             sb.append((8-dest.getRow()));
         }
         String notation = sb.toString();
-        if(notation.equals("Ke1-g1") || notation.equals("Ke8-g8")) {
+        if(notation.equals("Ke1-g1") || notation.equals("Ke1xh1") || notation.equals("Ke8-g8") || notation.equals("Ke8xh8"))  {
             notation = CASTLING_KINGSIDE;
         }
-        if(notation.equals("Ke1-c1") || notation.equals("Ke8-c8")) {
+        if(notation.equals("Ke1-c1") || notation.equals("Ke1xa1") || notation.equals("Ke8-c8") || notation.equals("Ke8xa8")) {
             notation = CASTLING_QUEENSIDE;
         }
         return notation;
@@ -203,17 +207,17 @@ public class BoardService implements IBoardService, Serializable {
             return false;
         }
         if(Board.WHITE.equals(colorPlayer)
-                && source.getRow()==7
-                && source.getColumn()==4
-                && Piece.KING_W==source.getPiece().getLetter()) {
-                 return isCastlingMove(7, dest,Board.CASTLING_KINGSIDE);
-             }
-             if(Board.BLACK.equals(colorPlayer)
-                && source.getRow()==0
-                && source.getColumn()==4
-                && Piece.KING_B==source.getPiece().getLetter()) {
-                 return isCastlingMove(0, dest,Board.CASTLING_KINGSIDE);
-             }
+           && source.getRow()==7
+           && source.getColumn()==4
+           && Piece.KING_W==source.getPiece().getLetter()) {
+            return isCastlingMove(7, dest,Board.CASTLING_KINGSIDE);
+        }
+        if(Board.BLACK.equals(colorPlayer)
+           && source.getRow()==0
+           && source.getColumn()==4
+           && Piece.KING_B==source.getPiece().getLetter()) {
+            return isCastlingMove(0, dest,Board.CASTLING_KINGSIDE);
+        }
         return false; 
     }
     
@@ -242,10 +246,10 @@ public class BoardService implements IBoardService, Serializable {
 
     private boolean isCastlingMove(int row, Square dest, String side) {
         if(Board.CASTLING_KINGSIDE.equals(side)){
-            return dest.getRow()==row && dest.getColumn()==6;
+            return dest.getRow()==row && dest.getColumn()==7;
         }
         if(Board.CASTLING_QUEENSIDE.equals(side)){
-            return dest.getRow()==row && dest.getColumn()==2;
+            return dest.getRow()==row && dest.getColumn()==0;
         }
         return false;
     }
