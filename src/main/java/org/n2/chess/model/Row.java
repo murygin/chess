@@ -169,5 +169,11 @@ public class Row implements Serializable {
             square.setDest(false);
         }
     }
+
+    public void hideLastMoves() {
+        for (Square square : getSquareMap().values()) {
+            square.setNext(false);
+        }
+    }
     
 }

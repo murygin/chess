@@ -96,13 +96,15 @@ public class BoardBean implements Serializable {
                 setSource(getSquare());
                 setDest(null);
                 getBoard().setSource(getSource());
+                hideLastMoves();
                 showNextMoves();                       
             } else {
                 setDest(getSquare());
                 getBoard().setDest(getDest());
                 String notation = null;
                 try {
-                    getRuleService().parseMove(createNotation());
+                    notation = createNotation();
+                    getRuleService().parseMove(notation);
                 } catch(ParseException parseException) {
                     if (LOG.isInfoEnabled()) {
                         LOG.info("Invalid move: " + notation + ", FEN: " + getGame().getFen());
@@ -111,6 +113,10 @@ public class BoardBean implements Serializable {
                 }
             }
         }
+    }
+
+    private void hideLastMoves() {
+        getBoard().hideLastMoves();
     }
 
     private void showNextMoves() {
@@ -124,10 +130,7 @@ public class BoardBean implements Serializable {
         }
     }
     
-    /**
-     * @param moveList
-     * @return
-     */
+
     private String printMoveList(Collection<? extends ChessLikeMove> moveList) {
         StringBuilder sb = new StringBuilder();
         if(moveList!=null) {
@@ -144,6 +147,7 @@ public class BoardBean implements Serializable {
         getBoard().move();       
         getGame().setFen(getBoardService().createFen(getBoard()));
         getRuleService().parsePosition(getGame().getFen());
+        hideLastMoves();
     }
 
     private void castling() {

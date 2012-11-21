@@ -27,10 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.n2.chess.beans.IRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import sun.security.action.GetBooleanAction;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -204,6 +200,12 @@ public class Board implements Serializable {
         getRowMap().get(source.getRow()).getSquareMap().get(source.getColumn()).setSource(true);
         this.source = source;
     }
+    
+    public void hideLastMoves() {
+        for (Row row : getRowMap().values()) {
+            row.hideLastMoves();
+        }
+    }
 
     /**
      * @return the source
@@ -334,7 +336,6 @@ public class Board implements Serializable {
         for (Row row : getRowMap().values()) {
             row.unSource();
         }
-
     }
 
     /**

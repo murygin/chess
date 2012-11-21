@@ -61,6 +61,7 @@ public class RuleService implements IRuleService, Serializable {
         if(notation.length()>5) {
             notation = notation.substring(1);
         }
+        notation = notation.replace("x", "-");
         return getRules().parseMove(notation, Locale.ENGLISH, position, getInitialBoard());
     }
     
