@@ -24,7 +24,7 @@
 	</appender>
     
     
-    <logger name="org.n2.chess.beans.BoardBean">
+    <logger name="org.n2.chess.beans.ReminderService">
         <level value="DEBUG" />
     </logger>
     

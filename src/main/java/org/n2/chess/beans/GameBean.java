@@ -77,9 +77,6 @@ public class GameBean implements Serializable{
     @Autowired
     private IGameService gameService;
     
-    @Autowired
-    private IMailService mailService;
-    
     public List<Game> getGameList() {
         if(gameList==null) {
             gameList = new LinkedList<Game>();
@@ -203,17 +200,12 @@ public class GameBean implements Serializable{
             getSelectedGame().getMoveSet().add(move);
             getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
             getSelectedGame().setLastMoveDate(date);
+            getSelectedGame().setNotifyDate(null);
             getGameService().updateGame(getSelectedGame());
             if (LOG.isDebugEnabled()) {
                 LOG.debug("New move saved, new FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
             }
             replaceGameInLists(getSelectedGame());
-            /*
-            getMailService().sendMail(null, getOpponent().getEmail(), Messages.getString("GameBean.0"), Messages.getString("GameBean.1", getOpponent().getLogin(), getUserBean().getUser().getLogin(), notation)); //$NON-NLS-1$ //$NON-NLS-2$
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("New move notification email send, game-id: " + getSelectedGame().getId());
-            }
-            */
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Move saved", "Notation: " + notation));
         } catch(ParseException parseException) {
             if (LOG.isInfoEnabled()) {
@@ -385,20 +377,5 @@ public class GameBean implements Serializable{
     public void setGameService(IGameService gameService) {
         this.gameService = gameService;
     }
-
-    /**
-     * @return the mailService
-     */
-    public IMailService getMailService() {
-        return mailService;
-    }
-
-    /**
-     * @param mailService the mailService to set
-     */
-    public void setMailService(IMailService mailService) {
-        this.mailService = mailService;
-    }
-
     
 }

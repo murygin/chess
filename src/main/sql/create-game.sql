@@ -7,6 +7,7 @@ CREATE TABLE  `cchess`.`game` (
   `status` VARCHAR(10) NOT NULL,
   `start` DATETIME NOT NULL,
   `last_move` DATETIME,
+  `notified` DATETIME,
   `fen` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX (`id`),

@@ -60,6 +60,7 @@ public class Game implements Serializable {
     private Set<Move> moveSet;
     private Date startDate;
     private Date lastMoveDate;
+    private Date notifyDate;
     private String fen;
 
     public Game() {
@@ -144,7 +145,7 @@ public class Game implements Serializable {
         this.moveSet = moveSet;
     }
 
-    /**true
+    /**
      * @return the startDate
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -174,6 +175,16 @@ public class Game implements Serializable {
      */  
     public void setLastMoveDate(Date lastMoveDate) {
         this.lastMoveDate = lastMoveDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "notified")
+    public Date getNotifyDate() {
+        return notifyDate;
+    }
+
+    public void setNotifyDate(Date notifyDate) {
+        this.notifyDate = notifyDate;
     }
 
     /**
