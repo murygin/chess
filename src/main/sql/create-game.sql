@@ -5,6 +5,7 @@ CREATE TABLE  `cchess`.`game` (
   `white` INT(10) UNSIGNED NOT NULL,
   `black` INT(10) UNSIGNED NOT NULL,
   `status` VARCHAR(10) NOT NULL,
+  `draw_offer` VARCHAR(10),
   `start` DATETIME NOT NULL,
   `last_move` DATETIME,
   `notified` DATETIME,

@@ -50,13 +50,14 @@ public class Game implements Serializable {
     public static final String BLACK = "b";
     public static final String WHITE = "w";
     public static final String DRAW = "draw";
-    public static final String BLACK_WIN = "bwin";
-    public static final String WHITE_WIN = "wwin";
+    public static final String BLACK_WIN = "winb";
+    public static final String WHITE_WIN = "winw";
     
     private Integer id;
     private User playerWhite;
     private User playerBlack;
     private String status; 
+    private String drawOffer;
     private Set<Move> moveSet;
     private Date startDate;
     private Date lastMoveDate;
@@ -122,6 +123,24 @@ public class Game implements Serializable {
     @Column(name = "status", nullable = false, length = 10)
     public String getStatus() {
         return status;
+    }
+
+    /**
+     * @param drawOffer 'b' id black offered draw, 'w' for white, null if there is no draw offer 
+     */
+    public void setDrawOffer(String drawOffer) {
+        this.drawOffer = drawOffer;
+    }
+    
+    /**
+     * Returns 'b' id black offered draw
+     * 'w' for white, null if there is no draw offer.
+     * 
+     * @return 'b', 'w' or null
+     */
+    @Column(name = "draw_offer", nullable = true, length = 10)
+    public String getDrawOffer() {
+        return drawOffer;
     }
 
     /**

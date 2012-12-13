@@ -40,28 +40,38 @@
 		</div>
 		<div id="content">
 			<p:outputPanel id="boardContainer">
-				<p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
-					<h2><h:outputText value="#{game.selectedGameInfo.opponent}" /></h2>
-					<div class="board">
-						<h:form>
-							<table class="board">
-								<ui:repeat value="#{board.board.rows}" var="row" >
-									<tr>
-										<ui:repeat value="#{row.squares}" var="square" >
-											<td class="#{square.style}">
-												<p:commandLink action="#{board.select}" update=":boardContainer,:moveListContainer">
-													<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
-													<h:graphicImage value="#{square.piece.image}" width="14" height="18" rendered="#{!empty square.piece}"/>
-													<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
-												</p:commandLink>									
-											</td>
-										</ui:repeat>
-									</tr>
-								</ui:repeat>
-							</table>
-						</h:form>
-					</div>
-				</p:outputPanel>
+                <h:form>
+				    <p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
+                        <table id="status">
+                           <tr>
+                              <td align="left"><h2><h:outputText value="#{game.selectedGameInfo.opponent}" /></h2></td>
+                              <td align="right"><h:outputText value="#{game.statusMessage}" /></td>
+                           </tr>
+                        </table>
+      					
+      					<div id="board" class="board">					
+      						<table class="board">
+      							<ui:repeat value="#{board.board.rows}" var="row" >
+      								<tr>
+      									<ui:repeat value="#{row.squares}" var="square" >
+      										<td class="#{square.style}">
+      											<p:commandLink action="#{board.select}" update=":boardContainer,:moveListContainer">
+      												<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
+      												<h:graphicImage value="#{square.piece.image}" width="14" height="18" rendered="#{!empty square.piece}"/>
+      												<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
+      											</p:commandLink>									
+      										</td>
+      									</ui:repeat>
+      								</tr>
+      							</ui:repeat>
+      						</table>
+      					</div>
+                        <div id="finish">
+                            <p:commandButton action="#{game.resign}" update=":moveListContainer,:boardContainer" value="Resign" rendered="#{game.active}"/>
+                            <p:commandButton action="#{game.draw}" update=":moveListContainer,:boardContainer" value="Offer draw" rendered="#{game.active and !game.drawOffer}"/>                        
+                        </div>
+			        </p:outputPanel>
+                </h:form>
 			</p:outputPanel>
 			<p:outputPanel id="newGameContainer" >
 				<p:outputPanel id="newGamePanel" rendered="#{user.ok and game.newGameVisible}">

@@ -218,6 +218,30 @@ public class GameBean implements Serializable{
         }
     }
     
+    public void resign() {
+        try {
+            String status = Game.BLACK_WIN;
+            if(Game.BLACK.equals(getMyColor())) {
+                status = Game.WHITE_WIN;
+            }
+            getSelectedGame().setStatus(status);
+            getGameService().updateGame(getSelectedGame());
+        } catch(Exception e) {
+            LOG.error("Resign failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Resign failed, unknwon error."));           
+        }
+    }
+    
+    public void draw() {
+        try {
+            getSelectedGame().setDrawOffer(getMyColor());
+            getGameService().updateGame(getSelectedGame());
+        } catch(Exception e) {
+            LOG.error("Resign failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Resign failed, unknwon error."));           
+        }
+    }
+    
     private void replaceGameInLists(Game selectedGame) {
         getGameList().remove(selectedGame);
         getGameInfoList().remove(new GameInfo(selectedGame, getUserBean().getUser()));
@@ -252,6 +276,38 @@ public class GameBean implements Serializable{
             }
         }
         return myColor;
+    }
+    
+    public boolean getActive() {
+        String status = getSelectedGame().getStatus();
+        return Game.BLACK.equals(status) || Game.WHITE.equals(status);
+    }
+    
+    public boolean getDrawOffer() {
+        return getSelectedGame().getDrawOffer()!=null;
+    }
+    
+    public String getStatusMessage() {
+        StringBuilder message = null;
+        String status = getSelectedGame().getStatus();
+        String drawOffer = getSelectedGame().getDrawOffer();
+        if(status.equals(getMyColor())) {
+            message = new StringBuilder("Your turn.");
+        } else if(Game.BLACK.equals(status) || Game.WHITE.equals(status)) {
+            message = new StringBuilder("Not your turn.");
+        } else if(Game.DRAW.equals(status)) {
+            message = new StringBuilder("Draw");
+        } else if(Game.WHITE.equals(getMyColor()) && Game.WHITE_WIN.equals(status)) {
+            message = new StringBuilder("You won!");
+        } else {
+            message = new StringBuilder("You lost.");
+        }
+        if(getMyColor().equals(drawOffer)) {
+            message.append(" You offered draw.");
+        } else if(drawOffer!=null) {
+            message.append(" Draw offered.");
+        }
+        return message.toString();
     }
 
     /**

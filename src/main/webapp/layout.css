@@ -92,6 +92,11 @@
 	overflow: auto;
 }
 
+#board
+{
+	height: 300px;
+}
+
 #section-new-game
 {
 }
@@ -124,7 +129,17 @@
 
 #content h2 
 { 
-	margin: 0 0 15px 0;
+	margin: 0;
+}
+
+#content table 
+{ 
+	margin: 0 0 8px 0;
+}
+
+#status
+{
+	width: 370px;
 }
 
 #aside
