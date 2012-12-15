@@ -201,6 +201,7 @@ public class GameBean implements Serializable{
             getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
             getSelectedGame().setLastMoveDate(date);
             getSelectedGame().setNotifyDate(null);
+            getSelectedGame().setDrawOffer(null);
             getGameService().updateGame(getSelectedGame());
             if (LOG.isDebugEnabled()) {
                 LOG.debug("New move saved, new FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
@@ -242,6 +243,49 @@ public class GameBean implements Serializable{
         }
     }
     
+    public void drawAccept() {
+        try {
+            String drawOffer = getSelectedGame().getDrawOffer();
+            if(drawOffer!=null && !drawOffer.equals(getMyColor())) {
+                getSelectedGame().setStatus(Game.DRAW);
+                getGameService().updateGame(getSelectedGame());
+            }
+        } catch(Exception e) {
+            LOG.error("Resign failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Resign failed, unknwon error."));           
+        }
+    }
+    
+    public void drawDecline() {
+        try {
+            String drawOffer = getSelectedGame().getDrawOffer();
+            if(drawOffer!=null && !drawOffer.equals(getMyColor())) {
+                getSelectedGame().setDrawOffer(null);
+                getGameService().updateGame(getSelectedGame());
+            }
+        } catch(Exception e) {
+            LOG.error("Resign failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Resign failed, unknwon error."));           
+        }
+    }
+    
+    public boolean getShowDrawDialog() {
+        boolean show = false;
+        try {
+            String drawOffer = getSelectedGame().getDrawOffer();
+            String status = getSelectedGame().getStatus();
+            show = getSelectedGame().getDrawOffer()!=null && (status.equals(Game.WHITE) || status.equals(Game.BLACK));
+            if(show) {
+               show = !getMyColor().equals(drawOffer);
+            }
+            getGameService().updateGame(getSelectedGame());
+        } catch(Exception e) {
+            LOG.error("Get draw dialog status failed: ", e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unknwon error."));           
+        }
+        return show;
+    }
+    
     private void replaceGameInLists(Game selectedGame) {
         getGameList().remove(selectedGame);
         getGameInfoList().remove(new GameInfo(selectedGame, getUserBean().getUser()));
@@ -249,9 +293,7 @@ public class GameBean implements Serializable{
         getGameInfoList().add(new GameInfo(selectedGame, getUserBean().getUser()));
     }
 
-    /**
-     * @return
-     */
+
     private User getOpponent() {
         return (getMyColor().equals(Board.WHITE) ? getSelectedGame().getPlayerBlack() : getSelectedGame().getPlayerWhite());
     }
@@ -259,7 +301,10 @@ public class GameBean implements Serializable{
     public boolean getMyTurn() {
         boolean myTurn = false;
         String myColor = getMyColor();
-        if(myColor!=null && getBoardBean().getBoard()!=null) {
+        String status = getSelectedGame().getStatus();
+        if((Game.BLACK.equals(status) || Game.WHITE.equals(status)) 
+           && myColor!=null 
+           && getBoardBean().getBoard()!=null) {
             myTurn = myColor.equals(getBoardBean().getBoard().getActive());
         }
         return myTurn;
@@ -302,10 +347,12 @@ public class GameBean implements Serializable{
         } else {
             message = new StringBuilder("You lost.");
         }
-        if(getMyColor().equals(drawOffer)) {
-            message.append(" You offered draw.");
-        } else if(drawOffer!=null) {
-            message.append(" Draw offered.");
+        if(!Game.DRAW.equals(status)) {           
+            if(getMyColor().equals(drawOffer)) {
+                message.append(" You offered draw.");
+            } else if(drawOffer!=null) {
+                message.append(" Draw offered.");
+            }
         }
         return message.toString();
     }
