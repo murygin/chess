@@ -41,4 +41,8 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
+    <session-config>
+      <!-- Session idle timeout in min. -->
+      <session-timeout>15</session-timeout> 
+    </session-config>
 </web-app>

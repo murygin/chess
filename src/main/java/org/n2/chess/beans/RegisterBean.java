@@ -150,6 +150,14 @@ public class RegisterBean implements Serializable {
         request.getSession( false ).invalidate();
         return "logout";
     }
+    
+    /**
+     * This method is called from client to keep session alive
+     * and prevents session timeout.
+     */
+    public void keepSessionAlive() {
+        getUserBean().getOk();
+    }
 
     private void validate() throws ValidatorException {
         if (login == null || login.trim().isEmpty()) {

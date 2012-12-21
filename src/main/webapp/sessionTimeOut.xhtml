@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+   <h:form prependId="false">
+      <p:outputPanel id="timeoutPanel">
+         <p:idleMonitor
+            timeout="#{session.maxInactiveInterval * 1000 - 65000}"
+            onidle="startIdleMonitor()" 
+            onactive="timeoutDialog.hide()" />
+   
+         <p:dialog id="timeoutSession"
+            header="Your session is about to expire."
+            widgetVar="timeoutDialog" 
+            showEffect="fade" hideEffect="fade"
+            modal="true" 
+            width="400" 
+            height="110" 
+            closable="false"
+            draggable="false" 
+            resizable="false" 
+            appendToBody="true"
+            onHide="stopCount()" 
+            onShow="doTimer()">
+            <p>
+               <span class="ui-icon ui-icon-alert" style="float: left; margin: 8px 8px 0;"/>
+               <p:panel>
+                  You will be logged off in <span id="dialog-countdown" style="font-weight: bold"></span> seconds.
+               </p:panel>
+            </p>
+            <p style="font-weight: bold;">Move your cursor to continue your session.</p>
+         </p:dialog>
+         <p:remoteCommand name="keepAlive" actionListener="#{register.keepSessionAlive}" />
+         <p:remoteCommand name="logout" actionListener="#{register.logout}" oncomplete="window.location.reload()" update=":loginToggle,:gameListContainer,:newGameContainer,:boardContainer,:moveListContainer"/>
+      </p:outputPanel>
+   </h:form>
+   <script type="text/javascript">
+      var TIME = 60; // in seconds
+      var countTimer = TIME;
+      var processTimer;
+      var timer_is_on = 0;
+      
+      var countDownDiv = "dialog-countdown";
+      var txtCountDown = null;
+      if (!txtCountDown)
+      	txtCountDown = document.getElementById(countDownDiv);
+      
+      function startIdleMonitor() {
+      	countTimer = TIME;
+      	txtCountDown.innerHTML = countTimer;
+      	timeoutDialog.show();
+      }
+      function timedCount() {
+      	txtCountDown.innerHTML = countTimer;
+      	if (countTimer == 0) {
+      		stopCount();
+      		logout();
+      		timeoutDialog.hide();
+      		return;
+      	}
+      	countTimer = countTimer - 1;
+      	processTimer = setTimeout("timedCount()", 1000);
+      }
+      function doTimer() {
+      	if (!timer_is_on) {
+      		timer_is_on = 1;
+      		timedCount();
+      	}
+      }
+      function stopCount() {
+      	clearTimeout(processTimer);
+      	timer_is_on = 0;
+      	keepAlive();
+      }
+      </script>
+</ui:composition>
+</html>
