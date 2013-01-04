@@ -108,12 +108,12 @@ public class GameBean implements Serializable{
                     if(white==null) {
                         white = move;
                     } else {
-                        moveList.add(new MoveTuble(white.getN(), white, move));
+                        moveList.add(new MoveTuble((white.getN()+1)/2, white, move));
                         white = null;
                     }
                 }
                 if(white!=null) {
-                    moveList.add(new MoveTuble(white.getN(), white, null));
+                    moveList.add(new MoveTuble((white.getN()+1)/2, white, null));
                 }
             }
         }

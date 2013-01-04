@@ -159,6 +159,7 @@
 							<table>
 								<ui:repeat value="#{game.moveList}" var="tuple" >
 									<tr>
+                                        <td><h:outputText value="#{tuple.number}." /></td>
 										<td><h:outputText value="#{tuple.white.move}" /></td>
 										<td><h:outputText value="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
 									</tr>
