@@ -31,9 +31,7 @@ import org.hibernate.criterion.Restrictions;
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.IGameDao;
 import org.n2.chess.beans.hibernate.User;
-import org.n2.chess.model.Square;
 import org.n2.chess.model.UserNotFoundException;
-import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -131,6 +129,7 @@ public class GameService implements IGameService, Serializable {
      * @param playerBlack
      * @return
      */
+    @Override
     public Game create(User playerWhite, User playerBlack) {
         Game game = new Game();
         game.setPlayerBlack(playerBlack);

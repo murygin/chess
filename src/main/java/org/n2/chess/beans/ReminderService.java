@@ -51,8 +51,8 @@ public class ReminderService {
     private IMailService mailService;
     
     //every 5 minutes
-    @Scheduled(cron="0 */5 * * * ?")
-    //every two hours@Scheduled(cron="0 0 0/2 * * ?")
+    @Scheduled(cron="0 */1 * * * ?")
+    //every two hours: @Scheduled(cron="0 0 0/2 * * ?")
     public void send() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Sending reminder...");
@@ -62,24 +62,92 @@ public class ReminderService {
         crit.setFetchMode("playerWhite", FetchMode.JOIN);
         crit.setFetchMode("playerBlack", FetchMode.JOIN);
         crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-        List<Game> gameList = getGameDao().find(crit);
-        Date date = Calendar.getInstance().getTime();
+        List<Game> gameList = getGameDao().find(crit);      
         for (Game game : gameList) {
-            String email = game.getPlayerBlack().getEmail();
-            String name = game.getPlayerBlack().getLogin();
-            String opponent = game.getPlayerWhite().getLogin();
-            if(Game.WHITE.equals(game.getStatus())) {
+            sendReminder(game);
+        }
+    }
+
+    private void sendReminder(Game game) {
+        Date date = Calendar.getInstance().getTime();
+        boolean drawReminder = false;
+        boolean resignReminder = false;
+        String email = game.getPlayerBlack().getEmail();
+        String name = game.getPlayerBlack().getLogin();
+        String opponent = game.getPlayerWhite().getLogin();
+        String status = game.getStatus();
+        if(Game.WHITE.equals(status)) {
+            email = game.getPlayerWhite().getEmail();
+            name = game.getPlayerWhite().getLogin();
+            opponent = game.getPlayerBlack().getLogin();                       
+        } else if(Game.DRAW.equals(status)) {
+            drawReminder = true;
+            if(Game.WHITE.equals(game.getDrawOffer())) {
                 email = game.getPlayerWhite().getEmail();
                 name = game.getPlayerWhite().getLogin();
                 opponent = game.getPlayerBlack().getLogin();
+            } else {
+                email = game.getPlayerBlack().getEmail();
+                name = game.getPlayerBlack().getLogin();
+                opponent = game.getPlayerWhite().getLogin();
             }
-            getMailService().sendMail(null, email, Messages.getString("GameBean.0"), Messages.getString("GameBean.1", name, opponent)); //$NON-NLS-1$ //$NON-NLS-2$
-            game.setNotifyDate(date);
-            getGameDao().update(game);
+        } else if(Game.BLACK_WIN.equals(status)) {
+            resignReminder = true;
+            email = game.getPlayerBlack().getEmail();
+            name = game.getPlayerBlack().getLogin();
+            opponent = game.getPlayerWhite().getLogin();     
+        } else if(Game.WHITE_WIN.equals(status)) {
+            resignReminder = true;
+            email = game.getPlayerWhite().getEmail();
+            name = game.getPlayerWhite().getLogin();
+            opponent = game.getPlayerBlack().getLogin();
+        }
+        if(drawReminder) {
+            sendDrawReminder(email, name, opponent);
             if (LOG.isInfoEnabled()) {
-                LOG.info("Reminder send to: " + name);
+                LOG.info("Draw reminder send to: " + name);
+            }
+        } else if(resignReminder) {
+            sendResignReminder(email, name, opponent);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Resign reminder send to: " + name);
+            }
+        } else {
+            sendMoveReminder(email, name, opponent);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Move reminder send to: " + name);
             }
         }
+        game.setNotifyDate(date);
+        getGameDao().update(game);        
+    }
+
+    
+    
+    private void sendDrawReminder(String email, String name, String opponent) {
+        getMailService().sendMail(
+                null, 
+                email, 
+                Messages.getString("GameBean.4"), //$NON-NLS-1$
+                Messages.getString("GameBean.5", name, opponent)); //$NON-NLS-1$
+        
+    }
+    
+    private void sendResignReminder(String email, String name, String opponent) {
+        getMailService().sendMail(
+                null, 
+                email, 
+                Messages.getString("GameBean.6"), //$NON-NLS-1$
+                Messages.getString("GameBean.7", name, opponent)); //$NON-NLS-1$
+        
+    }
+
+    private void sendMoveReminder(String email, String name, String opponent) {
+        getMailService().sendMail(
+                null, 
+                email, 
+                Messages.getString("GameBean.0"), //$NON-NLS-1$
+                Messages.getString("GameBean.1", name, opponent)); //$NON-NLS-1$ 
     }
 
     public IGameDao getGameDao() {

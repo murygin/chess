@@ -58,9 +58,19 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
         STATUS_IMAGE_MAP = new Hashtable<String, String>();
         STATUS_IMAGE_MAP.put(MOVE, "");
         STATUS_IMAGE_MAP.put(WAIT, IMAGE_FOLDER + "pause.gif");
-        STATUS_IMAGE_MAP.put(WIN, IMAGE_FOLDER + "pause.gif");
-        STATUS_IMAGE_MAP.put(DRAW, IMAGE_FOLDER + "pause.gif");
-        STATUS_IMAGE_MAP.put(LOSS, IMAGE_FOLDER + "pause.gif");
+        STATUS_IMAGE_MAP.put(WIN, "");
+        STATUS_IMAGE_MAP.put(DRAW, "");
+        STATUS_IMAGE_MAP.put(LOSS, "");
+    }
+    
+    private static Map<String, String> STATUS_MESSAGE_MAP;
+    static {
+        STATUS_MESSAGE_MAP = new Hashtable<String, String>();
+        STATUS_MESSAGE_MAP.put(MOVE, "Your turn");
+        STATUS_MESSAGE_MAP.put(WAIT, "Wait");
+        STATUS_MESSAGE_MAP.put(WIN, "You won");
+        STATUS_MESSAGE_MAP.put(DRAW, "Draw");
+        STATUS_MESSAGE_MAP.put(LOSS, "You lost");
     }
     
     Game game;
@@ -86,6 +96,21 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
         Date date = (game.getLastMoveDate()!=null) ? game.getLastMoveDate() : game.getStartDate();
         lastMove = getHumanRedableTime(Calendar.getInstance().getTimeInMillis() - date.getTime());
         status = (game.getStatus().equals(color)) ? MOVE : WAIT;
+        if(Game.DRAW.equals(game.getStatus())) {
+            status = DRAW;
+        }
+        if(Game.WHITE_WIN.equals(game.getStatus()) && Board.BLACK.equals(color)) {
+            status = LOSS;
+        }
+        if(Game.WHITE_WIN.equals(game.getStatus()) && Board.WHITE.equals(color)) {
+            status = WIN;
+        }
+        if(Game.BLACK_WIN.equals(game.getStatus()) && Board.BLACK.equals(color)) {
+            status = WIN;
+        }
+        if(Game.BLACK_WIN.equals(game.getStatus()) && Board.WHITE.equals(color)) {
+            status = LOSS;
+        }
     }
     
     /**
@@ -123,11 +148,12 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
         return status;
     }
     
-    /**
-     * @return the status
-     */
     public String getStatusImage() {
         return STATUS_IMAGE_MAP.get(getStatus());
+    }
+    
+    public String getStatusMessage() {
+        return STATUS_MESSAGE_MAP.get(getStatus());
     }
 
     public static String getHumanRedableTime(long ms) {

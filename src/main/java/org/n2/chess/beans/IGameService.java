@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.User;
-import org.n2.chess.model.Square;
 import org.n2.chess.model.UserNotFoundException;
 
 /**

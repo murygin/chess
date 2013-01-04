@@ -77,6 +77,9 @@ public class GameBean implements Serializable{
     @Autowired
     private IGameService gameService;
     
+    @Autowired
+    private IMailService mailService;
+    
     public List<Game> getGameList() {
         if(gameList==null) {
             gameList = new LinkedList<Game>();
@@ -155,21 +158,26 @@ public class GameBean implements Serializable{
         try {
             Game newGame = null;
             String oppenent = null;
-            String color;
+            String color, reminderEmail, reminderName;
             if(Board.WHITE.equals(getColorNew())) {
                 newGame = getGameService().create(getUserBean().getUser(),getEmailNew()); 
                 oppenent = newGame.getPlayerBlack().getLogin();
                 color = "white";
+                reminderEmail = newGame.getPlayerBlack().getEmail();
+                reminderName = newGame.getPlayerBlack().getLogin();
             } else {
                 newGame = getGameService().create(getEmailNew(),getUserBean().getUser());
                 oppenent = newGame.getPlayerWhite().getLogin();
                 color = "black";
+                reminderEmail = newGame.getPlayerWhite().getEmail();
+                reminderName = newGame.getPlayerWhite().getLogin();
             }
             getGameList().add(newGame);
             getGameInfoList().add(new GameInfo(newGame, getUserBean().getUser()));
             setSelectedGame(newGame);
             loadGame();
             setNewGameVisible(false);
+            sendNewGameReminder(reminderEmail, reminderName, getUserBean().getUser().getLogin());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New game saved", "Opponent: " + oppenent + ", your color: " + color));
         } catch (UserNotFoundException e) {
             if (LOG.isInfoEnabled()) {
@@ -226,6 +234,7 @@ public class GameBean implements Serializable{
                 status = Game.WHITE_WIN;
             }
             getSelectedGame().setStatus(status);
+            getSelectedGame().setNotifyDate(null);
             getGameService().updateGame(getSelectedGame());
         } catch(Exception e) {
             LOG.error("Resign failed: ", e);
@@ -248,6 +257,7 @@ public class GameBean implements Serializable{
             String drawOffer = getSelectedGame().getDrawOffer();
             if(drawOffer!=null && !drawOffer.equals(getMyColor())) {
                 getSelectedGame().setStatus(Game.DRAW);
+                getSelectedGame().setNotifyDate(null);
                 getGameService().updateGame(getSelectedGame());
             }
         } catch(Exception e) {
@@ -274,7 +284,7 @@ public class GameBean implements Serializable{
         try {
             String drawOffer = getSelectedGame().getDrawOffer();
             String status = getSelectedGame().getStatus();
-            show = getSelectedGame().getDrawOffer()!=null && (status.equals(Game.WHITE) || status.equals(Game.BLACK));
+            show = drawOffer!=null && (status.equals(Game.WHITE) || status.equals(Game.BLACK));
             if(show) {
                show = !getMyColor().equals(drawOffer);
             }
@@ -291,6 +301,7 @@ public class GameBean implements Serializable{
         getGameInfoList().remove(new GameInfo(selectedGame, getUserBean().getUser()));
         getGameList().add(selectedGame);
         getGameInfoList().add(new GameInfo(selectedGame, getUserBean().getUser()));
+        Collections.sort(gameInfoList);
     }
 
 
@@ -356,6 +367,15 @@ public class GameBean implements Serializable{
         }
         return message.toString();
     }
+    
+    private void sendNewGameReminder(String email, String name, String opponent) {
+        getMailService().sendMail(
+                null, 
+                email, 
+                Messages.getString("GameBean.2"), //$NON-NLS-1$
+                Messages.getString("GameBean.3", name, opponent)); //$NON-NLS-1$
+        
+    }
 
     /**
      * @return the selectedGame
@@ -382,6 +402,7 @@ public class GameBean implements Serializable{
         this.selectedGameInfo = selectedGame;
         if(!getGameInfoList().contains(selectedGameInfo)) {
             getGameInfoList().add(selectedGameInfo);
+            Collections.sort(gameInfoList);
         }
         if(!getGameList().contains(selectedGameInfo.getGame())) {
             getGameList().add(selectedGameInfo.getGame());
@@ -479,6 +500,14 @@ public class GameBean implements Serializable{
      */
     public void setGameService(IGameService gameService) {
         this.gameService = gameService;
+    }
+    
+    public IMailService getMailService() {
+        return mailService;
+    }
+
+    public void setMailService(IMailService mailService) {
+        this.mailService = mailService;
     }
     
 }
