@@ -1,2 +1,7 @@
-On online chessboard where you can play with your friends.
-Made with Spring, JSF 2 and Primefaces in Berlin.
+
+An online chessboard. Made with Spring, JSF 2 and Primefaces. Made in Berlin.
+
+Application is build & deployed at Cloudbees.
+
+You can test ist here:
+http://chess.murygin.cloudbees.net
