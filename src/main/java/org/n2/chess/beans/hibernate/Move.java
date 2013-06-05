@@ -49,6 +49,7 @@ public class Move implements Serializable {
     private String move;
     private Date date;
     private String fen;
+    private String css;
     private int sourceX, sourceY, destX, destY;
 
     public Move() {
@@ -175,6 +176,15 @@ public class Move implements Serializable {
      */   
     public void setFen(String fen) {
         this.fen = fen;
+    }
+    
+    @Transient
+    public String getCss() {
+        return css;
+    }
+
+    public void setCss(String css) {
+        this.css = css;
     }
 
     @Transient

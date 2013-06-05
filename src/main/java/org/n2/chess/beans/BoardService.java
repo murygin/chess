@@ -66,12 +66,22 @@ public class BoardService implements IBoardService, Serializable {
     @Autowired
     private IFenParser parser;
     
+    
+    @Override
+    public Board createBoard(Game game, String colorPlayer) {
+        return createBoard(game, colorPlayer, -1);
+    }
+    
     /* (non-Javadoc)
      * @see org.n2.chess.beans.IBoardService#createBoard(org.n2.chess.beans.hibernate.Game)
      */
     @Override
-    public Board createBoard(Game game, String colorPlayer) {
+    public Board createBoard(Game game, String colorPlayer, int moveNumber) {
+        Move move = getMove(game, moveNumber);
         String fen = game.getFen();
+        if(move!=null) {
+            fen = move.getFen();
+        } 
         getParser().parse(fen);
         Board board = new Board();
         board.setColorPlayer(colorPlayer);
@@ -100,36 +110,58 @@ public class BoardService implements IBoardService, Serializable {
            board.putRow(row);
            r++;
         }
-        highlightLastMove(game, board, colorPlayer);
+        if(move==null) {
+            highlightLastMove(game, board, colorPlayer);
+        } else {
+            hightlightMove(board, colorPlayer, move);
+        }
         return board;
     }
+    
+    private Move getMove(Game game, int moveNumber) {
+        if(moveNumber==-1) {
+            return null;
+        }
+        for (Move move : game.getMoveSet()) {
+            if(move.getN()==moveNumber) {
+                return move;
+            }
+        }
+        return null;
+    }
+    
 
     private void highlightLastMove(Game game, Board board, String colorPlayer) {
         Set<Move> moveSet = game.getMoveSet();
         if(moveSet!=null && !moveSet.isEmpty()) {
             Move lastMove = (Move) moveSet.toArray()[moveSet.size()-1];
-            if(!lastMove.getMove().contains("0")) {
-                lastMove.calculateCoordinates();
-                int sourceX = lastMove.getSourceX()-1;
-                int destX = lastMove.getDestX()-1;
-                int sourceY = lastMove.getSourceY();
-                int destY = lastMove.getDestY();
-                if(Board.WHITE.equals(colorPlayer)) {
-                    sourceX = 7-sourceX;
-                    destX = 7-destX;
-                }
-                if(Board.BLACK.equals(colorPlayer)) {
-                    sourceY = 7-sourceY;
-                    destY = 7-destY;
-                }
-                board.getRows().get(sourceX).getSquares().get(sourceY).setLastSource(true);
-                board.getRows().get(destX).getSquares().get(destY).setLastDest(true);
-            } else {
-                // TODO: highlight castling
+            hightlightMove(board, colorPlayer, lastMove);
+        }
+    }
+
+    public void hightlightMove(Board board, String colorPlayer, Move move) {
+        if(!move.getMove().contains("0")) {
+            move.calculateCoordinates();
+            int sourceX = move.getSourceX()-1;
+            int destX = move.getDestX()-1;
+            int sourceY = move.getSourceY();
+            int destY = move.getDestY();
+            if(Board.WHITE.equals(colorPlayer)) {
+                sourceX = 7-sourceX;
+                destX = 7-destX;
             }
+            if(Board.BLACK.equals(colorPlayer)) {
+                sourceY = 7-sourceY;
+                destY = 7-destY;
+            }
+            board.getRows().get(sourceX).getSquares().get(sourceY).setLastSource(true);
+            board.getRows().get(destX).getSquares().get(destY).setLastDest(true);
+        } else {
+            // TODO: highlight castling
         }
     }
     
+    @Override
     public String createFen(Board board) {
         StringBuilder fen = new StringBuilder();
         boolean first = true;

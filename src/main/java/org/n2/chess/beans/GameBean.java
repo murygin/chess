@@ -68,6 +68,8 @@ public class GameBean implements Serializable{
     
     private boolean newGameVisible = false;
     
+    private int moveNumber = -1;
+    
     @Autowired
     private UserBean userBean;
     
@@ -151,6 +153,36 @@ public class GameBean implements Serializable{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
+        }
+    }
+    
+    public boolean getFirstMove() {
+        return getMoveNumber()==1;
+    }
+    
+    public boolean getHistoryMode() {
+        return getMoveNumber()!=-1 && (getMoveNumber()<getSelectedGame().getMoveSet().size() && getMoveNumber()>-1);
+    }
+    
+    public void loadHistory() {
+        getBoardBean().loadHistory(getMoveNumber());
+        hightlightMove();
+    }
+    
+    public void historyBack() {
+        if(!getHistoryMode() || getMoveNumber()>1) {
+            if(this.moveNumber == -1) {
+                this.moveNumber = getSelectedGame().getMoveSet().size();
+            }
+            this.moveNumber--;
+            loadHistory();
+        }
+    }
+    
+    public void historyForward() {
+        if(getHistoryMode()) {
+            this.moveNumber++;
+            loadHistory();
         }
     }
     
@@ -315,7 +347,8 @@ public class GameBean implements Serializable{
         String status = getSelectedGame().getStatus();
         if((Game.BLACK.equals(status) || Game.WHITE.equals(status)) 
            && myColor!=null 
-           && getBoardBean().getBoard()!=null) {
+           && getBoardBean().getBoard()!=null
+           && !getHistoryMode()) {
             myTurn = myColor.equals(getBoardBean().getBoard().getActive());
         }
         return myTurn;
@@ -377,9 +410,6 @@ public class GameBean implements Serializable{
         
     }
 
-    /**
-     * @return the selectedGame
-     */
     public Game getSelectedGame() {
         Game game = null;
         if(getSelectedGameInfo()!=null) {
@@ -388,9 +418,6 @@ public class GameBean implements Serializable{
         return game;
     }
     
-    /**
-     * @return the selectedGame
-     */
     public GameInfo getSelectedGameInfo() {
         return selectedGameInfo;
     }
@@ -430,6 +457,33 @@ public class GameBean implements Serializable{
         this.newGameVisible = newGameVisible;
     }
     
+    public int getMoveNumber() {
+        return moveNumber;
+    }
+
+    public void setMoveNumber(int moveNumber) {
+        this.moveNumber = moveNumber;
+    }
+
+    public void hightlightMove() {
+        int n = getMoveNumber()-1;
+        boolean isWhite = n%2==0;
+        resetMoveHighlighting();
+        MoveTuble moveTuble = getMoveList().get(Math.abs(n/2));
+        if(isWhite) {
+            moveTuble.getWhite().setCss("selected");
+        } else {
+            moveTuble.getBlack().setCss("selected");
+        }
+    }
+
+    public void resetMoveHighlighting() {
+        for (MoveTuble moveTuble: getMoveList()) {
+            moveTuble.getWhite().setCss("");
+            moveTuble.getBlack().setCss("");
+        }
+    }
+
     public void toggleNewGame() {
         this.newGameVisible = !this.newGameVisible;
     }

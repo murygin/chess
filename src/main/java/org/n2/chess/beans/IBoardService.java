@@ -36,6 +36,8 @@ public interface IBoardService {
      */
     Board createBoard(Game game, String colorPlayer);
     
+    Board createBoard(Game game, String colorPlayer, int moveNumber);
+    
     String createFen(Board board);
 
     /**

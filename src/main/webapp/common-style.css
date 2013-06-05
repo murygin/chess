@@ -116,3 +116,8 @@ a:active {
 .currentMove {
 	font-size:15pt;
 }
+
+.selected {
+	color: #eeeeee;
+	background-color: #222222;
+}

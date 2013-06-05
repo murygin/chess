@@ -86,6 +86,13 @@ public class BoardBean implements Serializable {
         return this.board;
     }
     
+    private Board createBoard(int moveNumber) {
+        if(getGame()!=null) {
+            this.board = getBoardService().createBoard(getGame(),getColorPlayer(),moveNumber);
+        }
+        return this.board;
+    }
+    
     /**
      * Selects a square on the board. 
      * Method is called when the user clicks the board.
@@ -264,6 +271,10 @@ public class BoardBean implements Serializable {
         getRuleService().parsePosition(game.getFen());
         this.game = game;
         board = createBoard();
+    }
+    
+    public void loadHistory(int moveNumber) {
+        board = createBoard(moveNumber);
     }
 
     /**

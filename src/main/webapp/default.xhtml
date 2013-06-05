@@ -160,8 +160,18 @@
 								<ui:repeat value="#{game.moveList}" var="tuple" >
 									<tr>
                                         <td><h:outputText value="#{tuple.number}." /></td>
-										<td><h:outputText value="#{tuple.white.move}" /></td>
-										<td><h:outputText value="#{tuple.black.move}" rendered="#{!empty tuple.black}"/></td>
+										<td>
+                                             <p:commandLink action="#{game.loadHistory}" update=":boardContainer,:moveListContainer">
+                                                <f:setPropertyActionListener target="#{game.moveNumber}" value="#{tuple.white.n}" />
+                                                <h:outputText value="#{tuple.white.move}" styleClass="#{tuple.white.css}"/>
+                                             </p:commandLink>                           
+                                        </td>
+										<td>
+                                             <p:commandLink action="#{game.loadHistory}" update=":boardContainer,:moveListContainer" rendered="#{!empty tuple.black}">
+                                                <f:setPropertyActionListener target="#{game.moveNumber}" value="#{tuple.black.n}" />
+                                                <h:outputText value="#{tuple.black.move}" styleClass="#{tuple.black.css}" />
+                                             </p:commandLink>                                 
+                                        </td>
 									</tr>
 								</ui:repeat>
 							</table>
@@ -176,8 +186,10 @@
 						<div id="section-move">
 							<table>
 								<tr>
-									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/>	</td>
-								</tr>						
+                                    <td><p:commandButton action="#{game.historyBack}" update=":boardContainer,:moveListContainer" value="&lt;" rendered="#{!game.firstMove}"/></td>
+									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/></td>
+								    <td><p:commandButton action="#{game.historyForward}" update=":boardContainer,:moveListContainer" value="&gt;" rendered="#{game.historyMode}"/></td>
+                                 </tr>						
 							</table>									
 						</div>
 					</h:form>
