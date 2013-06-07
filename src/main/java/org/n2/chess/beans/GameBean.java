@@ -143,6 +143,7 @@ public class GameBean implements Serializable{
         getGameList().remove(getSelectedGameInfo().getGame());
         getGameInfoList().remove(getSelectedGameInfo());
         setSelectedGame(game);
+        setMoveNumber(-1);
         initBoardBean();
     }
 
@@ -377,19 +378,22 @@ public class GameBean implements Serializable{
     }
     
     public String getStatusMessage() {
-        StringBuilder message = null;
+        StringBuilder message = new StringBuilder();
         String status = getSelectedGame().getStatus();
         String drawOffer = getSelectedGame().getDrawOffer();
+        if(getHistoryMode()) {
+            message.append("(History) ");
+        }
         if(status.equals(getMyColor())) {
-            message = new StringBuilder("Your turn.");
+            message.append("Your turn.");
         } else if(Game.BLACK.equals(status) || Game.WHITE.equals(status)) {
-            message = new StringBuilder("Not your turn.");
+            message.append("Not your turn.");
         } else if(Game.DRAW.equals(status)) {
-            message = new StringBuilder("Draw");
+            message.append("Draw");
         } else if(Game.WHITE.equals(getMyColor()) && Game.WHITE_WIN.equals(status)) {
-            message = new StringBuilder("You won!");
+            message.append("You won!");
         } else {
-            message = new StringBuilder("You lost.");
+            message.append("You lost.");
         }
         if(!Game.DRAW.equals(status)) {           
             if(getMyColor().equals(drawOffer)) {
@@ -479,8 +483,12 @@ public class GameBean implements Serializable{
 
     public void resetMoveHighlighting() {
         for (MoveTuble moveTuble: getMoveList()) {
-            moveTuble.getWhite().setCss("");
-            moveTuble.getBlack().setCss("");
+            if(moveTuble.getWhite()!=null) {
+                moveTuble.getWhite().setCss("");
+            }
+            if(moveTuble.getBlack()!=null) {
+                moveTuble.getBlack().setCss("");
+            }
         }
     }
 

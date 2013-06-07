@@ -186,9 +186,9 @@
 						<div id="section-move">
 							<table>
 								<tr>
-                                    <td><p:commandButton action="#{game.historyBack}" update=":boardContainer,:moveListContainer" value="&lt;" rendered="#{!game.firstMove}"/></td>
-									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn}"/></td>
-								    <td><p:commandButton action="#{game.historyForward}" update=":boardContainer,:moveListContainer" value="&gt;" rendered="#{game.historyMode}"/></td>
+                                    <td><p:commandButton action="#{game.historyBack}" update=":boardContainer,:moveListContainer" value="&lt;" disabled="#{game.firstMove}"/></td>
+									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" disabled="#{! game.myTurn}"/></td>
+								    <td><p:commandButton action="#{game.historyForward}" update=":boardContainer,:moveListContainer" value="&gt;" disabled="#{! game.historyMode}"/></td>
                                  </tr>						
 							</table>									
 						</div>
