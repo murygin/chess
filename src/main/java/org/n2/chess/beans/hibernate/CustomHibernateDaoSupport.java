@@ -19,19 +19,21 @@
  ******************************************************************************/
 package org.n2.chess.beans.hibernate;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
  */
-public class CustomHibernateDaoSupport extends HibernateDaoSupport {
+public class CustomHibernateDaoSupport  {
 
     @Autowired
-    public void injectSessionFactory(SessionFactory sessionFactory)
-    {
-        setSessionFactory(sessionFactory);
+    private SessionFactory sessionFactory;
+
+    public Session getSession() {
+        return sessionFactory.getCurrentSession();
     }
+    
 }

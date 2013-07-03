@@ -28,6 +28,7 @@ import org.n2.chess.beans.hibernate.IUserDao;
 import org.n2.chess.beans.hibernate.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -54,15 +55,9 @@ public class UserService implements IUserService {
     public void setUserDao(IUserDao userDao) {
         this.userDao = userDao;
     }
-
-    /* (non-Javadoc)
-     * @see org.n2.chess.beans.IUserService#loadAll()
-     */
-    @Override
-    public List<User> getAll() {
-        return getUserDao().loadAll();
-    }
     
+    @Override
+    @Transactional
     public void save(User user) {
         getUserDao().save(user);
     }
@@ -71,6 +66,7 @@ public class UserService implements IUserService {
      * @see org.n2.chess.beans.IUserService#findUser(java.lang.String)
      */
     @Override
+    @Transactional(readOnly = true)
     public User findUser(String username) {
         DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
         criteria.add(Restrictions.eq("login", username));
@@ -92,6 +88,7 @@ public class UserService implements IUserService {
      * @see org.n2.chess.beans.IUserService#isUsernameAvailable(java.lang.String)
      */
     @Override
+    @Transactional(readOnly = true)
     public boolean isUsernameAvailable(String username) {
         List<User> userList = getUserDao().findByExample(new User(username,null,null,null));
         return userList==null || userList.isEmpty();
@@ -101,6 +98,7 @@ public class UserService implements IUserService {
      * @see org.n2.chess.beans.IUserService#isEmailAvailable(java.lang.String)
      */
     @Override
+    @Transactional(readOnly = true)
     public boolean isEmailAvailable(String email) {
         List<User> userList = getUserDao().findByExample(new User(null,email,null,null));
         return userList==null || userList.isEmpty();

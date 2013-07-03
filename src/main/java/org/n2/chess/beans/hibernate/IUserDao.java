@@ -32,8 +32,6 @@ public interface IUserDao {
     void save(User user);
     void update(User user);
     void delete(User user);
-    List<User> find(String query,Object... values);
     List<User> findByExample(User user);
     List<User> find(DetachedCriteria criteria);
-    List<User> loadAll();
 }

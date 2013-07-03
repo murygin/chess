@@ -5,7 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.prime.com.tr/ui">
+	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="layout.xhtml">
 	<ui:define name="content">
@@ -40,7 +40,7 @@
 		            	<p:password id="pwd2" value="#{register.password2}" feedback="false" label="Password (again)" required="true"/>
 		            	<p:message id="pwd2Msg" for="pwd2" showSummary="true" showDetail="false"/>
 		            	
-		            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.register}" />      	
+		            	<p:commandButton value="Register" update=":registerContainer,:loginContainer,:loginToggle" actionListener="#{register.register}" />      	
 					</h:panelGrid>
 				</h:form>
 			</p:outputPanel>
@@ -56,7 +56,7 @@
 						<h:outputLabel for="pwdLogin" value="Password: " />  
 		            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
 		            	
-		            	<p:commandButton value="Register" update="registerContainer,loginContainer,loginToggle" actionListener="#{register.login}" />
+		            	<p:commandButton value="Register" update=":registerContainer,:loginContainer,:loginToggle" actionListener="#{register.login}" />
 					</h:panelGrid>
 				</h:form>
 			</p:outputPanel>

@@ -4,17 +4,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.prime.com.tr/ui">
+	xmlns:p="http://primefaces.org/ui">
 <body>
 	<ui:composition>
 		<p:outputPanel id="loginToggle">
 			<h:outputLabel value="User: #{user.user.login}" rendered="#{user.ok}"/>
 			<h:form>
-				<p:commandLink actionListener="#{register.toggleRegister}" update="registerContainer" rendered="#{!user.ok}">
+				<p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer" rendered="#{!user.ok}">
 					<h:outputText value="Register" />
 				</p:commandLink>
 				<h:outputText value=" | " rendered="#{!user.ok}"/>
-				<p:commandLink actionListener="#{register.toggleLogin}" update="loginContainer" rendered="#{!user.ok}">
+				<p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer" rendered="#{!user.ok}">
 					<h:outputText value="Login" />
 				</p:commandLink>
 			</h:form>

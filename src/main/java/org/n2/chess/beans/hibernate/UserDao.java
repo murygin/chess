@@ -21,7 +21,9 @@ package org.n2.chess.beans.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -36,7 +38,7 @@ public class UserDao extends CustomHibernateDaoSupport implements IUserDao {
      */
     @Override
     public void save(User user) {
-        getHibernateTemplate().save(user);
+        getSession().save(user);
     }
 
     /* (non-Javadoc)
@@ -44,7 +46,7 @@ public class UserDao extends CustomHibernateDaoSupport implements IUserDao {
      */
     @Override
     public void update(User user) {
-        getHibernateTemplate().update(user);
+        getSession().update(user);
     }
 
     /* (non-Javadoc)
@@ -52,39 +54,31 @@ public class UserDao extends CustomHibernateDaoSupport implements IUserDao {
      */
     @Override
     public void delete(User user) {
-        getHibernateTemplate().delete(user);
+        getSession().delete(user);
     }
 
-    /* (non-Javadoc)
-     * @see org.n2.chess.beans.hibernate.IUserDao#findAll()
-     */
-    @Override
-    public List<User> loadAll() {
-        return getHibernateTemplate().loadAll(User.class);
-    }
+
+
 
     /* (non-Javadoc)
-     * @see org.n2.chess.beans.hibernate.IUserDao#find(java.lang.String, java.lang.Object[])
+     * @see org.n2.chess.beans.hibernate.IUserDao#find(org.hibernate.criterion.DetachedCriteria)
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public List<User> find(String query, Object... values) {
-        return getHibernateTemplate().find(query, values);
+    public List<User> find(DetachedCriteria criteria) {
+        return criteria.getExecutableCriteria(getSession()).list();
     }
 
     /* (non-Javadoc)
      * @see org.n2.chess.beans.hibernate.IUserDao#findByExample(org.n2.chess.beans.hibernate.User)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<User> findByExample(User user) {
-        return getHibernateTemplate().findByExample(user);
-    }
-
-    /* (non-Javadoc)
-     * @see org.n2.chess.beans.hibernate.IUserDao#find(org.hibernate.criterion.DetachedCriteria)
-     */
-    @Override
-    public List<User> find(DetachedCriteria criteria) {
-        return getHibernateTemplate().findByCriteria(criteria);
+        Criteria criteria = getSession().createCriteria(User.class);
+        Example example = Example.create(user).ignoreCase();
+        criteria.add(example);     
+        return criteria.list();
     }
 
 }
