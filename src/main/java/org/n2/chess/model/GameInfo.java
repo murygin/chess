@@ -126,6 +126,15 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
     public String getOpponent() {
         return opponent;
     }
+    
+    public String getOpponentShort() {
+        String name = getOpponent();
+        if(name!=null && name.length()>18) {
+            StringBuilder sb = new StringBuilder(name.substring(0,15));
+            name = sb.append("..").toString();
+        }
+        return name;
+    }
 
     /**
      * @return the color

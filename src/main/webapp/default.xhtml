@@ -21,7 +21,7 @@
 									<li>
 										<p:commandLink action="#{game.loadGame}" update=":gameListContainer,:boardContainer,:moveListContainer">
 											<f:setPropertyActionListener target="#{game.selectedGameInfo}" value="#{g}" />
-											<h:outputText value="#{g.opponent}" /><br/>
+											<h:outputText value="#{g.opponentShort}" /><br/>
 											<h:outputText value="#{g.statusMessage} (#{g.lastMove})" /><h:graphicImage value="#{g.statusImage}" rendered="#{!empty g.statusImage}"/>
 										</p:commandLink>
 									</li>						
@@ -45,7 +45,7 @@
                         <table id="status">
                            <tr>
                               <td align="left" width="65px">Opponent: </td>
-                              <td align="left" width="110px"><h2><h:outputText value="#{game.selectedGameInfo.opponent}" /></h2></td>
+                              <td align="left" width="110px"><h2><h:outputText value="#{game.selectedGameInfo.opponentShort}" /></h2></td>
                               <td align="right"><h:outputText value="#{game.statusMessage}" /></td>
                            </tr>
                         </table>
