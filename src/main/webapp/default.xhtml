@@ -68,11 +68,12 @@
       						</table>
       					</div>
                         <div id="finish">
-                            <p:commandButton action="#{game.resign}" update=":moveListContainer,:boardContainer" value="Resign" rendered="#{game.active and !game.showDrawDialog}"/>
-                            <p:commandButton action="#{game.draw}" update=":moveListContainer,:boardContainer" value="Offer draw" rendered="#{game.active and !game.drawOffer}"/>                        
+                            <p:commandButton action="#{game.toggleResignDialog}" update=":boardContainer" value="Resign" rendered="#{game.active and !game.showDrawDialog and !game.showResignDialog}"/>
+                            <p:commandButton action="#{game.resign}" update=":moveListContainer,:boardContainer" value="Resign (confirm)" rendered="#{game.active and game.showResignDialog}"/>
+                            <p:commandButton action="#{game.toggleResignDialog}" update=":boardContainer" value="Cancel" rendered="#{game.active and game.showResignDialog}"/>
+                            <p:commandButton action="#{game.draw}" update=":moveListContainer,:boardContainer" value="Offer draw" rendered="#{game.active and !game.drawOffer and !game.showResignDialog}"/>                        
                             <p:commandButton action="#{game.drawDecline}" update=":moveListContainer,:boardContainer" value="Decline draw offer" rendered="#{game.showDrawDialog}"/>                        
-                            <p:commandButton action="#{game.drawAccept}" update=":moveListContainer,:boardContainer" value="Accept draw offer" rendered="#{game.showDrawDialog}"/>                        
-                        
+                            <p:commandButton action="#{game.drawAccept}" update=":moveListContainer,:boardContainer" value="Accept draw offer" rendered="#{game.showDrawDialog}"/>                   
                         </div>
 			        </p:outputPanel>
                 </h:form>

@@ -70,6 +70,8 @@ public class GameBean implements Serializable{
     
     private int moveNumber = -1;
     
+    private boolean showResignDialog = false;
+    
     @Autowired
     private UserBean userBean;
     
@@ -144,6 +146,7 @@ public class GameBean implements Serializable{
         getGameInfoList().remove(getSelectedGameInfo());
         setSelectedGame(game);
         setMoveNumber(-1);
+        showResignDialog=false;
         initBoardBean();
     }
 
@@ -268,6 +271,7 @@ public class GameBean implements Serializable{
             }
             getSelectedGame().setStatus(status);
             getSelectedGame().setNotifyDate(null);
+            showResignDialog=false;
             getGameService().updateGame(getSelectedGame());
         } catch(Exception e) {
             LOG.error("Resign failed: ", e);
@@ -327,6 +331,14 @@ public class GameBean implements Serializable{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unknwon error."));           
         }
         return show;
+    }
+    
+    public boolean getShowResignDialog() {
+        return showResignDialog;
+    }
+    
+    public void toggleResignDialog() {
+        showResignDialog = !showResignDialog;
     }
     
     private void replaceGameInLists(Game selectedGame) {
