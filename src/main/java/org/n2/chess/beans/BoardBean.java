@@ -130,14 +130,11 @@ public class BoardBean implements Serializable {
         Collection<? extends ChessLikeMove> moveList = getRuleService().getAllowedMoves(getSource().getNotation());
         for (ChessLikeMove move : moveList) {
             String notation = move.getTarget().getNotation();
-            int row = Integer.valueOf(notation.substring(1));
-            int col = BoardService.LETTER_NUMBER_MAP.get(notation.substring(0,1));
-            Square square = getBoard().getRowMap().get(8-row).getSquareMap().get(col);
+            Square square = getSquare(notation);
             square.setNext(true);
         }
     }
     
-
     private String printMoveList(Collection<? extends ChessLikeMove> moveList) {
         StringBuilder sb = new StringBuilder();
         if(moveList!=null) {
@@ -171,9 +168,29 @@ public class BoardBean implements Serializable {
     }
     
     /**
-     * @param string 
-     * @return
+     * Sets the source and the destination square of an move.
+     * 
+     * @param notation Two letter number combinations: e2e5, b8c6
      */
+    public void setSourceAndDest(String notation) {
+        String sourceNotation = notation.substring(0,2);
+        String destNotation = notation.substring(2,4);
+        setSource(getSquare(sourceNotation));
+        getBoard().setSource(getSource());
+        setDest(getSquare(destNotation));
+        getBoard().setDest(getDest());
+    }
+    
+    /**
+     * @param notation Letter number notation: e5, d4, a1
+     * @return The square for this notation
+     */
+    protected Square getSquare(String notation) {
+        int row = Integer.valueOf(notation.substring(1));
+        int col = BoardService.LETTER_NUMBER_MAP.get(notation.substring(0,1));
+        return getBoard().getRowMap().get(8-row).getSquareMap().get(col);
+    }
+    
     public String createNotation() {
         return getBoardService().createNotation(getSource(),getDest(),getColorPlayer());
     }

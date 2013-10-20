@@ -36,6 +36,7 @@ import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.Move;
 import org.n2.chess.beans.hibernate.MoveTuble;
 import org.n2.chess.beans.hibernate.User;
+import org.n2.chess.flux.NextMove;
 import org.n2.chess.model.Board;
 import org.n2.chess.model.GameInfo;
 import org.n2.chess.model.UserNotFoundException;
@@ -59,6 +60,8 @@ public class GameBean implements Serializable{
     String emailNew;
     
     String colorNew = Board.WHITE;
+    
+    String typeNew = Game.HUMAN;
     
     List<Game> gameList;
     
@@ -195,6 +198,9 @@ public class GameBean implements Serializable{
             Game newGame = null;
             String oppenent = null;
             String color, reminderEmail, reminderName;
+            if(Game.ENGINE.equals(getTypeNew())) {
+                setEmailNew(null);
+            }
             if(Board.WHITE.equals(getColorNew())) {
                 newGame = getGameService().create(getUserBean().getUser(),getEmailNew()); 
                 oppenent = newGame.getPlayerBlack().getLogin();
@@ -227,6 +233,31 @@ public class GameBean implements Serializable{
     }
     
     public void move() {
+        doMove();
+        loadGame();
+    }
+    
+    public void calculateMove() {
+       NextMove nextMove = new NextMove();
+       String notation = nextMove.caclculateNextMove(getSelectedGame().getFen(), 8);
+       if (LOG.isDebugEnabled()) {
+           LOG.debug("Calculated next move: " + notation);
+       }
+       getBoardBean().setSourceAndDest(notation);
+       doMove();
+       loadGame();
+    }
+    
+
+    public boolean getIsHumanOpponent() {
+        if(getSelectedGameInfo()==null) {
+            LOG.error("Selected game info is null.");
+            return true;
+        }
+        return !User.ENINE_USER.equals(getSelectedGameInfo().getOpponent());
+    }
+
+    private void doMove() {
         String notation = null;
         try {
             Date date = Calendar.getInstance().getTime();
@@ -325,7 +356,6 @@ public class GameBean implements Serializable{
             if(show) {
                show = !getMyColor().equals(drawOffer);
             }
-            getGameService().updateGame(getSelectedGame());
         } catch(Exception e) {
             LOG.error("Get draw dialog status failed: ", e);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unknwon error."));           
@@ -532,6 +562,14 @@ public class GameBean implements Serializable{
      */
     public void setColorNew(String colorNew) {
         this.colorNew = colorNew;
+    }
+
+    public String getTypeNew() {
+        return typeNew;
+    }
+
+    public void setTypeNew(String typeNew) {
+        this.typeNew = typeNew;
     }
 
     /**

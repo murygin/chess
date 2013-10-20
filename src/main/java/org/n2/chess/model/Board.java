@@ -89,39 +89,55 @@ public class Board implements Serializable {
         }
         sourceSquare.setPiece(null);
         destSquare.setPiece(piece);
-        setActive(getActive().equals(BLACK) ? WHITE : BLACK);
+        setActive(getOtherColor(getActive()));
         setNumber(String.valueOf(Integer.parseInt(getNumber()) + 1));
         unSelect();
     }
+    
+    /* 
+    K = weiß kann kurz rochieren (engl.: to castle kingside)
+    Q = weiß kann lang rochieren (engl.: to castle queenside)
+    k = schwarz kann kurz rochieren
+    q = schwarz kann lang rochieren
+    - = keine Rochade mehr moeglich
+    */
 
     private void disableWhiteCastlings() {
-        String old = getCastling();
-        setCastling("--" + old.substring(2, 4));
+        String castling = getCastling();
+        castling = castling.replace("K", "");
+        castling = castling.replace("Q", "");
+        setCastling(castling);
     }
 
     private void disableBlackCastlings() {
-        String old = getCastling();
-        setCastling(old.substring(0, 2) + "--");
+        String castling = getCastling();
+        castling = castling.replace("k", "");
+        castling = castling.replace("q", "");
+        setCastling(castling);
     }
 
     private void disableBlackCastlingQueenside() {
-        String old = getCastling();
-        setCastling(old.substring(0, 3) + "-");
+        String castling = getCastling();
+        castling = castling.replace("q", "");
+        setCastling(castling);
     }
 
     private void disableBlackCastlingKingside() {
-        String old = getCastling();
-        setCastling(old.substring(0, 2) + "-" + old.substring(3, 4));
+        String castling = getCastling();
+        castling = castling.replace("k", "");
+        setCastling(castling);
     }
 
     private void disableWhiteCastlingQueenside() {
-        String old = getCastling();
-        setCastling(old.substring(0, 1) + "-" + old.substring(2, 4));
+        String castling = getCastling();
+        castling = castling.replace("Q", "");
+        setCastling(castling);
     }
 
     private void disableWhiteCastlingKingside() {
-        String old = getCastling();
-        setCastling("-" + old.substring(1, 4));
+        String castling = getCastling();
+        castling = castling.replace("K", "");
+        setCastling(castling);
     }
 
     public boolean isPieceAtSquare(char piece, int row, int col) {
@@ -271,6 +287,9 @@ public class Board implements Serializable {
      *            the castling to set
      */
     public void setCastling(String castling) {
+        if(castling==null || castling.isEmpty()) {
+            castling = "-";
+        }
         this.castling = castling;
     }
 
@@ -359,7 +378,10 @@ public class Board implements Serializable {
         for (Row row : getRowMap().values()) {
             row.unDest();
         }
-
+    }
+    
+    public static String getOtherColor(String color) {
+        return (WHITE.equals(color)) ? BLACK : WHITE;
     }
 
 }

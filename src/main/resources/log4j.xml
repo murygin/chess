@@ -24,9 +24,17 @@
 	</appender>
     
     
-    <logger name="org.n2.chess.beans.ReminderService">
+    <logger name="org.n2.chess.beans.GameBean">
         <level value="DEBUG" />
     </logger>
+    <logger name="org.n2.chess.flux">
+        <level value="DEBUG" />
+    </logger>
+    <logger name="org.n2.chess.test">
+        <level value="DEBUG" />
+    </logger>
+    
+    
     
 
 	<!-- Logger for everything else -->

@@ -52,6 +52,8 @@ public class Game implements Serializable {
     public static final String DRAW = "draw";
     public static final String BLACK_WIN = "winb";
     public static final String WHITE_WIN = "winw";
+    public static final String HUMAN = "human";
+    public static final String ENGINE = "engine";
     
     private Integer id;
     private User playerWhite;

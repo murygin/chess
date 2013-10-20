@@ -37,6 +37,9 @@ import javax.persistence.Table;
 @Table(name = "user", catalog = "cchess")
 public class User implements Serializable {
 
+    public static final String ENINE_USER = "Flux";
+    public static final String ENINE_EMAIL = "flux@this-is-not-an-email.com";
+    
     private Integer id;
     private String login;
     private String email;

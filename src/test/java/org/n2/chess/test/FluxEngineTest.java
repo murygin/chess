@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Daniel Murygin.
+ * Copyright (c) 2013 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public License 
@@ -17,34 +17,32 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.n2.chess.beans;
+package org.n2.chess.test;
 
-import java.util.List;
-
-import org.n2.chess.beans.hibernate.User;
+import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.n2.chess.flux.NextMove;
 
 /**
- * @author Daniel Murygin <dm[at]sernet[dot]de>
  *
+ *
+ * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public interface IUserService {
-    
-    List<User> getAll();
-    
-    void save(User user);
-    
-    User findUser(String username);
-    
-    /**
-     * @param email
-     * @return
-     */
-    User findUserByEmail(String email);
-    
-    boolean isUsernameAvailable(String username);
-    
-    boolean isEmailAvailable(String email);
+public class FluxEngineTest {
 
-    User getEngineUser();
-  
+    private static final Logger LOG = Logger.getLogger(FluxEngineTest.class);
+    
+    @Test
+    public void test() {
+        String fen = "r1bnkbnr/ppp2ppp/8/4p3/8/2N2N2/PPP1PPPP/R1B1KB1R w KQkq - 0 11";
+        NextMove nextMove = new NextMove();
+        String move = nextMove.caclculateNextMove(fen, 1);
+        
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Next move: " + move);
+        }
+    }
+    
+
 }

@@ -97,7 +97,12 @@ public class GameService implements IGameService, Serializable {
      */
     @Override
     public Game create(User userWhite, String emailBlack) throws UserNotFoundException {
-        User userBlack = getUserService().findUserByEmail(emailBlack);
+        User userBlack;
+        if(emailBlack==null) {
+            userBlack =  getUserService().getEngineUser();
+        } else {
+            userBlack = getUserService().findUserByEmail(emailBlack);
+        }
         if(userBlack==null) {
             throw new UserNotFoundException("No registered user found with email address: " + emailBlack);
         }
@@ -113,7 +118,12 @@ public class GameService implements IGameService, Serializable {
      */
     @Override
     public Game create(String emailWhite, User userBlack) throws UserNotFoundException {
-        User userWhite = getUserService().findUserByEmail(emailWhite);
+        User userWhite;
+        if(emailWhite==null) {
+            userWhite =  getUserService().getEngineUser();
+        } else {
+            userWhite = getUserService().findUserByEmail(emailWhite);
+        }
         if(userWhite==null) {
             throw new UserNotFoundException("No registered user found with email address: " + emailWhite);
         }

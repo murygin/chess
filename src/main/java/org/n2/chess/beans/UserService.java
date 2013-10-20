@@ -64,6 +64,7 @@ public class UserService implements IUserService, Serializable {
         return getUserDao().loadAll();
     }
     
+    @Override
     public void save(User user) {
         getUserDao().save(user);
     }
@@ -116,7 +117,7 @@ public class UserService implements IUserService, Serializable {
     @Override
     public boolean isUsernameAvailable(String username) {
         List<User> userList = getUserDao().findByExample(new User(username,null,null,null));
-        return userList==null || userList.isEmpty();
+        return (userList==null || userList.isEmpty()) && !User.ENINE_USER.equals(username);
     }
 
     /* (non-Javadoc)
@@ -125,7 +126,20 @@ public class UserService implements IUserService, Serializable {
     @Override
     public boolean isEmailAvailable(String email) {
         List<User> userList = getUserDao().findByExample(new User(null,email,null,null));
-        return userList==null || userList.isEmpty();
+        return (userList==null || userList.isEmpty()) && !User.ENINE_EMAIL.equals(email);
+    }
+
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IUserService#getEngineUser()
+     */
+    @Override
+    public User getEngineUser() {
+       User user = findUser(User.ENINE_USER);
+       if(user==null) {
+           user = new User(User.ENINE_USER, User.ENINE_EMAIL, null, null);
+           save(user);
+       }     
+       return user;
     }
 
     

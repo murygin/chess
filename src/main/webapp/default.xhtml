@@ -87,9 +87,14 @@
 							<p:selectOneRadio id="colorGame" value="#{game.colorNew}">  
 					            <f:selectItem itemLabel="White" itemValue="w" />  
 					            <f:selectItem itemLabel="Black" itemValue="b" />  
-					        </p:selectOneRadio>  
+					        </p:selectOneRadio> 
+                            <h:outputLabel for="type" value="Opponent type:" /> 
+                            <p:selectOneRadio id="type" value="#{game.typeNew}">  
+                                 <f:selectItem itemLabel="human" itemValue="human" />  
+                                 <f:selectItem itemLabel="engine" itemValue="engine" />  
+                             </p:selectOneRadio>  
 							<h:outputLabel for="emailGame" value="Opponent email: " /> 
-							<p:inputText id="emailGame" value="#{game.emailNew}" required="true" label="email"/>
+							<p:inputText id="emailGame" value="#{game.emailNew}" label="email"/>
 							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
 							<h:panelGroup>
 								<p:commandButton value="Create" actionListener="#{game.create}" update=":gameListContainer,:boardContainer,:newGameContainer" />									
@@ -185,10 +190,20 @@
 							</table>
 						</div>	
 						<div id="section-move">
-							<table>
+                           <script type="text/javascript">
+                              function calculateNextMove() {
+                            	  g.renderMessage({summary:'Calculating next move. Please wait.', detail: '', severity: 'info'});
+                            	  calculateRemote();
+                              }
+                           </script>
+                           <p:remoteCommand name="calculateRemote" actionListener="#{game.calculateMove}" update=":gameListContainer,:boardContainer,:moveListContainer"/>
+						   <table>
 								<tr>
                                     <td><p:commandButton action="#{game.historyBack}" update=":boardContainer,:moveListContainer" value="&lt;" disabled="#{game.firstMove}"/></td>
-									<td><p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" disabled="#{! game.myTurn}"/></td>
+									<td>
+                                       <p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn and game.isHumanOpponent}"/>                                   
+                                       <p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" oncomplete="calculateNextMove();" value="Move" rendered="#{game.myTurn and !game.isHumanOpponent}"/>
+                                    </td>
 								    <td><p:commandButton action="#{game.historyForward}" update=":boardContainer,:moveListContainer" value="&gt;" disabled="#{! game.historyMode}"/></td>
                                  </tr>						
 							</table>									
