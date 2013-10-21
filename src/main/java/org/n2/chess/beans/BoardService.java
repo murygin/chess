@@ -277,13 +277,14 @@ public class BoardService implements IBoardService, Serializable {
     }
 
     private boolean isCastlingMove(int row, Square dest, String side) {
+        boolean castling = false;
         if(Board.CASTLING_KINGSIDE.equals(side)){
-            return dest.getRow()==row && dest.getColumn()==7;
+            castling = dest.getRow()==row && (dest.getColumn()==7 || dest.getColumn()==6);        
         }
         if(Board.CASTLING_QUEENSIDE.equals(side)){
-            return dest.getRow()==row && dest.getColumn()==0;
+            return dest.getRow()==row && (dest.getColumn()==0 || dest.getColumn()==2);
         }
-        return false;
+        return castling;
     }
 
     private static Integer getNumber(char c) {
