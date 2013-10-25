@@ -20,10 +20,10 @@
 package org.n2.chess.beans;
 
 import java.util.Collection;
-import java.util.Locale;
 
 import de.schildbach.game.GameMove;
 import de.schildbach.game.common.ChessLikeMove;
+import de.schildbach.game.common.ChessLikeRules.CheckState;
 
 /**
  *
@@ -34,9 +34,6 @@ public interface IRuleService {
     void parsePosition(String fen);
     GameMove parseMove(String notation);
     Collection<? extends ChessLikeMove> getAllowedMoves();
-    /**
-     * @param notation
-     * @return
-     */
     Collection<? extends ChessLikeMove> getAllowedMoves(String notationSource);
+    CheckState getMateState();
 }

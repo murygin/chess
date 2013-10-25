@@ -33,6 +33,7 @@ import de.schildbach.game.GameMove;
 import de.schildbach.game.GamePosition;
 import de.schildbach.game.chess.ChessRules;
 import de.schildbach.game.common.ChessLikeMove;
+import de.schildbach.game.common.ChessLikeRules.CheckState;
 
 /**
  *
@@ -47,10 +48,13 @@ public class RuleService implements IRuleService, Serializable {
     GamePosition position = null;
     Board initialBoard = null;
     Collection<? extends ChessLikeMove> allowedMoves;
+    CheckState checkState = null;
     
+    @Override
     public void parsePosition(String fen) {
         position = getRules().parsePosition(fen);
         allowedMoves = getRules().allowedMoves(position, getInitialBoard());
+        checkState = getRules().checkState(position, getInitialBoard());
     }
     
     /* (non-Javadoc)
@@ -92,7 +96,14 @@ public class RuleService implements IRuleService, Serializable {
         return moveList;
     }
     
-
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IRuleService#getCheckState()
+     */
+    @Override
+    public CheckState getMateState() {
+        return checkState;
+    }
+    
     public ChessRules getRules() {
         if(rules==null) {
             rules = new ChessRules(null);
@@ -108,8 +119,5 @@ public class RuleService implements IRuleService, Serializable {
         }
         return initialBoard;
     }
-
-   
-    
-    
+ 
 }

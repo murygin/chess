@@ -34,6 +34,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import de.schildbach.game.common.ChessLikeMove;
+import de.schildbach.game.common.ChessLikeRules.CheckState;
 import de.schildbach.game.exception.ParseException;
 
 /**
@@ -179,6 +180,11 @@ public class BoardBean implements Serializable {
         getBoard().setSource(getSource());
         setDest(getSquare(destNotation));
         getBoard().setDest(getDest());
+    }
+    
+    public boolean isMate() {
+        return CheckState.CHECKMATE.equals(getRuleService().getMateState()) ||
+               CheckState.STALEMATE.equals(getRuleService().getMateState());
     }
     
     /**

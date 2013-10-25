@@ -156,10 +156,13 @@ public class GameBean implements Serializable{
     private void initBoardBean() {
         getBoardBean().setColorPlayer(getMyColor());
         getBoardBean().setGame(getSelectedGame());
-        if(getMyTurn()) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
+        String status = getSelectedGame().getStatus();
+        if(Game.BLACK.equals(status) || Game.WHITE.equals(status)) {
+            if(getMyTurn()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
+            }
         }
     }
     
@@ -238,15 +241,17 @@ public class GameBean implements Serializable{
     }
     
     public void calculateMove() {
-       NextMove nextMove = new NextMove();
-       String notation = nextMove.caclculateNextMove(getSelectedGame().getFen(), 8);
-       if (LOG.isDebugEnabled()) {
-           LOG.debug("Calculated next move: " + notation);
+       if(!getBoardBean().isMate()) {
+           NextMove nextMove = new NextMove();
+           String notation = nextMove.caclculateNextMove(getSelectedGame().getFen(), 8);
+           if (LOG.isDebugEnabled()) {
+               LOG.debug("Calculated next move: " + notation);
+           }
+           getBoardBean().setSourceAndDest(notation);
+           getBoardBean().setColorPlayer(getSelectedGame().getStatus());
+           doMove();
+           loadGame();
        }
-       getBoardBean().setSourceAndDest(notation);
-       getBoardBean().setColorPlayer(getSelectedGame().getStatus());
-       doMove();
-       loadGame();
     }
     
 
@@ -273,11 +278,27 @@ public class GameBean implements Serializable{
             move.setDate(date);
             move.setMove(notation);
             move.setFen(getSelectedGame().getFen());
+            String activeColor = getBoardBean().getBoard().getActive();
             getSelectedGame().getMoveSet().add(move);
-            getSelectedGame().setStatus(getBoardBean().getBoard().getActive());
+            getSelectedGame().setStatus(activeColor);
             getSelectedGame().setLastMoveDate(date);
             getSelectedGame().setNotifyDate(null);
             getSelectedGame().setDrawOffer(null);
+            if(getBoardBean().isMate()) {
+                String mateMessage = "You won!";
+                if(Board.WHITE.equals(activeColor)) {
+                    getSelectedGame().setStatus(Game.BLACK_WIN);
+                    if(Board.WHITE.equals(getMyColor())) {
+                        mateMessage = "You lost.";
+                    }
+                } else {
+                    getSelectedGame().setStatus(Game.WHITE_WIN);
+                    if(Board.BLACK.equals(getMyColor())) {
+                        mateMessage = "You lost.";
+                    }
+                }
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Checkmate", mateMessage));
+            }
             getGameService().updateGame(getSelectedGame());
             if (LOG.isDebugEnabled()) {
                 LOG.debug("New move saved, new FEN: " + getSelectedGame().getFen() + ", game-id: " + getSelectedGame().getId());
@@ -434,6 +455,8 @@ public class GameBean implements Serializable{
         } else if(Game.DRAW.equals(status)) {
             message.append("Draw");
         } else if(Game.WHITE.equals(getMyColor()) && Game.WHITE_WIN.equals(status)) {
+            message.append("You won!");
+        } else if(Game.BLACK.equals(getMyColor()) && Game.BLACK_WIN.equals(status)) {
             message.append("You won!");
         } else {
             message.append("You lost.");
