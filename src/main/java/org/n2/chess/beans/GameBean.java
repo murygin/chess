@@ -244,6 +244,7 @@ public class GameBean implements Serializable{
            LOG.debug("Calculated next move: " + notation);
        }
        getBoardBean().setSourceAndDest(notation);
+       getBoardBean().setColorPlayer(getSelectedGame().getStatus());
        doMove();
        loadGame();
     }
