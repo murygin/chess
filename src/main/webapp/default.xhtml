@@ -14,7 +14,7 @@
 			<p:outputPanel id="gameListContainer" >
 				<p:outputPanel id="gameListPanel" rendered="#{user.ok}">
 					<h2>Game list</h2>
-					<h:form>
+					<h:form id="gameListForm">
 						<div id="game-list">
 							<ul>
 								<ui:repeat value="#{game.gameInfoList}" var="g">
@@ -30,7 +30,7 @@
 						</div>
 					</h:form>
 					<div id="section-new-game">
-						<h:form>
+						<h:form id="newGameButtonForm">
 							<p:commandButton value="New Game" actionListener="#{game.toggleNewGame}"  update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer" rendered="#{!game.newGameVisible}"/>	
 							<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer" rendered="#{game.newGameVisible}"/>							
 						</h:form>
@@ -40,7 +40,7 @@
 		</div>
 		<div id="content">
 			<p:outputPanel id="boardContainer">
-                <h:form>
+                <h:form id="boardForm">
 				    <p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
                         <table id="status">
                            <tr>
@@ -79,29 +79,41 @@
                 </h:form>
 			</p:outputPanel>
 			<p:outputPanel id="newGameContainer" >
-				<p:outputPanel id="newGamePanel" rendered="#{user.ok and game.newGameVisible}">
-					<h2>New game</h2>
-					<h:form>
-						<h:panelGrid id="newGameGrid" columns="1" cellpadding="5">
-							<h:outputLabel for="colorGame" value="Your color: " /> 
-							<p:selectOneRadio id="colorGame" value="#{game.colorNew}">  
-					            <f:selectItem itemLabel="White" itemValue="w" />  
-					            <f:selectItem itemLabel="Black" itemValue="b" />  
-					        </p:selectOneRadio> 
-                            <h:outputLabel for="type" value="Opponent type:" /> 
-                            <p:selectOneRadio id="type" value="#{game.typeNew}">  
-                                 <f:selectItem itemLabel="human" itemValue="human" />  
-                                 <f:selectItem itemLabel="engine" itemValue="engine" />  
-                             </p:selectOneRadio>  
-							<h:outputLabel for="emailGame" value="Opponent email: " /> 
-							<p:inputText id="emailGame" value="#{game.emailNew}" label="email"/>
-							<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
-							<h:panelGroup>
-								<p:commandButton value="Create" actionListener="#{game.create}" update=":gameListContainer,:boardContainer,:newGameContainer" />									
-							</h:panelGroup>						
-						</h:panelGrid>
-					</h:form>
-				</p:outputPanel>
+                <h:form id="newGameForm"> 
+                  <script type="text/javascript">
+                      function calculateFirstMove() {
+                       var engine = typeRadio.inputs[1].checked;
+                         var black = colorRadio.inputs[1].checked;
+                         if(engine &amp;&amp; black) {
+                          g.renderMessage({summary:'Calculating first move. Please wait.', detail: '', severity: 'info'});                           
+                          calculateFirstMoveRemote();
+                         }
+                      }
+                  </script> 
+                  <p:remoteCommand id="calculateFirstMove" name="calculateFirstMoveRemote" actionListener="#{game.calculateMove}" update=":gameListContainer,:boardContainer,:moveListContainer"/>
+                  <p:outputPanel id="newGamePanel" rendered="#{user.ok and game.newGameVisible}">
+					<h2>New game</h2>				                    
+                     <h:panelGrid id="newGameGrid" columns="1" cellpadding="5">
+                         <h:outputLabel for="colorGame" value="Your color: " /> 
+						<p:selectOneRadio id="colorGame" value="#{game.colorNew}" widgetVar="colorRadio">  
+				            <f:selectItem itemLabel="White" itemValue="w" />  
+				            <f:selectItem itemLabel="Black" itemValue="b" />  
+				        </p:selectOneRadio> 
+                         <h:outputLabel for="type" value="Opponent type:" /> 
+                         <p:selectOneRadio id="type" value="#{game.typeNew}" widgetVar="typeRadio">  
+                              <f:selectItem itemLabel="human" itemValue="human" />  
+                              <f:selectItem itemLabel="engine" itemValue="engine" />  
+                          </p:selectOneRadio>  
+						<h:outputLabel for="emailGame" value="Opponent email: " /> 
+						<p:inputText id="emailGame" value="#{game.emailNew}" label="email"/>
+						<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
+						<h:panelGroup>
+							<p:commandButton value="Create" actionListener="#{game.create}" oncomplete="calculateFirstMove();" update=":gameListContainer,:boardContainer,:newGameContainer" />									
+						</h:panelGroup>						
+					</h:panelGrid>
+					
+				  </p:outputPanel>
+               </h:form>
 			</p:outputPanel>
 			<p:outputPanel id="registerContainer" >
 				<p:outputPanel id="registerPanel" rendered="#{!user.ok and register.registerVisible}" >
@@ -142,7 +154,7 @@
 			<p:outputPanel id="loginContainer" >
 				<p:outputPanel id="loginPanel" rendered="#{!user.ok and register.loginVisible}" >
 					<h2>Login</h2>
-					<h:form>
+					<h:form id="loginForm">
 						<h:panelGrid id="loginGrid" columns="1" cellpadding="2">
 							<h:outputLabel for="usernameLogin" value="Username: " /> 
 							<p:inputText id="usernameLogin" value="#{register.login}" required="true" label="username"/>
@@ -159,7 +171,7 @@
 		<div id="aside">
 			<p:outputPanel id="moveListContainer" >
 				<p:outputPanel id="moveListPanel" rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">
-					<h:form>
+					<h:form id="moveListForm">
 						<h2>Move list</h2>
 						<div id="move-list">
 							<table>
@@ -191,12 +203,12 @@
 						</div>	
 						<div id="section-move">
                            <script type="text/javascript">
-                              function calculateNextMove() {
+                               function calculateNextMove() {
                             	  g.renderMessage({summary:'Calculating next move. Please wait.', detail: '', severity: 'info'});
                             	  calculateRemote();
-                              }
+                               }
                            </script>
-                           <p:remoteCommand name="calculateRemote" actionListener="#{game.calculateMove}" update=":gameListContainer,:boardContainer,:moveListContainer"/>
+                           <p:remoteCommand id="calculateNextMove" name="calculateRemote" actionListener="#{game.calculateMove}" update=":gameListContainer,:boardContainer,:moveListContainer"/>
 						   <table>
 								<tr>
                                     <td><p:commandButton action="#{game.historyBack}" update=":boardContainer,:moveListContainer" value="&lt;" disabled="#{game.firstMove}"/></td>
