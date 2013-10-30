@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui">
+   <ui:composition>
+      <p:outputPanel id="readmeContainer" >
+         <p:outputPanel id="readmePanel" rendered="#{!user.ok and !register.registerVisible and !register.loginVisible}" >
+            <h2>Welcome!</h2>
+            <p>This is an online chessboard. You can play with your friends or you can battle a chess engine called Flux.</p>
+         </p:outputPanel>
+      </p:outputPanel>
+   </ui:composition>
+</html>
