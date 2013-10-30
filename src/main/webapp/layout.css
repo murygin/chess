@@ -5,50 +5,6 @@
 	background: #fff;
 }
 
-#header
-{
-	background: #ccc;
-	padding: 20px;
-}
-
-#header h1 
-{ 
-	margin: 0; 
-}
-
-#navigation
-{
-	float: left;
-	width: 800px;
-	background: #333;
-}
-
-#navigation ul
-{
-	margin: 0;
-	padding: 0;
-}
-
-#navigation ul li
-{
-	list-style-type: none;
-	display: inline;
-}
-
-#navigation li a, #navigation li label
-{
-	display: block;
-	float: left;
-	padding: 5px 10px;
-	color: #fff;
-	text-decoration: none;
-	border-right: 1px solid #fff;
-}
-
-#navigation li a:hover { 
-	background: #383; 
-}
-
 #content-container
 {
 	float: left;
@@ -60,7 +16,7 @@
 {
 	float: left;
 	width: 160px;
-	height: 395px;
+	height: 385px;
 	padding: 20px 0 0 20px;
 	display: inline;
 	position: relative;
@@ -87,7 +43,7 @@
 
 #game-list
 {
-	height: 300px;
+	height: 287px;
 	width: 156px;
 	overflow: auto;
 }
@@ -99,6 +55,7 @@
 
 #section-new-game
 {
+	padding-top: 12px;
 }
 
 #move-list
@@ -110,7 +67,7 @@
 #section-move-display
 {
 	height: 30px;
-	padding-top: 10px;
+	padding-top: 8px;
 }
 
 #section-move
@@ -121,7 +78,7 @@
 {
 	float: left;
 	width: 370px;
-	height: 395px;
+	height: 385px;
 	padding: 20px 20px 0 20px;
 	border-right: solid 1px #e3e2e2;
 	border-left: solid 1px #e3e2e2;
@@ -146,7 +103,7 @@
 {
 	float: right;
 	width: 164px;
-	height: 395px;
+	height: 385px;
 	padding: 20px 20px 0 0;
 	display: inline;
 	position: relative;
@@ -162,19 +119,59 @@
 	background: #ccc;
 }
 
+.ui-messages-info, .ui-message-info {
+    background-color: #6B88A1;
+    color: #dddddd;
+}
+
+.ui-messages-error, .ui-message-error {
+    background-color: #E05543;
+    color: #ffffff;
+}
+
 #messages .ui-messages
 {
-	margin: 0 10px 0 10px;
+/* 	margin: 0 10px 0 10px; */
+}
+
+.ui-messages-info, .ui-messages-warn, .ui-messages-error, .ui-messages-fatal {
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	border-left: 0px;
+	border-right: 0px;
+}
+
+.ui-messages-info-icon, .ui-messages-warn-icon, .ui-messages-error-icon, .ui-messages-fatal-icon, .ui-message-info-icon, .ui-message-warn-icon, .ui-message-error-icon, .ui-message-fatal-icon {
+    background: none;
+    height: 0px;
+    width: 0px;
+}
+
+.ui-messages ul {
+	margin: 0;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
 }
 
 #footer
 {
 	clear: left;
-	background: #ccc;
+	background: none repeat scroll 0 0 rgba(101, 96, 116, 0.8);
+	color: #FFFFFF;
 	text-align: right;
 	padding: 7px;
 	height: 1%;
 	font-size: x-small;
+}
+#footer a:link {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+#footer a:visited {
+	text-decoration:none;
+	color: #EEEEEE;;
 }
 
 .ui-inputfield

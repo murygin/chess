@@ -146,7 +146,7 @@
 			            	<p:message id="pwd2Msg" for="pwd2" showSummary="true" showDetail="false"/>
 			            	
 			            	<h:outputLabel value="" /> 
-			            	<p:commandButton value="Register" update=":registerContainer,:loginContainer,:loginToggle,:gameListContainer" actionListener="#{register.register}" />      	
+			            	<p:commandButton value="Register" update=":registerContainer,:loginContainer,:loginToggle,:gameListContainer,:readmeContainer" actionListener="#{register.register}" />      	
 						</h:panelGrid>
 					</h:form>
 				</p:outputPanel>
@@ -162,12 +162,15 @@
 							<h:outputLabel for="pwdLogin" value="Password: " />  
 			            	<p:password id="pwdLogin" value="#{register.password}" feedback="false"  label="Password" required="true" />
 			            				           
-			            	<p:commandButton value="Login" actionListener="#{register.login}"  update=":boardContainer,:registerContainer,:loginContainer,:loginToggle,:gameListContainer,:moveListContainer" />
+			            	<p:commandButton value="Login" actionListener="#{register.login}"  update=":boardContainer,:registerContainer,:loginContainer,:loginToggle,:gameListContainer,:moveListContainer,:readmeContainer" />
 						</h:panelGrid>
 					</h:form>
 				</p:outputPanel>
-			</p:outputPanel>
-		</div>
+			</p:outputPanel>    
+            <ui:insert name="readme">
+               <ui:include src="readme.xhtml" />
+            </ui:insert>   
+        </div>
 		<div id="aside">
 			<p:outputPanel id="moveListContainer" >
 				<p:outputPanel id="moveListPanel" rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">

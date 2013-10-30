@@ -7,33 +7,51 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 <body>
-	<ui:composition>
-		<p:outputPanel id="loginToggle">
-			<h:form>			
-				<ul>
-					<p:outputPanel id="userNamePanel" rendered="#{user.ok}">
-						<li><h:outputLabel value="User: #{user.user.login}" /></li>
-						<li>
-							<p:commandLink actionListener="#{register.logout}" update=":loginToggle,:gameListContainer,:newGameContainer,:boardContainer,:moveListContainer">
-								<h:outputText value="Logout" />
-							</p:commandLink>
-						</li>
-					</p:outputPanel>
-					<p:outputPanel id="loginLinkPanel" rendered="#{!user.ok}">
-						<li>
-							<p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer,:loginContainer" rendered="#{!user.ok}">
-								<h:outputText value="Register" />
-							</p:commandLink>
-						</li>
-						<li>
-							<p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer,:registerContainer" rendered="#{!user.ok}">
-								<h:outputText value="Login" />
-							</p:commandLink>
-						</li>
-					</p:outputPanel>		
-				</ul>			
-			</h:form>
-		</p:outputPanel>
-	</ui:composition>
+   <ui:composition>
+      <p:outputPanel id="loginToggle">
+         <header>                    
+             <h1>Chess In The Cloud</h1>
+             <nav>
+               <h:form> 
+                  <ul>
+                      <li>
+                        <p:ajaxStatus >
+                           <f:facet name="start">
+                              <p:graphicImage value="/image/loader.gif"/>                      
+                           </f:facet>
+                           <f:facet name="complete">  
+                              <h:outputText value="&nbsp;" styleClass="loader"/>
+                           </f:facet>              
+                        </p:ajaxStatus>
+                     </li> 
+                     <p:outputPanel id="userNamePanel" rendered="#{user.ok}">                     
+                        <li><h:outputLabel value="User: #{user.user.login}" /></li>
+                        <li>
+                           <p:commandLink actionListener="#{register.logout}" update=":loginToggle,:gameListContainer,:newGameContainer,:boardContainer,:moveListContainer,:loginToggle,:readmeContainer">
+                              <h:outputText value="Logout" />
+                              <span></span>
+                           </p:commandLink>
+                        </li>
+                     </p:outputPanel>
+                     <p:outputPanel id="loginLinkPanel" rendered="#{!user.ok}">
+                        <li class="#{register.registerStyle}">
+                           <p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer,:loginContainer,:loginToggle,:readmeContainer" rendered="#{!user.ok}">
+                              <h:outputText value="Register" />
+                              <span></span>
+                           </p:commandLink>
+                        </li>
+                        <li class="#{register.loginStyle}">
+                           <p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer,:registerContainer,:loginToggle,:readmeContainer" rendered="#{!user.ok}">
+                              <h:outputText value="Login" />
+                              <span></span>
+                           </p:commandLink>
+                        </li>
+                     </p:outputPanel>                               
+                  </ul>
+               </h:form>
+             </nav>                                 
+         </header>
+	  </p:outputPanel>
+   </ui:composition>
 </body>
 </html>

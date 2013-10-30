@@ -17,27 +17,15 @@
 </h:head>
 <h:body>	
 	<div id="container">
-		<div id="header">
-			<h1>Chess In The Cloud</h1>
-		</div>
 		<div id="navigation">
 			<ui:insert name="header">
 				<ui:include src="header.xhtml" />
 			</ui:insert>
 		</div>
 		<div id="content-container">
-			<ui:insert name="content" />		
+			<ui:insert name="content" />
 		</div>
-		<div id="messages">
-			<p:ajaxStatus>
-				<f:facet name="start">
-					<p:graphicImage value="/image/loader.gif" styleClass="loader"/>
-					<h:outputText value="Please wait..." styleClass="loader"/>								
-				</f:facet>
-				<f:facet name="complete">	
-					<h:outputText value="" styleClass="loader"/>
-				</f:facet>					
-			</p:ajaxStatus>
+		<div id="messages">		
 			<p:messages showDetail="true" autoUpdate="true"/>
             <p:growl widgetVar="g" />
 		</div>	

@@ -343,6 +343,14 @@ public class RegisterBean implements Serializable {
     public boolean getRegisterVisible() {
         return registerVisible;
     }
+    
+    public String getRegisterStyle() {
+        return (getRegisterVisible()) ? "current" : "" ;
+    }
+    
+    public String getLoginStyle() {
+        return (getLoginVisible()) ? "current" : "" ;
+    }
 
     /**
      * @param registerVisible the registerVisible to set

@@ -1,6 +1,87 @@
+header {
+    background: none repeat scroll 0 0 rgba(101, 96, 116, 0.8);
+    height: 70px;
+    top: 0px;
+}
+
+header h1 {
+	color: #FFFFFF;
+    height: 26px;
+    padding-top: 20px;
+    float: left;
+    font-size: 24px;
+    letter-spacing: 2px;
+    line-height: 1em;;
+    height: 16px;
+    padding-top: 11px;
+    padding-left: 15px;
+}
+header nav {
+    display: block;
+    padding-top: 35px;
+    float: right;
+}
+
+header nav a:link {
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+header nav li {
+    border-right: 3px solid #FFFFFF;
+    float: left;
+    font-size: 14px;
+    letter-spacing: 2px;
+    line-height: 1em;
+    margin-right: 15px;
+    padding-right: 15px;
+    position: relative;
+}
+
+header nav li.noborder {
+    border-right: 0;
+    float: left;
+    font-size: 0px;
+    letter-spacing: 2px;
+    line-height: 1em;
+    margin-right: 0px;
+    padding-left: 18px;
+    position: relative;
+}
+
+.loader {
+	width: 25px;
+}
+
+header nav li label {
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+header nav li.current a span {
+    background: none repeat scroll 0 0 #FFFFFF;
+    bottom: -21px;
+    height: 4px;
+    left: 0;
+    position: absolute;
+    right: 15px;
+}
+
+ul, ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+
 body {
 	font-family: Arial,sans-serif;
     font-size: .8em;
+    color: #746E85;
+}
+
+h2 {
+	/*color: #FF7D7B;*/
 }
 
 div.board {
@@ -31,7 +112,7 @@ table.board td img{
 }
 
 table.board td.white{
-	background-color:#cccccc;
+	background-color:#dedede;
 }
 table.board td.white-next{
 	background-color:#b5eab5;
@@ -62,7 +143,7 @@ table.board td.white-dest-last-next {
 }
 
 table.board td.black{
-	background-color:#775555;
+	background-color:#999999;
 }
 table.board td.black-next{
 	background-color:#56ad56;
@@ -94,23 +175,19 @@ table.board td.black-dest-last-next {
 
 a:link {
 	text-decoration:none;
-	color: #000000;
+	color: #746E85;
 }
 a:visited {
 	text-decoration:none;
-	color: #000000;
+	color: #746E85;
 }
 a:hover {
 		text-decoration:none;
-		color: #770000
+		color: #FF7D7B
 }
 a:active {
 	text-decoration:none;
-	color: #000000;
-}
-
-.loader {
-	padding: 1px 10px;
+	color: #746E85;
 }
 
 .currentMove {
@@ -120,4 +197,8 @@ a:active {
 .selected {
 	color: #eeeeee;
 	background-color: #222222;
+}
+
+.ui-button {
+	color: #746E85;
 }
