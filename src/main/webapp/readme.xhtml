@@ -8,10 +8,23 @@
    xmlns:p="http://primefaces.org/ui">
    <ui:composition>
       <p:outputPanel id="readmeContainer" >
+         <h:form>
          <p:outputPanel id="readmePanel" rendered="#{!user.ok and !register.registerVisible and !register.loginVisible}" >
             <h2>Welcome!</h2>
-            <p>This is an online chessboard. You can play with your friends or you can battle a chess engine called Flux.</p>
+            <p>
+            This is an online chessboard. 
+            You can play with your friends or you can battle a chess engine called <a href="http://fluxchess.com/">Flux Chess</a>.
+            </p>
+            <p>
+            To get started click <p:commandLink actionListener="#{register.toggleRegister}" update=":registerContainer,:loginContainer,:loginToggle,:readmeContainer">this link to register</p:commandLink>.
+            If you are alredy registered <p:commandLink actionListener="#{register.toggleLogin}" update=":loginContainer,:registerContainer,:loginToggle,:readmeContainer">login here</p:commandLink>.
+            </p>
+            <p>       
+            After registering or logging in you can start a new game. You can play against other registered persons or a computer which is running a chess engine.
+            If you want to play against a person, the person must be registered too and you also need to know the email address. New moves from your opponent will be send to you by email.
+            </p>
          </p:outputPanel>
+         </h:form>
       </p:outputPanel>
    </ui:composition>
 </html>
