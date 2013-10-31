@@ -41,6 +41,8 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
     public static final String DRAW = "draw";
     public static final String LOSS = "loss";
     
+    public static final String STYLE_CURRENT = "current";
+    
     private static final String IMAGE_FOLDER = "image/";
     
     private static Map<String, Integer> STATUS_SORT_MAP;
@@ -82,6 +84,8 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
     String lastMove;
     
     String status;
+    
+    String style;
     
     public GameInfo(Game game, User user) {
         this.game = game;
@@ -157,6 +161,17 @@ public class GameInfo implements Serializable, Comparable<GameInfo>{
         return status;
     }
     
+    public String getStyle() {
+        if(style==null) {
+            return "";
+        }
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
     public String getStatusImage() {
         return STATUS_IMAGE_MAP.get(getStatus());
     }

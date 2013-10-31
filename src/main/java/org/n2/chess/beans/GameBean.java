@@ -160,8 +160,6 @@ public class GameBean implements Serializable{
         if(Game.BLACK.equals(status) || Game.WHITE.equals(status)) {
             if(getMyTurn()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "It's your turn", "To move click the board."));         
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Please wait", "It's not your turn."));
             }
         }
     }
@@ -500,6 +498,13 @@ public class GameBean implements Serializable{
         if(!getGameInfoList().contains(selectedGameInfo)) {
             getGameInfoList().add(selectedGameInfo);
             Collections.sort(gameInfoList);
+        }
+        for (GameInfo gameInfo : getGameInfoList()) {
+            if(gameInfo.equals(selectedGame)) {
+                gameInfo.setStyle(GameInfo.STYLE_CURRENT);
+            } else {
+                gameInfo.setStyle(null);
+            }
         }
         if(!getGameList().contains(selectedGameInfo.getGame())) {
             getGameList().add(selectedGameInfo.getGame());

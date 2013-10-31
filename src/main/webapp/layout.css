@@ -25,7 +25,12 @@
 
 #section-navigation h2, #aside h2
 {
-	margin: 0 0 15px 0;	
+	margin: 0 0 15px 0px;	
+}
+
+#section-navigation #gameListPanel h2
+{
+	margin: 0 0 15px 8px;	
 }
 
 #section-navigation ul
@@ -39,6 +44,31 @@
 	margin: 0 0 1em;
 	padding: 0;
 	list-style-type: none;
+	border-left: 4px solid #ffffff;
+}
+
+.Your.turn
+{
+
+}
+
+#section-navigation ul li.current
+{
+	margin: 0 0 1em;
+	padding: 0;
+	list-style-type: none;
+	border-left: 4px solid #e3e2e2;
+}
+
+#section-navigation ul li a
+{ 
+	padding-left: 5px;
+}
+
+#section-navigation ul li a.Your.turn
+{ 
+	border-left: 2px solid #FF7D7B;
+	padding-left: 3px;
 }
 
 #game-list
