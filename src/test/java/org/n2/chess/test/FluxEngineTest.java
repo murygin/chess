@@ -35,13 +35,11 @@ public class FluxEngineTest {
     @Test
     public void test() {
         String fen = "r1bnkbnr/ppp2ppp/8/4p3/8/2N2N2/PPP1PPPP/R1B1KB1R w KQkq - 0 11";
-        NextMove nextMove = new NextMove(fen, 1);
+        NextMove nextMove = new NextMove(fen, 10);
+        LOG.debug("Start calculating...");
         String move = nextMove.caclculateNextMove();
         
-        
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Next move: " + move);
-        }
+        LOG.debug("Next move: " + move);
     }
     
 

@@ -68,8 +68,7 @@ public class NextMove extends AbstractCommunication implements ICommunication {
         try {
             this.engineCommandQueue.add(new EngineAnalyzeCommand(new GenericBoard(fen), new ArrayList<GenericMove>()));
         } catch (IllegalNotationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Illegal notation: " + fen, e);
         }
         EngineStartCalculatingCommand engineCommand = new EngineStartCalculatingCommand();
         engineCommand.setMoveTime(seconds * 1000);
