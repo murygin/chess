@@ -240,8 +240,8 @@ public class GameBean implements Serializable{
     
     public void calculateMove() {
        if(!getBoardBean().isMate()) {
-           NextMove nextMove = new NextMove();
-           String notation = nextMove.caclculateNextMove(getSelectedGame().getFen(), 8);
+           NextMove nextMove = new NextMove(getSelectedGame().getFen(), 8);
+           String notation = nextMove.caclculateNextMove();
            if (LOG.isDebugEnabled()) {
                LOG.debug("Calculated next move: " + notation);
            }

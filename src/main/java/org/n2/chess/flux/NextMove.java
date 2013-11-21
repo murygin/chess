@@ -19,13 +19,28 @@
  ******************************************************************************/
 package org.n2.chess.flux;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import jcpi.AbstractCommunication;
 import jcpi.AbstractEngine;
+import jcpi.ICommunication;
+import jcpi.commands.EngineAnalyzeCommand;
+import jcpi.commands.EngineNewGameCommand;
 import jcpi.commands.EngineQuitCommand;
-import jcpi.commands.EngineStopCalculatingCommand;
+import jcpi.commands.EngineReadyRequestCommand;
+import jcpi.commands.EngineStartCalculatingCommand;
+import jcpi.commands.GuiBestMoveCommand;
+import jcpi.commands.GuiInformationCommand;
+import jcpi.commands.GuiInitializeAnswerCommand;
+import jcpi.commands.GuiReadyAnswerCommand;
+import jcpi.commands.IEngineCommand;
+import jcpi.commands.IGuiCommand;
+import jcpi.data.GenericBoard;
+import jcpi.data.GenericMove;
+import jcpi.data.IllegalNotationException;
 
 import org.apache.log4j.Logger;
 
@@ -36,82 +51,70 @@ import com.fluxchess.Flux;
  *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class NextMove {
+public class NextMove extends AbstractCommunication implements ICommunication {
     
     private static final Logger LOG = Logger.getLogger(NextMove.class);
     
-    public String caclculateNextMove(String fen, long seconds) {
-        String nextMove = null;
-        try {
-            NextMoveComunication comunication = new NextMoveComunication(fen);
-            
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(new EngineTestThread(comunication));
-            //Thread thread = new Thread(new EngineTestThread(comunication));
-            //thread.start();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Engine thread startet, fen: " + fen);
-            }
-          
-            Thread.sleep(seconds*1000);
-            
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Sending stop and quit command...");
-            }
-            comunication.addCommand(new EngineStopCalculatingCommand());
-            comunication.addCommand(new EngineQuitCommand());
-            
-            shutdownAndAwaitTermination(executor);                
-            
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Next move: " + comunication.getNextMove());
-            }
-            nextMove = comunication.getNextMove();
-        } catch (InterruptedException e) {
-            LOG.error("Interrupted", e);
-        }
-        return nextMove;
-    }
+    private final BlockingQueue<IEngineCommand> engineCommandQueue = new LinkedBlockingQueue<IEngineCommand>();
     
-    void shutdownAndAwaitTermination(ExecutorService pool) {
-        pool.shutdown(); // Disable new tasks from being submitted
-        try {
-          // Wait a while for existing tasks to terminate
-          if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
-            pool.shutdownNow(); // Cancel currently executing tasks
-            // Wait a while for tasks to respond to being cancelled
-            if (!pool.awaitTermination(2, TimeUnit.SECONDS))
-                System.err.println("Pool did not terminate");
-          }
-        } catch (InterruptedException ie) {
-          // (Re-)Cancel if current thread also interrupted
-          pool.shutdownNow();
-          // Preserve interrupt status
-          Thread.currentThread().interrupt();
-        }
-      }
-    
-    public class EngineTestThread implements Runnable {
+    private long seconds;
+    private GenericMove result;
+
+    public NextMove(String fen, long seconds) {
+        this.seconds = seconds;
         
-        NextMoveComunication comunication;
-
-        /**
-         * @param comunication
-         */
-        public EngineTestThread(NextMoveComunication comunication) {
-            this.comunication = comunication;
+        this.engineCommandQueue.add(new EngineReadyRequestCommand());
+        this.engineCommandQueue.add(new EngineNewGameCommand());
+        try {
+            this.engineCommandQueue.add(new EngineAnalyzeCommand(new GenericBoard(fen), new ArrayList<GenericMove>()));
+        } catch (IllegalNotationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-
-        /* (non-Javadoc)
-         * @see java.lang.Thread#run()
-         */
-        @Override
-        public void run() {
-            AbstractEngine engine = new Flux(comunication);
-            engine.run();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Engine thread finished");
-            }
-        }
+        EngineStartCalculatingCommand engineCommand = new EngineStartCalculatingCommand();
+        engineCommand.setMoveTime(seconds * 1000);
+        this.engineCommandQueue.add(engineCommand);
     }
+
+    public String caclculateNextMove() {
+        AbstractEngine engine = new Flux(this);
+        engine.run();
+
+        return result.toString();
+    }
+
+    @Override
+    protected IEngineCommand receive() {
+        try {
+            // Wait 5 seconds longer than the engine calculates before giving up waiting
+			return this.engineCommandQueue.poll(seconds + 5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			return new EngineQuitCommand();
+		}
+    }
+
+    @Override
+    public void send(IGuiCommand guiCommand) {
+        guiCommand.accept(this);
+    }
+
+    @Override
+    public void visit(GuiInitializeAnswerCommand command) {
+    }
+
+    @Override
+    public void visit(GuiReadyAnswerCommand command) {
+    }
+
+    @Override
+    public void visit(GuiBestMoveCommand command) {
+        result = command.bestMove;
+        
+        engineCommandQueue.add(new EngineQuitCommand());
+    }
+
+    @Override
+    public void visit(GuiInformationCommand command) {
+    }
+
 }
