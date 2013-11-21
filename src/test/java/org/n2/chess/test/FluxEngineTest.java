@@ -19,8 +19,6 @@
  ******************************************************************************/
 package org.n2.chess.test;
 
-import jcpi.data.IllegalNotationException;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.n2.chess.flux.NextMove;
@@ -35,7 +33,7 @@ public class FluxEngineTest {
     private static final Logger LOG = Logger.getLogger(FluxEngineTest.class);
     
     @Test
-    public void test() throws IllegalNotationException {
+    public void test() {
         String fen = "r1bnkbnr/ppp2ppp/8/4p3/8/2N2N2/PPP1PPPP/R1B1KB1R w KQkq - 0 11";
         NextMove nextMove = new NextMove(fen, 1);
         String move = nextMove.caclculateNextMove();
