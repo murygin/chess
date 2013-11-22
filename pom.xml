@@ -177,7 +177,7 @@
         <dependency>
             <groupId>de.schildbach</groupId>
             <artifactId>game</artifactId>
-            <version>1.10</version>
+            <version>1.11</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
