@@ -4,11 +4,6 @@ Thanks to Flux Chess and Andreas Schildbach for chess and rule engine.
 
 This is a "just-for-fun-project".
 
-Application is build & deployed at Cloudbees.
-
-You can test ist here:
-http://chess.murygin.cloudbees.net
-
 Flux Chess engine: http://fluxchess.com/
 
 Rule engine: https://github.com/schildbach/de.schildbach.game
