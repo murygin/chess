@@ -24,34 +24,31 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import jcpi.AbstractCommunication;
-import jcpi.AbstractEngine;
-import jcpi.ICommunication;
-import jcpi.commands.EngineAnalyzeCommand;
-import jcpi.commands.EngineNewGameCommand;
-import jcpi.commands.EngineQuitCommand;
-import jcpi.commands.EngineReadyRequestCommand;
-import jcpi.commands.EngineStartCalculatingCommand;
-import jcpi.commands.GuiBestMoveCommand;
-import jcpi.commands.GuiInformationCommand;
-import jcpi.commands.GuiInitializeAnswerCommand;
-import jcpi.commands.GuiReadyAnswerCommand;
-import jcpi.commands.IEngineCommand;
-import jcpi.commands.IGuiCommand;
-import jcpi.data.GenericBoard;
-import jcpi.data.GenericMove;
-import jcpi.data.IllegalNotationException;
-
 import org.apache.log4j.Logger;
 
-import com.fluxchess.Flux;
+import com.fluxchess.flux.Flux;
+import com.fluxchess.jcpi.AbstractEngine;
+import com.fluxchess.jcpi.commands.EngineAnalyzeCommand;
+import com.fluxchess.jcpi.commands.EngineNewGameCommand;
+import com.fluxchess.jcpi.commands.EngineQuitCommand;
+import com.fluxchess.jcpi.commands.EngineReadyRequestCommand;
+import com.fluxchess.jcpi.commands.EngineStartCalculatingCommand;
+import com.fluxchess.jcpi.commands.IEngineCommand;
+import com.fluxchess.jcpi.commands.ProtocolBestMoveCommand;
+import com.fluxchess.jcpi.commands.ProtocolInformationCommand;
+import com.fluxchess.jcpi.commands.ProtocolInitializeAnswerCommand;
+import com.fluxchess.jcpi.commands.ProtocolReadyAnswerCommand;
+import com.fluxchess.jcpi.models.GenericBoard;
+import com.fluxchess.jcpi.models.GenericMove;
+import com.fluxchess.jcpi.models.IllegalNotationException;
+import com.fluxchess.jcpi.protocols.IProtocolHandler;
 
 /**
  *
  *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class NextMove extends AbstractCommunication implements ICommunication {
+public class NextMove  implements IProtocolHandler {
     
     private static final Logger LOG = Logger.getLogger(NextMove.class);
     
@@ -83,7 +80,7 @@ public class NextMove extends AbstractCommunication implements ICommunication {
     }
 
     @Override
-    protected IEngineCommand receive() {
+    public IEngineCommand receive() {
         try {
             // Wait 5 seconds longer than the engine calculates before giving up waiting
 			return this.engineCommandQueue.poll(seconds + 5, TimeUnit.SECONDS);
@@ -92,28 +89,38 @@ public class NextMove extends AbstractCommunication implements ICommunication {
 		}
     }
 
+
+    /* (non-Javadoc)
+     * @see com.fluxchess.jcpi.commands.IProtocol#send(com.fluxchess.jcpi.commands.ProtocolInitializeAnswerCommand)
+     */
     @Override
-    public void send(IGuiCommand guiCommand) {
-        guiCommand.accept(this);
+    public void send(ProtocolInitializeAnswerCommand command) {
+        command.accept(this);
     }
 
+    /* (non-Javadoc)
+     * @see com.fluxchess.jcpi.commands.IProtocol#send(com.fluxchess.jcpi.commands.ProtocolReadyAnswerCommand)
+     */
     @Override
-    public void visit(GuiInitializeAnswerCommand command) {
-    }
-
-    @Override
-    public void visit(GuiReadyAnswerCommand command) {
-    }
-
-    @Override
-    public void visit(GuiBestMoveCommand command) {
-        result = command.bestMove;
+    public void send(ProtocolReadyAnswerCommand command) {
         
+    }
+
+    /* (non-Javadoc)
+     * @see com.fluxchess.jcpi.commands.IProtocol#send(com.fluxchess.jcpi.commands.ProtocolBestMoveCommand)
+     */
+    @Override
+    public void send(ProtocolBestMoveCommand command) {
+        result = command.bestMove;       
         engineCommandQueue.add(new EngineQuitCommand());
     }
 
+    /* (non-Javadoc)
+     * @see com.fluxchess.jcpi.commands.IProtocol#send(com.fluxchess.jcpi.commands.ProtocolInformationCommand)
+     */
     @Override
-    public void visit(GuiInformationCommand command) {
+    public void send(ProtocolInformationCommand command) {
     }
+
 
 }
