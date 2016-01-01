@@ -44,7 +44,7 @@ import javax.persistence.TemporalType;
  *
  */
 @Entity
-@Table(name = "game", catalog = "cchess")
+@Table(name = "game")
 public class Game implements Serializable {
 
     public static final String BLACK = "b";

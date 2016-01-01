@@ -40,7 +40,7 @@ import org.n2.chess.beans.BoardService;
  *
  */
 @Entity
-@Table(name = "move", catalog = "cchess")
+@Table(name = "move")
 public class Move implements Serializable {
 
     private Integer id;

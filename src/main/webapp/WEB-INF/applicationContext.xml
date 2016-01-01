@@ -16,27 +16,31 @@
     
     <bean
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-            <value>/WEB-INF/classes/mail.properties</value>
-            <!--<value>/WEB-INF/classes/database.properties</value>-->
+        <property name="locations">
+        		<list>
+	            <value>/WEB-INF/classes/mail.properties</value>
+	            <!-- Optional property file for driver managed data source -->
+	            <value>/WEB-INF/classes/database.properties</value>        		
+        		</list>
         </property>
     </bean>
 
-    <!--
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
-	</bean>
-    -->
-
+		<!-- Driver managed data source (option A) -->
+		<bean id="dataSource"
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="${jdbc.driverClassName}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+		</bean>
+  
+  	<!-- Container managed datasource (option B) -->
+ 		<!--
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/cchess"/>   
         <property name="resourceRef" value="true" />
     </bean>
-
+-->
 	<!-- Hibernate session factory -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">

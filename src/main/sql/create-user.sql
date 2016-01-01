@@ -1,6 +1,6 @@
 --DROP TABLE `cchess`.`user`;
 
-CREATE TABLE  `cchess`.`user` (
+CREATE TABLE  `user` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `login` VARCHAR(100),
   `email` VARCHAR(100) NOT NULL,

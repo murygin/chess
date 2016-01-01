@@ -1,6 +1,6 @@
 --DROP TABLE `cchess`.`move`;
 
-CREATE TABLE  `cchess`.`move` (
+CREATE TABLE  `move` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `game_id` INT(10) UNSIGNED NOT NULL,
   `number` INT(10) UNSIGNED NOT NULL,
