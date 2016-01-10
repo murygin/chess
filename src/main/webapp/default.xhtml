@@ -5,38 +5,47 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="3col-fixed.xhtml">
 	<ui:define name="content">
 		<div id="section-navigation">
-			<p:outputPanel id="gameListContainer" >
+			<p:outputPanel id="gameListContainer">
 				<p:outputPanel id="gameListPanel" rendered="#{user.ok}">
 					<h2>Game list</h2>
 					<h:form id="gameListForm">
 						<div id="game-list">
 							<ul>
 								<ui:repeat value="#{game.gameInfoList}" var="g">
-									<li class="#{g.style}">
-									   <p:commandLink action="#{game.loadGame}" update=":gameListContainer,:boardContainer,:moveListContainer" styleClass="#{g.statusMessage}">
-										  <f:setPropertyActionListener target="#{game.selectedGameInfo}" value="#{g}" />
-										  <h:outputText value="#{g.opponentShort}" />
-									   </p:commandLink>
-                                       <br/>
-                                       <p:commandLink action="#{game.loadGame}" update=":gameListContainer,:boardContainer,:moveListContainer" styleClass="#{g.statusMessage}">
-                                          <f:setPropertyActionListener target="#{game.selectedGameInfo}" value="#{g}" />
-                                          <h:outputText value="#{g.statusMessage} (#{g.lastMove})" />
-                                       </p:commandLink>
-									</li>						
+									<li class="#{g.style}"><p:commandLink
+											action="#{game.loadGame}"
+											update=":gameListContainer,:boardContainer,:moveListContainer"
+											styleClass="#{g.statusMessage}">
+											<f:setPropertyActionListener
+												target="#{game.selectedGameInfo}" value="#{g}" />
+											<h:outputText value="#{g.opponentShort}" />
+										</p:commandLink> <br /> <p:commandLink action="#{game.loadGame}"
+											update=":gameListContainer,:boardContainer,:moveListContainer"
+											styleClass="#{g.statusMessage}">
+											<f:setPropertyActionListener
+												target="#{game.selectedGameInfo}" value="#{g}" />
+											<h:outputText value="#{g.statusMessage} (#{g.lastMove})" />
+										</p:commandLink></li>
 								</ui:repeat>
 							</ul>
 						</div>
 					</h:form>
 					<div id="section-new-game">
 						<h:form id="newGameButtonForm">
-							<p:commandButton value="New Game" actionListener="#{game.toggleNewGame}"  update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer" rendered="#{!game.newGameVisible}"/>	
-							<p:commandButton value="Cancel" actionListener="#{game.toggleNewGame}" update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer" rendered="#{game.newGameVisible}"/>							
+							<p:commandButton value="New Game"
+								actionListener="#{game.toggleNewGame}"
+								update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer"
+								rendered="#{!game.newGameVisible}" />
+							<p:commandButton value="Cancel"
+								actionListener="#{game.toggleNewGame}"
+								update=":boardContainer,:newGameContainer,:moveListContainer,:gameListContainer"
+								rendered="#{game.newGameVisible}" />
 						</h:form>
 					</div>
 				</p:outputPanel>
@@ -44,47 +53,67 @@
 		</div>
 		<div id="content">
 			<p:outputPanel id="boardContainer">
-                <h:form id="boardForm">
-				    <p:outputPanel id="boardPanel" rendered="#{user.ok and !game.newGameVisible}" >
-                        <table id="status">
-                           <tr>
-                              <td align="left" width="65px">Opponent: </td>
-                              <td align="left" width="110px"><h2><h:outputText value="#{game.selectedGameInfo.opponentShort}" /></h2></td>
-                              <td align="right"><h:outputText value="#{game.statusMessage}" /></td>
-                           </tr>
-                        </table>
-      					
-      					<div id="board" class="board">					
-      						<table class="board">
-      							<ui:repeat value="#{board.board.rows}" var="row" >
-      								<tr>
-      									<ui:repeat value="#{row.squares}" var="square" >
-      										<td class="#{square.style}">
-      											<p:commandLink action="#{board.select}" update=":boardContainer,:moveListContainer">
-      												<f:setPropertyActionListener target="#{board.square}" value="#{square}" />
-      												<h:graphicImage value="#{square.piece.image}" width="14" height="18" rendered="#{!empty square.piece}"/>
-      												<h:graphicImage value="/image/null.gif" rendered="#{empty square.piece}"/> 
-      											</p:commandLink>									
-      										</td>
-      									</ui:repeat>
-      								</tr>
-      							</ui:repeat>
-      						</table>
-      					</div>
-                        <div id="finish">
-                            <p:commandButton action="#{game.toggleResignDialog}" update=":boardContainer" value="Resign" rendered="#{game.active and !game.showDrawDialog and !game.showResignDialog}"/>
-                            <p:commandButton action="#{game.resign}" update=":moveListContainer,:boardContainer" value="Resign (confirm)" rendered="#{game.active and game.showResignDialog}"/>
-                            <p:commandButton action="#{game.toggleResignDialog}" update=":boardContainer" value="Cancel" rendered="#{game.active and game.showResignDialog}"/>
-                            <p:commandButton action="#{game.draw}" update=":moveListContainer,:boardContainer" value="Offer draw" rendered="#{game.active and !game.drawOffer and !game.showResignDialog}"/>                        
-                            <p:commandButton action="#{game.drawDecline}" update=":moveListContainer,:boardContainer" value="Decline draw offer" rendered="#{game.showDrawDialog}"/>                        
-                            <p:commandButton action="#{game.drawAccept}" update=":moveListContainer,:boardContainer" value="Accept draw offer" rendered="#{game.showDrawDialog}"/>                   
-                        </div>
-			        </p:outputPanel>
-                </h:form>
+				<h:form id="boardForm">
+					<p:outputPanel id="boardPanel"
+						rendered="#{user.ok and !game.newGameVisible}">
+						<table id="status">
+							<tr>
+								<td align="left" width="65px">Opponent:</td>
+								<td align="left" width="110px"><h2>
+										<h:outputText value="#{game.selectedGameInfo.opponentShort}" />
+									</h2></td>
+								<td align="right"><h:outputText
+										value="#{game.statusMessage}" /></td>
+							</tr>
+						</table>
+
+						<div id="board" class="board">
+							<table class="board">
+								<ui:repeat value="#{board.board.rows}" var="row">
+									<tr>
+										<ui:repeat value="#{row.squares}" var="square">
+											<td class="#{square.style}"><p:commandLink
+													action="#{board.select}"
+													update=":boardContainer,:moveListContainer">
+													<f:setPropertyActionListener target="#{board.square}"
+														value="#{square}" />
+													<h:graphicImage value="#{square.piece.image}" width="14"
+														height="18" rendered="#{!empty square.piece}" />
+													<h:graphicImage value="/image/null.gif"
+														rendered="#{empty square.piece}" />
+												</p:commandLink></td>
+										</ui:repeat>
+									</tr>
+								</ui:repeat>
+							</table>
+						</div>
+						<div id="finish">
+							<p:commandButton action="#{game.toggleResignDialog}"
+								update=":boardContainer" value="Resign"
+								rendered="#{game.active and !game.showDrawDialog and !game.showResignDialog}" />
+							<p:commandButton action="#{game.resign}"
+								update=":moveListContainer,:boardContainer"
+								value="Resign (confirm)"
+								rendered="#{game.active and game.showResignDialog}" />
+							<p:commandButton action="#{game.toggleResignDialog}"
+								update=":boardContainer" value="Cancel"
+								rendered="#{game.active and game.showResignDialog}" />
+							<p:commandButton action="#{game.draw}"
+								update=":moveListContainer,:boardContainer" value="Offer draw"
+								rendered="#{game.active and !game.drawOffer and !game.showResignDialog}" />
+							<p:commandButton action="#{game.drawDecline}"
+								update=":moveListContainer,:boardContainer"
+								value="Decline draw offer" rendered="#{game.showDrawDialog}" />
+							<p:commandButton action="#{game.drawAccept}"
+								update=":moveListContainer,:boardContainer"
+								value="Accept draw offer" rendered="#{game.showDrawDialog}" />
+						</div>
+					</p:outputPanel>
+				</h:form>
 			</p:outputPanel>
-			<p:outputPanel id="newGameContainer" >
-                <h:form id="newGameForm"> 
-                  <script type="text/javascript">
+			<p:outputPanel id="newGameContainer">
+				<h:form id="newGameForm">
+					<script type="text/javascript">
                       function calculateFirstMove() {
                        var engine = typeRadio.inputs[1].checked;
                          var black = colorRadio.inputs[1].checked;
@@ -93,61 +122,76 @@
                           calculateFirstMoveRemote();
                          }
                       }
-                  </script> 
-                  <p:remoteCommand id="calculateFirstMove" name="calculateFirstMoveRemote" actionListener="#{game.calculateMove}" update=":gameListContainer,:boardContainer,:moveListContainer"/>
-                  <p:outputPanel id="newGamePanel" rendered="#{user.ok and game.newGameVisible}">
-					<h2>New game</h2>				                    
-                     <h:panelGrid id="newGameGrid" columns="1" cellpadding="5">
-                         <h:outputLabel for="colorGame" value="Your color: " /> 
-						<p:selectOneRadio id="colorGame" value="#{game.colorNew}" widgetVar="colorRadio">  
-				            <f:selectItem itemLabel="White" itemValue="w" />  
-				            <f:selectItem itemLabel="Black" itemValue="b" />  
-				        </p:selectOneRadio> 
-                         <h:outputLabel for="type" value="Opponent type:" /> 
-                         <p:selectOneRadio id="type" value="#{game.typeNew}" widgetVar="typeRadio">  
-                              <f:selectItem itemLabel="Human" itemValue="human" />  
-                              <f:selectItem itemLabel="Chess engine (Computer)" itemValue="engine" />  
-                          </p:selectOneRadio>  
-						<h:outputLabel for="emailGame" value="Opponent email: " /> 
-						<p:inputText id="emailGame" value="#{game.emailNew}" label="email"/>
-						<p:message id="emailGameMsg" for="emailGame" showSummary="true" showDetail="false"/>
-						<h:panelGroup>
-							<p:commandButton value="Create" actionListener="#{game.create}" oncomplete="calculateFirstMove();" update=":gameListContainer,:boardContainer,:newGameContainer" />									
-						</h:panelGroup>						
-					</h:panelGrid>
-					
-				  </p:outputPanel>
-               </h:form>
-			</p:outputPanel>			
-            <ui:insert name="auth">
-               <ui:include src="auth.xhtml" />
-            </ui:insert>  
-            <ui:insert name="readme">
-               <ui:include src="readme.xhtml" />
-            </ui:insert>   
-        </div>
+                  </script>
+					<p:remoteCommand id="calculateFirstMove"
+						name="calculateFirstMoveRemote"
+						actionListener="#{game.calculateMove}"
+						update=":gameListContainer,:boardContainer,:moveListContainer" />
+					<p:outputPanel id="newGamePanel"
+						rendered="#{user.ok and game.newGameVisible}">
+						<h2>New game</h2>
+						<h:panelGrid id="newGameGrid" columns="1" cellpadding="5">
+							<h:outputLabel for="colorGame" value="Your color: " />
+							<p:selectOneRadio id="colorGame" value="#{game.colorNew}"
+								widgetVar="colorRadio">
+								<f:selectItem itemLabel="White" itemValue="w" />
+								<f:selectItem itemLabel="Black" itemValue="b" />
+							</p:selectOneRadio>
+							<h:outputLabel for="type" value="Opponent type:" />
+							<p:selectOneRadio id="type" value="#{game.typeNew}"
+								widgetVar="typeRadio">
+								<f:selectItem itemLabel="Human" itemValue="human" />
+								<f:selectItem itemLabel="Chess engine (Computer)"
+									itemValue="engine" />
+							</p:selectOneRadio>
+							<h:outputLabel for="emailGame" value="Opponent email: " />
+							<p:inputText id="emailGame" value="#{game.emailNew}"
+								label="email" />
+							<p:message id="emailGameMsg" for="emailGame" showSummary="true"
+								showDetail="false" />
+							<h:panelGroup>
+								<p:commandButton value="Create" actionListener="#{game.create}"
+									oncomplete="calculateFirstMove();"
+									update=":gameListContainer,:boardContainer,:newGameContainer" />
+							</h:panelGroup>
+						</h:panelGrid>
+
+					</p:outputPanel>
+				</h:form>
+			</p:outputPanel>
+			<ui:insert name="auth">
+				<ui:include src="auth.xhtml" />
+			</ui:insert>
+			<ui:insert name="readme">
+				<ui:include src="readme.xhtml" />
+			</ui:insert>
+		</div>
 		<div id="aside">
-			<p:outputPanel id="moveListContainer" >
-				<p:outputPanel id="moveListPanel" rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">
+			<p:outputPanel id="moveListContainer">
+				<p:outputPanel id="moveListPanel"
+					rendered="#{user.ok and !empty game.selectedGame and !game.newGameVisible}">
 					<h:form id="moveListForm">
 						<h2>Move list</h2>
 						<div id="move-list">
 							<table>
-								<ui:repeat value="#{game.moveList}" var="tuple" >
+								<ui:repeat value="#{game.moveList}" var="tuple">
 									<tr>
-                                        <td><h:outputText value="#{tuple.number}." /></td>
-										<td>
-                                             <p:commandLink action="#{game.loadHistory}" update=":boardContainer,:moveListContainer">
-                                                <f:setPropertyActionListener target="#{game.moveNumber}" value="#{tuple.white.n}" />
-                                                <h:outputText value="#{tuple.white.move}" styleClass="#{tuple.white.css}"/>
-                                             </p:commandLink>                           
-                                        </td>
-										<td>
-                                             <p:commandLink action="#{game.loadHistory}" update=":boardContainer,:moveListContainer" rendered="#{!empty tuple.black}">
-                                                <f:setPropertyActionListener target="#{game.moveNumber}" value="#{tuple.black.n}" />
-                                                <h:outputText value="#{tuple.black.move}" styleClass="#{tuple.black.css}" />
-                                             </p:commandLink>                                 
-                                        </td>
+										<td><h:outputText value="#{tuple.number}." /></td>
+										<td><p:commandLink action="#{game.loadHistory}"
+												update=":boardContainer,:moveListContainer">
+												<f:setPropertyActionListener target="#{game.moveNumber}"
+													value="#{tuple.white.n}" />
+												<h:outputText value="#{tuple.white.move}"
+													styleClass="#{tuple.white.css}" />
+											</p:commandLink></td>
+										<td><p:commandLink action="#{game.loadHistory}"
+												update=":boardContainer,:moveListContainer"
+												rendered="#{!empty tuple.black}">
+												<f:setPropertyActionListener target="#{game.moveNumber}"
+													value="#{tuple.black.n}" />
+												<h:outputText value="#{tuple.black.move}"
+													styleClass="#{tuple.black.css}" />
+											</p:commandLink></td>
 									</tr>
 								</ui:repeat>
 							</table>
@@ -155,33 +199,44 @@
 						<div id="section-move-display">
 							<table>
 								<tr>
-									<td><h:outputText value="#{board.notation}" styleClass="currentMove"/></td>
+									<td><h:outputText value="#{board.notation}"
+											styleClass="currentMove" /></td>
 								</tr>
 							</table>
-						</div>	
+						</div>
 						<div id="section-move">
-                           <script type="text/javascript">
+							<script type="text/javascript">
                                function calculateNextMove() {
                             	  g.renderMessage({summary:'Calculating next move. Please wait.', detail: '', severity: 'info'});
                             	  calculateRemote();
                                }
                            </script>
-                           <p:remoteCommand id="calculateNextMove" name="calculateRemote" actionListener="#{game.calculateMove}" update=":gameListContainer,:boardContainer,:moveListContainer"/>
-						   <table>
+							<p:remoteCommand id="calculateNextMove" name="calculateRemote"
+								actionListener="#{game.calculateMove}"
+								update=":gameListContainer,:boardContainer,:moveListContainer" />
+							<table>
 								<tr>
-                                    <td><p:commandButton action="#{game.historyBack}" update=":boardContainer,:moveListContainer" value="&lt;" disabled="#{game.firstMove}"/></td>
-									<td>
-                                       <p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" value="Move" rendered="#{game.myTurn and game.isHumanOpponent}"/>                                   
-                                       <p:commandButton action="#{game.move}" update=":gameListContainer,:boardContainer,:moveListContainer" oncomplete="calculateNextMove();" value="Move" rendered="#{game.myTurn and !game.isHumanOpponent}"/>
-                                    </td>
-								    <td><p:commandButton action="#{game.historyForward}" update=":boardContainer,:moveListContainer" value="&gt;" disabled="#{! game.historyMode}"/></td>
-                                 </tr>						
-							</table>									
+									<td><p:commandButton action="#{game.historyBack}"
+											update=":boardContainer,:moveListContainer" value="&lt;"
+											disabled="#{game.firstMove}" /></td>
+									<td><p:commandButton action="#{game.move}"
+											update=":gameListContainer,:boardContainer,:moveListContainer"
+											value="Move"
+											rendered="#{game.myTurn and game.isHumanOpponent}" /> <p:commandButton
+											action="#{game.move}"
+											update=":gameListContainer,:boardContainer,:moveListContainer"
+											oncomplete="calculateNextMove();" value="Move"
+											rendered="#{game.myTurn and !game.isHumanOpponent}" /></td>
+									<td><p:commandButton action="#{game.historyForward}"
+											update=":boardContainer,:moveListContainer" value="&gt;"
+											disabled="#{! game.historyMode}" /></td>
+								</tr>
+							</table>
 						</div>
 					</h:form>
 				</p:outputPanel>
 			</p:outputPanel>
-		</div>	
+		</div>
 	</ui:define>
 </ui:composition>
 </html>
