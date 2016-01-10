@@ -1,2 +1,4 @@
 /database.properties
 /mail.properties
+/database.properties.local
+/database.properties.openshift

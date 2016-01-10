@@ -57,22 +57,18 @@ public class GameBean implements Serializable{
 
     private static final Logger LOG = Logger.getLogger(GameBean.class);
     
-    String emailNew;
+    private String emailNew;
+    private String loginOpponent;
+    private String colorNew = Board.WHITE;    
+    private String typeNew = Game.HUMAN;
     
-    String colorNew = Board.WHITE;
+    private List<Game> gameList;   
+    private List<GameInfo> gameInfoList;    
+    private GameInfo selectedGameInfo;
+    private List<String> loginOpponentList;
     
-    String typeNew = Game.HUMAN;
-    
-    List<Game> gameList;
-    
-    List<GameInfo> gameInfoList;
-    
-    GameInfo selectedGameInfo;
-    
-    private boolean newGameVisible = false;
-    
-    private int moveNumber = -1;
-    
+    private boolean newGameVisible = false;    
+    private int moveNumber = -1;    
     private boolean showResignDialog = false;
     
     @Autowired
@@ -83,6 +79,9 @@ public class GameBean implements Serializable{
     
     @Autowired
     private IGameService gameService;
+    
+    @Autowired
+    private IUserService userService;
     
     @Autowired
     private IMailService mailService;
@@ -201,15 +200,24 @@ public class GameBean implements Serializable{
             String color, reminderEmail, reminderName;
             if(Game.ENGINE.equals(getTypeNew())) {
                 setEmailNew(null);
+                setLoginOpponent(null);
             }
             if(Board.WHITE.equals(getColorNew())) {
-                newGame = getGameService().create(getUserBean().getUser(),getEmailNew()); 
+                if(getLoginOpponent()!=null) {
+                    newGame = getGameService().create(getUserBean().getUser(),getLoginOpponent());
+                } else {
+                    newGame = getGameService().createByEmail(getUserBean().getUser(),getEmailNew()); 
+                }
                 oppenent = newGame.getPlayerBlack().getLogin();
                 color = "white";
                 reminderEmail = newGame.getPlayerBlack().getEmail();
                 reminderName = newGame.getPlayerBlack().getLogin();
             } else {
-                newGame = getGameService().create(getEmailNew(),getUserBean().getUser());
+                if(getLoginOpponent()!=null) {
+                    newGame = getGameService().create(getLoginOpponent(),getUserBean().getUser());
+                } else {
+                    newGame = getGameService().createByEmail(getEmailNew(),getUserBean().getUser());
+                }
                 oppenent = newGame.getPlayerWhite().getLogin();
                 color = "black";
                 reminderEmail = newGame.getPlayerWhite().getEmail();
@@ -258,7 +266,7 @@ public class GameBean implements Serializable{
             LOG.error("Selected game info is null.");
             return true;
         }
-        return !User.ENINE_USER.equals(getSelectedGameInfo().getOpponent());
+        return !User.ENGINE_USER.equals(getSelectedGameInfo().getOpponent());
     }
 
     private void doMove() {
@@ -415,6 +423,14 @@ public class GameBean implements Serializable{
             myTurn = myColor.equals(getBoardBean().getBoard().getActive());
         }
         return myTurn;
+    }
+    
+    public String getMyLogin() {
+        String login = null;
+        if(getUserBean()!=null && getUserBean().getUser()!=null) {
+            login = getUserBean().getUser().getLogin();
+        }
+        return login;
     }
     
     public String getMyColor() {
@@ -579,6 +595,26 @@ public class GameBean implements Serializable{
     public void setEmailNew(String emailNew) {
         this.emailNew = emailNew;
     }
+    public String getLoginOpponent() {
+        return loginOpponent;
+    }
+
+    public void setLoginOpponent(String login) {
+        this.loginOpponent = login;
+    }
+    
+    public List<String> getLoginOpponentList() {
+       if(loginOpponentList==null) {
+           loginOpponentList = new LinkedList<String>();
+           for (String login : getUserService().getAllLogins()) {
+               if(!login.equals(getMyLogin()) && !login.equals(User.ENGINE_USER)) {
+                   loginOpponentList.add(login);
+               }        
+           }
+       }
+       return loginOpponentList;
+    }
+
     /**
      * @return the colorNew
      */
@@ -643,6 +679,14 @@ public class GameBean implements Serializable{
         this.gameService = gameService;
     }
     
+    public IUserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
+
     public IMailService getMailService() {
         return mailService;
     }

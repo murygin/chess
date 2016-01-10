@@ -35,9 +35,13 @@ public interface IGameService {
 
     Game loadGame(Integer id);
 
-    Game create(User userWhite, String emailBlack) throws UserNotFoundException;
+    Game create(User userWhite, String loginBlack) throws UserNotFoundException;
     
-    Game create(String emailWhite, User userblack) throws UserNotFoundException;
+    Game create(String loginWhite, User userblack) throws UserNotFoundException;
+    
+    Game createByEmail(User userWhite, String emailBlack) throws UserNotFoundException;
+    
+    Game createByEmail(String emailWhite, User userblack) throws UserNotFoundException;
     
     Game create(User userWhite, User userBlack);
     

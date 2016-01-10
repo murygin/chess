@@ -31,6 +31,8 @@ public interface IUserService {
     
     List<User> getAll();
     
+    List<String> getAllLogins();
+    
     void save(User user);
     
     User findUser(String username);

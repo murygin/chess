@@ -20,6 +20,8 @@
 package org.n2.chess.beans;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -62,6 +64,19 @@ public class UserService implements IUserService, Serializable {
     @Override
     public List<User> getAll() {
         return getUserDao().loadAll();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IUserService#getAllLogins()
+     */
+    @Override
+    public List<String> getAllLogins() {
+        List<String> allLogins = new LinkedList<String>();
+        for (User user : getAll()) {
+            allLogins.add(user.getLogin());
+        }
+        Collections.sort(allLogins);
+        return allLogins;
     }
     
     @Override
@@ -117,7 +132,7 @@ public class UserService implements IUserService, Serializable {
     @Override
     public boolean isUsernameAvailable(String username) {
         List<User> userList = getUserDao().findByExample(new User(username,null,null,null));
-        return (userList==null || userList.isEmpty()) && !User.ENINE_USER.equals(username);
+        return (userList==null || userList.isEmpty()) && !User.ENGINE_USER.equals(username);
     }
 
     /* (non-Javadoc)
@@ -126,7 +141,7 @@ public class UserService implements IUserService, Serializable {
     @Override
     public boolean isEmailAvailable(String email) {
         List<User> userList = getUserDao().findByExample(new User(null,email,null,null));
-        return (userList==null || userList.isEmpty()) && !User.ENINE_EMAIL.equals(email);
+        return (userList==null || userList.isEmpty()) && !User.ENGINE_EMAIL.equals(email);
     }
 
     /* (non-Javadoc)
@@ -134,9 +149,9 @@ public class UserService implements IUserService, Serializable {
      */
     @Override
     public User getEngineUser() {
-       User user = findUser(User.ENINE_USER);
+       User user = findUser(User.ENGINE_USER);
        if(user==null) {
-           user = new User(User.ENINE_USER, User.ENINE_EMAIL, null, null);
+           user = new User(User.ENGINE_USER, User.ENGINE_EMAIL, null, null);
            save(user);
        }     
        return user;

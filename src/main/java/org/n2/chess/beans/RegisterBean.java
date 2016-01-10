@@ -129,7 +129,7 @@ public class RegisterBean implements Serializable {
             if (user != null &&  Arrays.equals(proposedDigest, bDigest) ) {
                 getUserBean().setUser(user);
                 getGameBean().init();
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login succesful", "You are logged in. Welcome back: " + getLogin()));              
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login succesful", "Welcome back: " + getLogin()));              
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login failed", "Check username and password."));
             }

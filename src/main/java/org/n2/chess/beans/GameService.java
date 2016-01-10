@@ -91,12 +91,54 @@ public class GameService implements IGameService, Serializable {
         }
         return game;
     }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
+     */
+    @Override
+    public Game create(User userWhite, String loginBlack) throws UserNotFoundException {
+        User userBlack;
+        if(loginBlack==null) {
+            userBlack =  getUserService().getEngineUser();
+        } else {
+            userBlack = getUserService().findUser(loginBlack);
+        }
+        if(userBlack==null) {
+            throw new UserNotFoundException("No registered user found with login: " + loginBlack);
+        }
+        Game game = null;
+        if(userBlack!=null && userWhite!=null) {
+            game = create(userWhite, userBlack);
+        }
+        return game;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
+     */
+    @Override
+    public Game create(String loginWhite, User userBlack) throws UserNotFoundException {
+        User userWhite;
+        if(loginWhite==null) {
+            userWhite =  getUserService().getEngineUser();
+        } else {
+            userWhite = getUserService().findUser(loginWhite);
+        }
+        if(userWhite==null) {
+            throw new UserNotFoundException("No registered user found with login: " + loginWhite);
+        }
+        Game game = null;
+        if(userBlack!=null && userWhite!=null) {
+            game = create(userWhite, userBlack);
+        }
+        return game;
+    }
 
     /* (non-Javadoc)
      * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
      */
     @Override
-    public Game create(User userWhite, String emailBlack) throws UserNotFoundException {
+    public Game createByEmail(User userWhite, String emailBlack) throws UserNotFoundException {
         User userBlack;
         if(emailBlack==null) {
             userBlack =  getUserService().getEngineUser();
@@ -117,7 +159,7 @@ public class GameService implements IGameService, Serializable {
      * @see org.n2.chess.beans.IGameService#create(org.n2.chess.beans.hibernate.User, java.lang.String)
      */
     @Override
-    public Game create(String emailWhite, User userBlack) throws UserNotFoundException {
+    public Game createByEmail(String emailWhite, User userBlack) throws UserNotFoundException {
         User userWhite;
         if(emailWhite==null) {
             userWhite =  getUserService().getEngineUser();

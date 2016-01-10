@@ -144,11 +144,20 @@
 								<f:selectItem itemLabel="Chess engine (Computer)"
 									itemValue="engine" />
 							</p:selectOneRadio>
+							<h:outputLabel for="loginOpponent" value="Opponent:" />
+            	<p:selectOneMenu id="loginOpponent" value="#{game.loginOpponent}" style="width:150px">
+                <f:selectItem itemLabel="Select" itemValue="" noSelectionOption="true" />
+                <f:selectItems value="#{game.loginOpponentList}" />
+            	</p:selectOneMenu>
+            	<p:message id="loginOpponentMsg" for="loginOpponent" showSummary="true"
+								showDetail="false" />
+            	<!--
 							<h:outputLabel for="emailGame" value="Opponent email: " />
 							<p:inputText id="emailGame" value="#{game.emailNew}"
 								label="email" />
 							<p:message id="emailGameMsg" for="emailGame" showSummary="true"
 								showDetail="false" />
+							-->
 							<h:panelGroup>
 								<p:commandButton value="Create" actionListener="#{game.create}"
 									oncomplete="calculateFirstMove();"
