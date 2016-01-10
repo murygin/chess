@@ -51,9 +51,9 @@ public class ReminderService {
     private IMailService mailService;
     
     //every 5 minutes
-    //@Scheduled(cron="0 */5 * * * ?")
+    @Scheduled(cron="0 */5 * * * ?")
     //every hour
-    @Scheduled(cron="0 0 0/1 * * ?")
+    //@Scheduled(cron="0 0 0/1 * * ?")
     public void send() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Sending reminder...");
