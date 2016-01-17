@@ -115,7 +115,7 @@ public class ReminderService {
                 LOG.info("Resign reminder send to: " + name);
             }
         } else {
-            sendMoveReminder(email, name, opponent, game.getLastMove().getMove());
+            sendMoveReminder(email, name, opponent, game.extractLastMove().getMove());
             if (LOG.isInfoEnabled()) {
                 LOG.info("Move reminder send to: " + name);
             }

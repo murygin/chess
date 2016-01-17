@@ -166,7 +166,7 @@ public class Game implements Serializable {
         this.moveSet = moveSet;
     }
     
-    public Move getLastMove() {
+    public Move extractLastMove() {
         Move lastMove = null;
         if(moveSet!=null) {
             for (Move move : moveSet) {
