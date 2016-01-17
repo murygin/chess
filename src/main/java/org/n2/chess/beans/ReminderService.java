@@ -30,6 +30,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n2.chess.beans.hibernate.Game;
 import org.n2.chess.beans.hibernate.IGameDao;
+import org.n2.chess.beans.hibernate.Move;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -50,10 +51,10 @@ public class ReminderService {
     @Autowired
     private IMailService mailService;
     
-    //every 5 minutes
-    @Scheduled(cron="0 */5 * * * ?")
+    //every minute
+    //@Scheduled(cron="0 */1 * * * ?")
     //every hour
-    //@Scheduled(cron="0 0 0/1 * * ?")
+    @Scheduled(cron="0 0 0/1 * * ?")
     public void send() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Sending reminder...");
@@ -114,7 +115,7 @@ public class ReminderService {
                 LOG.info("Resign reminder send to: " + name);
             }
         } else {
-            sendMoveReminder(email, name, opponent);
+            sendMoveReminder(email, name, opponent, game.getLastMove().getMove());
             if (LOG.isInfoEnabled()) {
                 LOG.info("Move reminder send to: " + name);
             }
@@ -143,12 +144,12 @@ public class ReminderService {
         
     }
 
-    private void sendMoveReminder(String email, String name, String opponent) {
+    private void sendMoveReminder(String email, String name, String opponent, String notation) {
         getMailService().sendMail(
                 null, 
                 email, 
-                Messages.getString("GameBean.0"), //$NON-NLS-1$
-                Messages.getString("GameBean.1", name, opponent)); //$NON-NLS-1$ 
+                Messages.getString("GameBean.0", notation), //$NON-NLS-1$
+                Messages.getString("GameBean.1", name, opponent, notation)); //$NON-NLS-1$ 
     }
 
     public IGameDao getGameDao() {

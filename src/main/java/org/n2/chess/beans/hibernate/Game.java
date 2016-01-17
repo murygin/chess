@@ -165,6 +165,16 @@ public class Game implements Serializable {
     public void setMoveSet(Set<Move> moveSet) {
         this.moveSet = moveSet;
     }
+    
+    public Move getLastMove() {
+        Move lastMove = null;
+        if(moveSet!=null) {
+            for (Move move : moveSet) {
+                lastMove = move;
+            }
+        }
+        return lastMove;
+    }
 
     /**
      * @return the startDate
